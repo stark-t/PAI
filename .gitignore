@@ -1,0 +1,4 @@
+# Add all file that will be ignore by git
+# Example: ignore all pdf files *.pdf
+
+*.pdf
