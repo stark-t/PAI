@@ -2,3 +2,4 @@
 # Example: ignore all pdf files *.pdf
 
 *.pdf
+*.pyc
