@@ -3,3 +3,5 @@
 
 *.pdf
 *.pyc
+
+/wandb/*
