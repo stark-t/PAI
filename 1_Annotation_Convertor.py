@@ -6,7 +6,7 @@ README:
 
 - This Code will convert the annotation style of your dataset and put the images and labels into 2 seperate folders.
 - Decide the Conversion, define the intention and the Input- and Output-folder (lines 29-46)
-
+ROBIN
 Note:
 - requires the subfolders of datasetfolder to be the classnames (except UFZ)
 - the classnames will then be the annotation of the images as numbers
