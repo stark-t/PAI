@@ -8,6 +8,8 @@ README:
 """
 
 import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+import cv2
 import detect
 import shutil
 import tqdm
@@ -15,48 +17,11 @@ import numpy as np
 from utils.metrics import bbox_iou
 import torch
 import matplotlib
-matplotlib.use('Tkagg')
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-def get_iou(a, b, epsilon=1e-5):
-    """ Given two boxes `a` and `b` defined as a list of four numbers:
-            [x1,y1,x2,y2]
-        where:
-            x1,y1 represent the upper left corner
-            x2,y2 represent the lower right corner
-        It returns the Intersect of Union score for these two boxes.
-
-    Args:
-        a:          (list of 4 numbers) [x1,y1,x2,y2]
-        b:          (list of 4 numbers) [x1,y1,x2,y2]
-        epsilon:    (float) Small value to prevent division by zero
-
-    Returns:
-        (float) The Intersect of Union score.
-    """
-    # COORDINATES OF THE INTERSECTION BOX
-    x1 = max(a[0], b[0])
-    y1 = max(a[1], b[1])
-    x2 = min(a[2], b[2])
-    y2 = min(a[3], b[3])
-
-    # AREA OF OVERLAP - Area where the boxes intersect
-    width = (x2 - x1)
-    height = (y2 - y1)
-    # handle case where there is NO overlap
-    if (width<0) or (height <0):
-        return 0.0
-    area_overlap = width * height
-
-    # COMBINED AREA
-    area_a = (a[2] - a[0]) * (a[3] - a[1])
-    area_b = (b[2] - b[0]) * (b[3] - b[1])
-    area_combined = area_a + area_b - area_overlap
-
-    # RATIO OF AREA OF OVERLAP OVER COMBINED AREA
-    iou = area_overlap / (area_combined+epsilon)
-    return iou
+verbose = 0
 
 #decide if you want bounding boxes in the detected images
 img_bounding_boxes = True
@@ -66,20 +31,14 @@ delete_prediction_images = True
 conf_threshold = .50
 batch_size = 16
 imgsz = 1280
-datasetname = "UFZ_field_observation_21_08"
-source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
-save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
-# save_dir = r"C:\MASTERTHESIS\Results\pollinator_detector"
-# save_dir = r"C:\MASTERTHESIS\Results\order_classification"
-weights = r"C:\MASTERTHESIS\Results\Training\Trial_insect_detector_200_yolov5m6_1280\weights\best.pt"
 
-"""
+source = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\test\images"
+save_dir = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\results"
+weights = r"D:\202105_PAI\data\best.pt"
 
-
-"""
 
 #make folder to save predictions if not exist
-modelname = weights.split("\\")[4]
+modelname = weights.split("\\")[3]
 sourcename = source.split("\\")[3]
 save_dir = os.path.join(save_dir, (modelname + "_" + sourcename))
 if not os.path.exists(save_dir):
@@ -104,79 +63,63 @@ if not os.path.exists(labels_dir):
     shutil.copytree(source_labels, labels_dir, dirs_exist_ok=True)
 
 #loop through all labels
-for file_name in tqdm.tqdm(os.listdir(labels_dir)):
+list_of_all_ious = []
+for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
+
     #get path to label and prediction file
     label_file = os.path.join(labels_dir, file_name)
     prediction_file = os.path.join(prediction_dir, file_name)
+
     #read and get label and prediction
     with open(label_file) as lf:
-        label_info = lf.readlines()
+        label_lines_str = lf.readlines()
         labels = []
-        for i, info in enumerate(label_info):
-            label_info_ = label_info[i].split(" ")
-            labels.append(label_info_)
-        labels = np.array(labels)
+        for i, info in enumerate(label_lines_str):
+            label_info_str = label_lines_str[i].split(" ")
+            label_floats = [float(f) for f in label_info_str]
+            labels.append(label_floats)
+
     with open(prediction_file) as pf:
-        prediction_info = pf.readlines()
+        prediction_lines_str = pf.readlines()
         predictions = []
-        for i, info in enumerate(prediction_info):
-            prediction_info_ = prediction_info[i].split(" ")
-            predictions.append(prediction_info_)
-        predictions = np.array(predictions)
-    if len(labels) != len(predictions):
-        problem = 1
-    if len(labels) > 1:
-        debug = 1
+        for i, info in enumerate(prediction_lines_str):
+            prediction_info_str = prediction_lines_str[i].split(" ")
+            prediction_floats = [float(f) for f in prediction_info_str]
+            predictions.append(prediction_floats)
+
     ious = []
     for label_i, label in enumerate(labels):
         all_ious_per_label = []
         for prediction_i, prediction in enumerate(predictions):
-            bbox_label = label.astype(np.float32)
+            bbox_label = np.array(label[1:])
             bbox_label_torch = torch.from_numpy(bbox_label)
-            bbox_prediction = prediction.astype(np.float32)
+
+            bbox_prediction = np.array(prediction[1:])
             bbox_prediction_torch = torch.from_numpy(bbox_prediction)
-            if len(labels) > 1:
-                # p1 = Polygon([[label[1], label[2]], [label[3], label[2]], [label[3], label[4]], [label[1], label[4]]], closed=False, color="red", alpha=0.5)
-                # p2 = Polygon([[prediction[1], prediction[2]], [prediction[3], prediction[2]], [prediction[3], prediction[4]], [prediction[1], prediction[4]]], closed=False, color="blue", alpha=0.5)
-                # ax = plt.gca()
-                # ax.add_patch(p1)
-                # ax.add_patch(p2)
-                # plt.show()
-                debug = 1
-            iou_torch = bbox_iou(bbox_label_torch[1:], bbox_prediction_torch[1:])
+
+            iou_torch = bbox_iou(bbox_label_torch, bbox_prediction_torch, x1y1x2y2=False)
             iou = iou_torch.numpy()
-            iou2 = get_iou(bbox_label[1:], bbox_prediction[1:])
-            #vergleiche alle predictions pro label
+
+            if iou < 0:
+                iou = 0.0
+            elif iou > 1.0:
+                if verbose == 1:
+                    print('Warning: Ill defined IOU of above 1.0')
+                iou = 1.0
+
+            # for all predictions im images calculate iou for i-th label
             all_ious_per_label.append(iou)
+
+        # get highest iou per label per prediction
         iou_max_per_label = np.max(all_ious_per_label)
         ious.append(iou_max_per_label)
-    debug = 1
-        # if len(labels) > 1:
-        #     debug = 1
 
-    # weitere evaluation metrics? später!
+    # get mean iou per images
+    mean_iou_per_images = np.mean(ious)
+    list_of_all_ious.append(mean_iou_per_images)
 
-    #wie ist es mit mehreren predictions pro Bild?
-    #was ist wenn anzahl predictions ungleich anzahl labels?
-
-
+# get mean overall iou
+mean_overall_iou = np.mean(list_of_all_ious)
+print('[INFO]    Mean overall IOU:    {:5.4f}   with an standart deviation of {:5.4f}'.format(mean_overall_iou, np.std(list_of_all_ious)))
 
 
-
-
-
-#delete redundant images in exp
-if delete_prediction_images:
-    for image_to_delete in tqdm.tqdm(os.listdir(os.path.join(save_dir, 'exp'))):
-        if image_to_delete.endswith('.jpg'):
-            delete_redundant_image = os.path.join(save_dir, 'exp', image_to_delete)
-            delete_redundant_image = delete_redundant_image.replace('.txt', '.jpg')
-            os.remove(delete_redundant_image)
-        elif image_to_delete.endswith('.JPG'):
-            delete_redundant_image = os.path.join(save_dir, 'exp', image_to_delete)
-            delete_redundant_image = delete_redundant_image.replace('.txt', '.JPG')
-            os.remove(delete_redundant_image)
-
-#rename outputfile
-newfoldername = os.path.join(save_dir, (datasetname+'_'+'Threshhold_'+str(int(conf_threshold*100))+'%'))
-os.rename(os.path.join(save_dir, 'exp'), newfoldername)
