@@ -21,8 +21,6 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-verbose = 0
-
 #decide if you want bounding boxes in the detected images
 img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
@@ -99,13 +97,6 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
 
             iou_torch = bbox_iou(bbox_label_torch, bbox_prediction_torch, x1y1x2y2=False)
             iou = iou_torch.numpy()
-
-            if iou < 0:
-                iou = 0.0
-            elif iou > 1.0:
-                if verbose == 1:
-                    print('Warning: Ill defined IOU of above 1.0')
-                iou = 1.0
 
             # for all predictions im images calculate iou for i-th label
             all_ious_per_label.append(iou)
