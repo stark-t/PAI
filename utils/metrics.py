@@ -207,9 +207,6 @@ def bbox_iou(box1, box2, x1y1x2y2=True, GIoU=False, DIoU=False, CIoU=False, eps=
     # Intersection area
     inter = (torch.min(b1_x2, b2_x2) - torch.max(b1_x1, b2_x1)).clamp(0) * \
             (torch.min(b1_y2, b2_y2) - torch.max(b1_y1, b2_y1)).clamp(0)
-    # inter = (torch.min(b1_x2, b2_x2) - torch.max(b1_x1, b2_x1)) * \
-    #         (torch.min(b1_y2, b2_y2) - torch.max(b1_y1, b2_y1))
-
 
     # Union Area
     w1, h1 = b1_x2 - b1_x1, b1_y2 - b1_y1 + eps
