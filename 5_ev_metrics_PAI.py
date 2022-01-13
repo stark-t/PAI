@@ -14,6 +14,7 @@ import detect
 import shutil
 import tqdm
 import numpy as np
+from sklearn.metrics import accuracy_score, f1_score
 from utils.metrics import bbox_iou
 import torch
 import matplotlib
@@ -30,9 +31,9 @@ conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 
-source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
-save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\P1 Beta Training Insect Detector 10 epochs model s\weights\best.pt"
+source = r"D:\202105_PAI\data\test_2\test\images"
+save_dir = r"D:\202105_PAI\data\test_2\results"
+weights = r"D:\202105_PAI\data\best_worst.pt"
 
 
 #make folder to save predictions if not exist
@@ -60,9 +61,16 @@ labels_dir = os.path.join(save_dir, 'exp', "labels")
 if not os.path.exists(labels_dir):
     shutil.copytree(source_labels, labels_dir, dirs_exist_ok=True)
 
+
+y_true = []
+y_pred = []
+
 #loop through all labels
-list_of_all_ious = []
+print('[INFO]:    calculate metrics for each image')
 for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
+    ious = []
+
+    iou_max_indicies = []
 
     #get path to label and prediction file
     label_file = os.path.join(labels_dir, file_name)
@@ -100,16 +108,11 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
         for i in range(diff_len):
             labels.append([-1,0,0,0,0])
 
-    if file_name == "2to3insects.txt":
-        debug = 1
-    ious = []
-    all_records = []
-    for label_i, label in enumerate(labels):
-        all_ious_per_label = []
-        for prediction_i, prediction in enumerate(predictions):
+    # Go through prediction and label to get fitting metrics
+    for prediction_i, prediction in enumerate(predictions):
 
-            class_true = int(label[0])
-            class_pred = int(prediction[0])
+        iou_ = []
+        for label_i, label in enumerate(labels):
 
             bbox_label = np.array(label[1:])
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -120,40 +123,51 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
             iou_torch = bbox_iou(bbox_label_torch, bbox_prediction_torch, x1y1x2y2=False)
             iou = iou_torch.numpy()
 
-            record = {
-                "iou": iou,
-                "class_true": class_true,
-                "class_pred": class_pred,
-            }
-
             # for all predictions im images calculate iou for i-th label
-            all_ious_per_label.append(iou)
-
-            all_records.append(record)
+            iou_.append(iou)
 
         # get highest iou per label per prediction
-        iou_max_per_label = np.max(all_ious_per_label)
-        ious.append(iou_max_per_label)
+        iou = np.max(iou_)
+        ious.append(iou)
 
-    # get mean iou per images
-    # placeholder: remove all 0-values
-    if 0 in ious:
-        while 0 in ious:
-            ious.remove(0)
-    mean_iou_per_images = np.mean(ious)
-    list_of_all_ious.append(mean_iou_per_images)
+        # get index
+        iou_max_i = iou_.index(max(iou_))
+        iou_max_indicies.append(iou_max_i)
 
-# get mean overall iou
-mean_overall_iou = np.mean(list_of_all_ious)
-print('[INFO]    Mean overall IOU:    {:5.4f}   with an standard deviation of {:5.4f}'.format(mean_overall_iou, np.std(list_of_all_ious)))
+    while 0 in ious:
+        ious.remove(0)
+
+
+    # get matching classes
+    for i, class_i in enumerate(iou_max_indicies):
+        label = labels[class_i]
+        y_true_ = int(label[0])
+        y_true.append(y_true_)
+
+        prediction = predictions[i]
+        y_pred_ = int(prediction[0])
+        y_pred.append(y_pred_)
+
+
+
+del iou_, iou, iou_torch
+iou_mean = np.mean(ious)
+iou_std = np.std(ious)
+print('[INFO]    Mean overall IOU:    {:5.4f}   with an standard deviation of {:5.4f}'.format(iou_mean, iou_std))
+
+accuracy = accuracy_score(y_true, y_pred)
+print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
+
+f1 = f1_score(y_true, y_pred, average='macro') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
+print('[INFO]    F1-score:    {:5.4f}'.format(f1))
 
 # save metrics to text file
 save_metrics_path = os.path.join(save_dir, "exp")
 nameoffile = "Evaluation Metrics.txt"
 completeName = os.path.join(save_metrics_path, nameoffile)
 with open(completeName, "w") as file1:
-    file1.write("The iou is:" + " " + str(mean_overall_iou) + "\n")
-    file1.write("The standard deviation is:" + " " + str(np.std(list_of_all_ious)) + "\n")
+    file1.write("The iou is:" + " " + str(iou_mean) + "\n")
+    file1.write("The standard deviation is:" + " " + str(np.std(iou_std)) + "\n")
 
 
 
