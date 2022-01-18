@@ -31,8 +31,8 @@ conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 
-source = r"D:\202105_PAI\data\test_2\test\images"
-save_dir = r"D:\202105_PAI\data\test_2\results"
+source = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\test\images"
+save_dir = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\results"
 weights = r"D:\202105_PAI\data\best_worst.pt"
 
 
@@ -64,12 +64,13 @@ if not os.path.exists(labels_dir):
 
 y_true = []
 y_pred = []
+ious = []
 
 #loop through all labels
 print('[INFO]:    calculate metrics for each image')
 for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
-    ious = []
 
+    ious_ = []
     iou_max_indicies = []
 
     #get path to label and prediction file
@@ -128,6 +129,7 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
 
         # get highest iou per label per prediction
         iou = np.max(iou_)
+        # ious_.append(iou)
         ious.append(iou)
 
         # get index
@@ -153,7 +155,7 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
 del iou_, iou, iou_torch
 iou_mean = np.mean(ious)
 iou_std = np.std(ious)
-print('[INFO]    Mean overall IOU:    {:5.4f}   with an standard deviation of {:5.4f}'.format(iou_mean, iou_std))
+print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with an standard deviation of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std))
 
 accuracy = accuracy_score(y_true, y_pred)
 print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
