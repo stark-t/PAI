@@ -31,9 +31,9 @@ conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 
-source = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\test\images"
-save_dir = r"D:\202105_PAI\data\test_dataset_for_ev_metrics\results"
-weights = r"D:\202105_PAI\data\best_worst.pt"
+source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
+save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
+weights = r"C:\MASTERTHESIS\Results\Training\P1 Beta Training Insect Detector 10 epochs model s\weights\best.pt"
 
 
 #make folder to save predictions if not exist
