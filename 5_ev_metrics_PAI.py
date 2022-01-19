@@ -31,9 +31,9 @@ conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 
-source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
+source = r"C:\MASTERTHESIS\Data\ArTaxOr_dataset_annotated_insect_detector\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\P1 Beta Training Insect Detector 10 epochs model s\weights\best.pt"
+weights = r"C:\MASTERTHESIS\Results\Training\Trial_insect_detector_200_yolov5m6\weights\best.pt"
 
 
 #make folder to save predictions if not exist
@@ -168,11 +168,12 @@ save_metrics_path = os.path.join(save_dir, "exp")
 nameoffile = "Evaluation Metrics.txt"
 completeName = os.path.join(save_metrics_path, nameoffile)
 with open(completeName, "w") as file1:
-    file1.write("The iou is:" + " " + str(iou_mean) + "\n")
-    file1.write("The standard deviation is:" + " " + str(np.std(iou_std)) + "\n")
+    file1.write('[Mean overall IOU] for {} of {} bounding boxes:    {:5.4f}   with an [standard deviation] of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std) + "\n")
+    file1.write('[Accuracy]:    {:5.4f}'.format(accuracy) + "\n")
+    file1.write('[F1-score]:    {:5.4f}'.format(f1) + "\n")
 
 
 
-"TODO: alle metrics berechnen"
-"Funktion einfügen wenn classlabel ungleich predictionlabel ist soll er die iou NICHT berechnen für dieses objekt/insekt"
+#!TODO: alle metrics berechnen
+#!TODO: Funktion einfügen wenn classlabel ungleich predictionlabel ist soll er die iou NICHT berechnen für dieses objekt/insekt
 
