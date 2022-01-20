@@ -15,14 +15,16 @@ import shutil
 import tqdm
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import confusion_matrix
 from utils.metrics import bbox_iou
+import seaborn as sns
 import torch
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-#decide if you want bounding boxes in the detected images
+#decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Brauchen wir das überhaupt?
 img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
 delete_prediction_images = True
@@ -31,7 +33,9 @@ conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 
-source = r"C:\MASTERTHESIS\Data\ArTaxOr_dataset_annotated_insect_detector\test\images"
+source = r"C:\MASTERTHESIS\Data\UFZ_2021_07_07_dataset_annotated_insect_detector\test\images"
+# source = r"C:\MASTERTHESIS\Data\ArTaxOr_dataset_annotated_insect_detector\test\images"
+# source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
 weights = r"C:\MASTERTHESIS\Results\Training\Trial_insect_detector_200_yolov5m6\weights\best.pt"
 
@@ -150,7 +154,17 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
         y_pred_ = int(prediction[0])
         y_pred.append(y_pred_)
 
-
+#delete redundant images in exp
+if delete_prediction_images:
+    for image_to_delete in tqdm.tqdm(os.listdir(os.path.join(save_dir, 'exp'))):
+        if image_to_delete.endswith('.jpg'):
+            delete_redundant_image = os.path.join(save_dir, 'exp', image_to_delete)
+            delete_redundant_image = delete_redundant_image.replace('.txt', '.jpg')
+            os.remove(delete_redundant_image)
+        elif image_to_delete.endswith('.JPG'):
+            delete_redundant_image = os.path.join(save_dir, 'exp', image_to_delete)
+            delete_redundant_image = delete_redundant_image.replace('.txt', '.JPG')
+            os.remove(delete_redundant_image)
 
 del iou_, iou, iou_torch
 iou_mean = np.mean(ious)
@@ -160,13 +174,40 @@ print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with
 accuracy = accuracy_score(y_true, y_pred)
 print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
 
+# precision =
+
+# recall =
+
 f1 = f1_score(y_true, y_pred, average='macro') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
 print('[INFO]    F1-score:    {:5.4f}'.format(f1))
 
+#Seaborn Confusion Matrix Plot:
+cf_matrix = confusion_matrix(y_true, y_pred)
+group_names = ['True Neg','False Pos','False Neg','True Pos']
+group_counts = ["{0:0.0f}".format(value) for value in
+                cf_matrix.flatten()]
+group_percentages = ["{0:.2%}".format(value) for value in
+                     cf_matrix.flatten()/np.sum(cf_matrix)]
+matrix_labels = [f"{v1}\n{v2}\n{v3}" for v1, v2, v3 in
+          zip(group_names,group_counts,group_percentages)]
+matrix_labels = np.asarray(matrix_labels).reshape(2,2)
+ax = sns.heatmap(cf_matrix, annot=matrix_labels, fmt='', cmap='Blues')
+ax.set_title('Confusion Matrix\n\n');
+ax.set_xlabel('\nPredicted Values')
+ax.set_ylabel('Ground Truth');
+
+## Ticket labels - List must be in alphabetical order
+ax.xaxis.set_ticklabels(['False','True'])
+ax.yaxis.set_ticklabels(['False','True'])
+
+# show and save plot to folder
+save_metrics_info_path = os.path.join(save_dir, "exp")
+plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'))
+plt.show()
+
 # save metrics to text file
-save_metrics_path = os.path.join(save_dir, "exp")
-nameoffile = "Evaluation Metrics.txt"
-completeName = os.path.join(save_metrics_path, nameoffile)
+nameoffile = "_Evaluation_Metrics.txt"
+completeName = os.path.join(save_metrics_info_path, nameoffile)
 with open(completeName, "w") as file1:
     file1.write('[Mean overall IOU] for {} of {} bounding boxes:    {:5.4f}   with an [standard deviation] of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std) + "\n")
     file1.write('[Accuracy]:    {:5.4f}'.format(accuracy) + "\n")
