@@ -20,18 +20,18 @@ import shutil
 
 
 # Define dataset folder
-dataset_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced'
+dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders'
 
 # make train, val and test into your dataset folder:
-train_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\train'
+train_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders\train'
 if not os.path.exists(train_PATH):
     os.makedirs(train_PATH)
 
-val_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\val'
+val_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders\val'
 if not os.path.exists(val_PATH):
     os.makedirs(val_PATH)
 
-test_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\test'
+test_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders\test'
 if not os.path.exists(test_PATH):
     os.makedirs(test_PATH)
 

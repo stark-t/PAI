@@ -32,8 +32,8 @@ Pascal_VOC_XML_to_yolo = False
 UFZ_to_yolo = True
 
 #define the intention. Do you want to use the Labels for training/testing or for the insect detector? (change "False" to "True")
-conversion_training_orders = False
-conversion_insect_detector = True
+conversion_training_orders = True
+conversion_insect_detector = False
 
 #class balance for UFZ_to_YOLO?
 class_balance = False
@@ -41,7 +41,7 @@ class_balance = False
 # define the input folder / dataset path
 dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23'
 # define the output folder(name): (It will create one if it doesn't exist yet)
-output_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced'
+output_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders'
 if not os.path.exists(output_PATH):
     os.makedirs(output_PATH)
 
@@ -267,27 +267,38 @@ if UFZ_to_yolo:
         for image_file in tqdm.tqdm(os.listdir(image_PATH)):
             annotation_data = []
             if conversion_insect_detector:
-                #
-                label_name = image_file.split('.')[0]
-                label_PATH_src = os.path.join(dataset_PATH, classname, 'annotations', 'yolo_txt', (label_name+'.txt'))
-                label_PATH_dst = os.path.join(output_PATH, 'labels', (label_name+'.txt'))
-                #
-                image_PATH_src = os.path.join(image_PATH, image_file)
-                image_PATH_dst = os.path.join(output_PATH, 'images', (label_name+'.jpg'))
-                if os.path.exists(label_PATH_src):
-                    if not class_balance:
-                        max_number_of_labels = 1e9
-                    else:
-                        max_number_of_labels = 1000
-                    i += 1
-                    if i <= max_number_of_labels:
-                        shutil.copyfile(image_PATH_src, image_PATH_dst)
-                        shutil.copyfile(label_PATH_src, label_PATH_dst)
-                    else:
-                        continue
-"""
-            # MÜSSEN WIR NOCH BEARBEITEN!!!
-            elif conversion_training_orders:
-                with open(os.path.join(annotation_PATH, annotation_file)) as f:
-                    annotation_data = list(open(f).items())
-"""
+                classid = 0
+
+            label_name = image_file.split('.')[0]
+            label_PATH_src = os.path.join(dataset_PATH, classname, 'annotations', 'yolo_txt', (label_name+'.txt'))
+            label_PATH_dst = os.path.join(output_PATH, 'labels', (label_name+'.txt'))
+
+            # read label file and change classes if necessary
+            if not os.path.exists(label_PATH_src):
+                continue
+            with open(label_PATH_src, 'r') as f:
+                contents = f.readlines()
+            f.close()
+            with open(label_PATH_dst, 'w') as f:
+                for line in contents:
+                    delimiter = ''
+                    line_string = delimiter.join(line)
+                    line_array = line_string.split()
+                    line_array[0] = classid
+                    new_line = ' '.join(str(x) for x in line_array)
+                    f.write(new_line)
+            f.close()
+
+            image_PATH_src = os.path.join(image_PATH, image_file)
+            image_PATH_dst = os.path.join(output_PATH, 'images', (label_name+'.jpg'))
+            if os.path.exists(label_PATH_src):
+                if not class_balance:
+                    max_number_of_labels = 1e9
+                else:
+                    max_number_of_labels = 1000
+                i += 1
+                if i <= max_number_of_labels:
+                    shutil.copyfile(image_PATH_src, image_PATH_dst)
+                    # shutil.copyfile(label_PATH_src, label_PATH_dst) #!TODO: MÜSEN WIR UNS ANGUCKEN WENN WIR DIE BALANCED/UNBALANCED SACHE MACHEN WOLLEN
+                else:
+                    continue

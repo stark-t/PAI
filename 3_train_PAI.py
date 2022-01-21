@@ -11,14 +11,14 @@ import train
 import os
 
 if __name__ == "__main__":
-    weights = 'yolov5s6.pt'
-    epochs = 200
-    batch_size = 8
+    weights = 'yolov5m6.pt'
+    epochs = 50
+    batch_size = 4
     save_dir = r"C:\MASTERTHESIS\Results\Training"
     # config = 'Config_ArTaxOr_order.yaml'
     # config = 'Config_ArTaxOr_insect_detector.yaml'
     # config = 'Config_P1_beta_order.yaml'
-    config = 'Config_P1_beta_insect_detector.yaml'
+    config = 'Config_P1_beta_order.yaml'
 
     # train.run(data=config, weights=weights, batch_size=batch_size, epochs=epochs, project=save_dir)
     train.run(data=config, weights=weights, batch_size=batch_size, epochs=epochs, imgsz=1280)
