@@ -14,8 +14,7 @@ import detect
 import shutil
 import tqdm
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, recall_score, precision_score, cohen_kappa_score
 from utils.metrics import bbox_iou
 import seaborn as sns
 import torch
@@ -174,12 +173,20 @@ print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with
 accuracy = accuracy_score(y_true, y_pred)
 print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
 
-# precision =
+error_rate = 1 - accuracy #!TODO: Nochmal überprüfen ob das wirklich die error rate ist
+print('[INFO]    Error Rate:    {:5.4f}'.format(error_rate))
 
-# recall =
+kappa = cohen_kappa_score(y_true, y_pred)
+print('[INFO]    Kappa Coefficient:    {:5.4f}'.format(kappa))
 
-f1 = f1_score(y_true, y_pred, average='macro') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
-print('[INFO]    F1-score:    {:5.4f}'.format(f1))
+precision = precision_score(y_true, y_pred, average='macro')
+print('[INFO]    Precision (macro):    {:5.4f}'.format(precision))
+
+recall = recall_score(y_true, y_pred, average='macro')
+print('[INFO]    Recall (macro):    {:5.4f}'.format(recall))
+
+f1 = f1_score(y_true, y_pred, average='binary', pos_label=0) #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
+print('[INFO]    F1-score (macro):    {:5.4f}'.format(f1))
 
 #Seaborn Confusion Matrix Plot:
 cf_matrix = confusion_matrix(y_true, y_pred)
@@ -211,10 +218,14 @@ completeName = os.path.join(save_metrics_info_path, nameoffile)
 with open(completeName, "w") as file1:
     file1.write('[Mean overall IOU] for {} of {} bounding boxes:    {:5.4f}   with an [standard deviation] of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std) + "\n")
     file1.write('[Accuracy]:    {:5.4f}'.format(accuracy) + "\n")
-    file1.write('[F1-score]:    {:5.4f}'.format(f1) + "\n")
+    file1.write('[Error Rate]:    {:5.4f}'.format(error_rate) + "\n")
+    file1.write('[Kappa Coefficient]:    {:5.4f}'.format(kappa) + "\n")
+    file1.write('[Precision (Macro)]:    {:5.4f}'.format(precision) + "\n")
+    file1.write('[Recall (Macro)]:    {:5.4f}'.format(recall) + "\n")
+    file1.write('[F1-score (Macro)]:    {:5.4f}'.format(f1) + "\n" + "\n")
+    file1.write('(Macro = Calculate metrics for each label, and find their unweighted mean. This does not take label imbalance into account.)')
 
 
 
 #!TODO: alle metrics berechnen
-#!TODO: Funktion einfügen wenn classlabel ungleich predictionlabel ist soll er die iou NICHT berechnen für dieses objekt/insekt
 
