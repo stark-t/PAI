@@ -286,6 +286,7 @@ if UFZ_to_yolo:
                     line_array = line_string.split()
                     line_array[0] = classid
                     new_line = ' '.join(str(x) for x in line_array)
+                    new_line = new_line + '\n'
                     f.write(new_line)
             f.close()
 

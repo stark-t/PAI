@@ -14,7 +14,7 @@ import detect
 import shutil
 import tqdm
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, recall_score, precision_score, cohen_kappa_score
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, recall_score, precision_score, cohen_kappa_score, matthews_corrcoef, classification_report
 from utils.metrics import bbox_iou
 import seaborn as sns
 import torch
@@ -31,12 +31,12 @@ delete_prediction_images = True
 conf_threshold = .50
 batch_size = 16
 imgsz = 1280
-
-source = r"C:\MASTERTHESIS\Data\UFZ_2021_07_07_dataset_annotated_insect_detector\test\images"
+classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+source = r"C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders\test\images"
 # source = r"C:\MASTERTHESIS\Data\ArTaxOr_dataset_annotated_insect_detector\test\images"
 # source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\Trial_insect_detector_200_yolov5m6\weights\best.pt"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_order_classification_50_yolov5m6_1280\weights\best.pt"
 
 
 #make folder to save predictions if not exist
@@ -173,11 +173,11 @@ print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with
 accuracy = accuracy_score(y_true, y_pred)
 print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
 
-error_rate = 1 - accuracy #!TODO: Nochmal überprüfen ob das wirklich die error rate ist
-print('[INFO]    Error Rate:    {:5.4f}'.format(error_rate))
-
 kappa = cohen_kappa_score(y_true, y_pred)
 print('[INFO]    Kappa Coefficient:    {:5.4f}'.format(kappa))
+
+matthews = matthews_corrcoef(y_true, y_pred)
+print('[INFO]    Matthews Correlation Coefficient:    {:5.4f}'.format(matthews))
 
 precision = precision_score(y_true, y_pred, average='macro')
 print('[INFO]    Precision (macro):    {:5.4f}'.format(precision))
@@ -185,31 +185,30 @@ print('[INFO]    Precision (macro):    {:5.4f}'.format(precision))
 recall = recall_score(y_true, y_pred, average='macro')
 print('[INFO]    Recall (macro):    {:5.4f}'.format(recall))
 
-f1 = f1_score(y_true, y_pred, average='binary', pos_label=0) #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
+f1 = f1_score(y_true, y_pred, average='macro') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
 print('[INFO]    F1-score (macro):    {:5.4f}'.format(f1))
+
+print('[INFO]    Classification Report:' + "\n")
+print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
 
 #Seaborn Confusion Matrix Plot:
 cf_matrix = confusion_matrix(y_true, y_pred)
-group_names = ['True Neg','False Pos','False Neg','True Pos']
-group_counts = ["{0:0.0f}".format(value) for value in
-                cf_matrix.flatten()]
-group_percentages = ["{0:.2%}".format(value) for value in
-                     cf_matrix.flatten()/np.sum(cf_matrix)]
-matrix_labels = [f"{v1}\n{v2}\n{v3}" for v1, v2, v3 in
-          zip(group_names,group_counts,group_percentages)]
-matrix_labels = np.asarray(matrix_labels).reshape(2,2)
-ax = sns.heatmap(cf_matrix, annot=matrix_labels, fmt='', cmap='Blues')
-ax.set_title('Confusion Matrix\n\n');
-ax.set_xlabel('\nPredicted Values')
-ax.set_ylabel('Ground Truth');
+plt.subplots(figsize=(12,9))
+ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='Blues', square=True)
+# ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='viridis', square=True)
+ax.set_title('Confusion Matrix\n');
+ax.set_xlabel('\nPredicted Labels');
+ax.set_ylabel('Ground Truth Labels\n');
+ax.figure.tight_layout()
+ax.figure.subplots_adjust(bottom = 0.2)
 
 ## Ticket labels - List must be in alphabetical order
-ax.xaxis.set_ticklabels(['False','True'])
-ax.yaxis.set_ticklabels(['False','True'])
+ax.xaxis.set_ticklabels(['background FN'] + classnames, rotation = 90)
+ax.yaxis.set_ticklabels(['background FP'] + classnames, rotation = 0)
 
 # show and save plot to folder
 save_metrics_info_path = os.path.join(save_dir, "exp")
-plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'))
+plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'), dpi=250)
 plt.show()
 
 # save metrics to text file
@@ -218,14 +217,13 @@ completeName = os.path.join(save_metrics_info_path, nameoffile)
 with open(completeName, "w") as file1:
     file1.write('[Mean overall IOU] for {} of {} bounding boxes:    {:5.4f}   with an [standard deviation] of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std) + "\n")
     file1.write('[Accuracy]:    {:5.4f}'.format(accuracy) + "\n")
-    file1.write('[Error Rate]:    {:5.4f}'.format(error_rate) + "\n")
     file1.write('[Kappa Coefficient]:    {:5.4f}'.format(kappa) + "\n")
+    file1.write('[Matthews Correlation Coefficient]:    {:5.4f}'.format(matthews) + "\n")
     file1.write('[Precision (Macro)]:    {:5.4f}'.format(precision) + "\n")
     file1.write('[Recall (Macro)]:    {:5.4f}'.format(recall) + "\n")
-    file1.write('[F1-score (Macro)]:    {:5.4f}'.format(f1) + "\n" + "\n")
-    file1.write('(Macro = Calculate metrics for each label, and find their unweighted mean. This does not take label imbalance into account.)')
-
-
+    file1.write('[F1-score (Macro)]:    {:5.4f}'.format(f1) + "\n")
+    file1.write('[Classification Report]:' + "\n" + "\n")
+    file1.write(classification_report(y_true, y_pred, target_names=classnames + ['background']))
 
 #!TODO: alle metrics berechnen
 
