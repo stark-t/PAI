@@ -32,16 +32,16 @@ Pascal_VOC_XML_to_yolo = False
 UFZ_to_yolo = True
 
 #define the intention. Do you want to use the Labels for training/testing or for the insect detector? (change "False" to "True")
-conversion_training_orders = True
-conversion_insect_detector = False
+conversion_training_orders = False
+conversion_insect_detector = True
 
 #class balance for UFZ_to_YOLO?
 class_balance = False
 
 # define the input folder / dataset path
-dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23'
+dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_raw'
 # define the output folder(name): (It will create one if it doesn't exist yet)
-output_PATH = r'C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders'
+output_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID'
 if not os.path.exists(output_PATH):
     os.makedirs(output_PATH)
 
@@ -300,6 +300,6 @@ if UFZ_to_yolo:
                 i += 1
                 if i <= max_number_of_labels:
                     shutil.copyfile(image_PATH_src, image_PATH_dst)
-                    # shutil.copyfile(label_PATH_src, label_PATH_dst) #!TODO: MÜSEN WIR UNS ANGUCKEN WENN WIR DIE BALANCED/UNBALANCED SACHE MACHEN WOLLEN
+                    # shutil.copyfile(label_PATH_src, label_PATH_dst) #!TODO: MÜSSEN WIR UNS ANGUCKEN WENN WIR DIE BALANCED/UNBALANCED SACHE MACHEN WOLLEN
                 else:
                     continue

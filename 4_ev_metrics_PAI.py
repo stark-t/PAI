@@ -4,7 +4,7 @@ Created on 5th of Jan. 2022
 
 README:
 
-- change variables in lines
+- make adjustments to lines 27-41
 """
 
 import os
@@ -23,26 +23,23 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-#decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Brauchen wir das überhaupt?
+#decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Braucht Valentin das?
 img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
-delete_prediction_images = True
+delete_prediction_images = False
 
 conf_threshold = .50
 batch_size = 16
 imgsz = 1280
 classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
-source = r"C:\MASTERTHESIS\Data\P1_beta_dataset_2021_11_23_annotated_orders\test\images"
-# source = r"C:\MASTERTHESIS\Data\ArTaxOr_dataset_annotated_insect_detector\test\images"
-# source = r"C:\MASTERTHESIS\Data\test_dataset_for_ev_metrics\test\images"
+source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_order_classification_50_yolov5m6_1280\weights\best.pt"
-
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
 #make folder to save predictions if not exist
-modelname = weights.split("\\")[3]
 sourcename = source.split("\\")[3]
-save_dir = os.path.join(save_dir, (modelname + "_" + sourcename))
+weightsname = weights.split("\\")[4]
+save_dir = os.path.join(save_dir, (sourcename + "_" + weightsname + "_best_" + 'Threshhold_' + str(int(conf_threshold*100)) + '%'))
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
@@ -179,22 +176,34 @@ print('[INFO]    Kappa Coefficient:    {:5.4f}'.format(kappa))
 matthews = matthews_corrcoef(y_true, y_pred)
 print('[INFO]    Matthews Correlation Coefficient:    {:5.4f}'.format(matthews))
 
-precision = precision_score(y_true, y_pred, average='macro')
-print('[INFO]    Precision (macro):    {:5.4f}'.format(precision))
+precision = precision_score(y_true, y_pred, average='weighted')
+print('[INFO]    Precision (weighted):    {:5.4f}'.format(precision))
 
-recall = recall_score(y_true, y_pred, average='macro')
-print('[INFO]    Recall (macro):    {:5.4f}'.format(recall))
+recall = recall_score(y_true, y_pred, average='weighted')
+print('[INFO]    Recall (weighted):    {:5.4f}'.format(recall))
 
-f1 = f1_score(y_true, y_pred, average='macro') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
-print('[INFO]    F1-score (macro):    {:5.4f}'.format(f1))
+f1 = f1_score(y_true, y_pred, average='weighted') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
+print('[INFO]    F1-score (weighted):    {:5.4f}'.format(f1))
 
 print('[INFO]    Classification Report:' + "\n")
 print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
 
 #Seaborn Confusion Matrix Plot:
+# cf_matrix = confusion_matrix(y_true, y_pred)
+# plt.subplots(figsize=(12,9))
+# ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='Blues', square=True)
+# # ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='viridis', square=True)
+# ax.set_title('Confusion Matrix\n');
+# ax.set_xlabel('\nPredicted Labels');
+# ax.set_ylabel('Ground Truth Labels\n');
+# ax.figure.tight_layout()
+# ax.figure.subplots_adjust(bottom = 0.2)
+
+#Seaborn Confusion Matrix Plot:
 cf_matrix = confusion_matrix(y_true, y_pred)
+group_percentages = cf_matrix.astype('float') / cf_matrix.sum(axis=1)[:, np.newaxis]
 plt.subplots(figsize=(12,9))
-ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='Blues', square=True)
+ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='Blues', square=True)
 # ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='viridis', square=True)
 ax.set_title('Confusion Matrix\n');
 ax.set_xlabel('\nPredicted Labels');
@@ -219,11 +228,11 @@ with open(completeName, "w") as file1:
     file1.write('[Accuracy]:    {:5.4f}'.format(accuracy) + "\n")
     file1.write('[Kappa Coefficient]:    {:5.4f}'.format(kappa) + "\n")
     file1.write('[Matthews Correlation Coefficient]:    {:5.4f}'.format(matthews) + "\n")
-    file1.write('[Precision (Macro)]:    {:5.4f}'.format(precision) + "\n")
-    file1.write('[Recall (Macro)]:    {:5.4f}'.format(recall) + "\n")
-    file1.write('[F1-score (Macro)]:    {:5.4f}'.format(f1) + "\n")
+    file1.write('[Precision (Weighted)]:    {:5.4f}'.format(precision) + "\n")
+    file1.write('[Recall (Weighted)]:    {:5.4f}'.format(recall) + "\n")
+    file1.write('[F1-score (Weighted)]:    {:5.4f}'.format(f1) + "\n")
     file1.write('[Classification Report]:' + "\n" + "\n")
-    file1.write(classification_report(y_true, y_pred, target_names=classnames + ['background']))
+    file1.write(classification_report(y_true, y_pred, target_names= ['background'] + classnames))
 
 #!TODO: alle metrics berechnen
 
