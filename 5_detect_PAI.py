@@ -17,15 +17,14 @@ img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
 delete_prediction_images = True
 
-conf_threshold = .50
+conf_threshold = .80
 batch_size = 16
 imgsz = 1280
-datasetname = "UFZ_field_observation_21_08"
-source = r"C:\MASTERTHESIS\Data\UFZ_field_observation_21_08"
-save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
+source = r"C:\MASTERTHESIS\Data\UFZ_field_observation_21_08_raw"
+# save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
 # save_dir = r"C:\MASTERTHESIS\Results\pollinator_detector"
-# save_dir = r"C:\MASTERTHESIS\Results\order_classification"
-weights = r"C:\MASTERTHESIS\Results\Training\Trial_insect_detector_200_yolov5m6_1280\weights\best.pt"
+save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_ID_200_yolov5m6\weights\best.pt"
 
 """
 
@@ -77,5 +76,7 @@ if delete_prediction_images:
             os.remove(delete_redundant_image)
 
 #rename outputfile
-newfoldername = os.path.join(save_dir, (datasetname+'_'+'Threshhold_'+str(int(conf_threshold*100))+'%'))
+sourcename = source.split("\\")[3]
+weightsname = weights.split("\\")[4]
+newfoldername = os.path.join(save_dir, (sourcename + "_" + weightsname + "_best_" + 'Threshhold_' + str(int(conf_threshold*100)) + '%'))
 os.rename(os.path.join(save_dir, 'exp'), newfoldername)

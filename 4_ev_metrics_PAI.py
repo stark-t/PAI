@@ -4,7 +4,7 @@ Created on 5th of Jan. 2022
 
 README:
 
-- make adjustments to lines 27-41
+- make adjustments to lines 27-42
 """
 
 import os
@@ -13,6 +13,7 @@ import cv2
 import detect
 import shutil
 import tqdm
+import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, recall_score, precision_score, cohen_kappa_score, matthews_corrcoef, classification_report
 from utils.metrics import bbox_iou
@@ -31,10 +32,11 @@ delete_prediction_images = False
 conf_threshold = .50
 batch_size = 16
 imgsz = 1280
-classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
-source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
+# classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+classnames = ['Insect']
+source = r"C:\MASTERTHESIS\Data\ARCHIV\test_dataset_for_ev_metrics\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_ID_200_yolov5m6\weights\best.pt"
 
 #make folder to save predictions if not exist
 sourcename = source.split("\\")[3]
@@ -99,7 +101,7 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
     else:
         predictions.append([-1,0,0,0,0])
 
-    # get predictions and labels into the same lenght using dummy values
+    # get predictions and labels into the same lengths using dummy values
     if len(labels) > len(predictions):
         diff_len = len(labels) - len(predictions)
         for i in range(diff_len):
@@ -188,26 +190,46 @@ print('[INFO]    F1-score (weighted):    {:5.4f}'.format(f1))
 print('[INFO]    Classification Report:' + "\n")
 print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
 
-#Seaborn Confusion Matrix Plot:
-# cf_matrix = confusion_matrix(y_true, y_pred)
-# plt.subplots(figsize=(12,9))
-# ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='Blues', square=True)
-# # ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='viridis', square=True)
-# ax.set_title('Confusion Matrix\n');
-# ax.set_xlabel('\nPredicted Labels');
-# ax.set_ylabel('Ground Truth Labels\n');
-# ax.figure.tight_layout()
-# ax.figure.subplots_adjust(bottom = 0.2)
+
+# #NEW TRY
+# labels_matrix = classnames
+# cm = confusion_matrix(y_true, y_pred, labels=labels_matrix)
+# cm_sum = np.sum(cm, axis=1, keepdims=True)
+# cm_perc = cm / cm_sum.astype(float) * 100
+# annot = np.empty_like(cm).astype(str)
+# nrows, ncols = cm.shape
+# for i in range(nrows):
+#     for j in range(ncols):
+#         c = cm[i, j]
+#         p = cm_perc[i, j]
+#         if i == j:
+#             s = cm_sum[i]
+#             annot[i, j] = '%.1f%%\n%d/%d' % (p, c, s)
+#         elif c == 0:
+#             annot[i, j] = ''
+#         else:
+#             annot[i, j] = '%.1f%%\n%d' % (p, c)
+# cm = pd.DataFrame(cm, index=labels_matrix, columns=labels_matrix)
+# cm.index.name = 'Actual'
+# cm.columns.name = 'Predicted'
+# sns.heatmap(cm, annot=annot, fmt='', ax=ax)
+
+#Another TRY
+# group_counts = ["{0:0.0f}".format(value) for value in cf_matrix.flatten()]
+# group_percentages = ["{0:.2%}".format(value) for value in cf_matrix.flatten()/np.sum(cf_matrix)]
+# labels_matrix = [f"{v1}\n{v2}\n" for v1, v2 in zip(group_counts,group_percentages)]
+# labels_matrix = np.asarray(labels_matrix).reshape(1.4,1.4)
 
 #Seaborn Confusion Matrix Plot:
 cf_matrix = confusion_matrix(y_true, y_pred)
 group_percentages = cf_matrix.astype('float') / cf_matrix.sum(axis=1)[:, np.newaxis]
 plt.subplots(figsize=(12,9))
 ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='Blues', square=True)
-# ax = sns.heatmap(cf_matrix, annot=True, fmt='g', cmap='viridis', square=True)
+# ax = sns.heatmap(cf_matrix, annot=labels_matrix, fmt='', cmap='Blues', square=True)
+# ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='viridis', square=True)
 ax.set_title('Confusion Matrix\n');
-ax.set_xlabel('\nPredicted Labels');
-ax.set_ylabel('Ground Truth Labels\n');
+ax.set_xlabel('\nPredicted');
+ax.set_ylabel('Actual\n');
 ax.figure.tight_layout()
 ax.figure.subplots_adjust(bottom = 0.2)
 
