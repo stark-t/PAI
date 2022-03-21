@@ -4,8 +4,23 @@ Created on 5th of Jan. 2022
 
 README:
 
-- make adjustments to lines 27-42
+- make adjustments to lines 10-22
 """
+
+#decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Braucht Valentin das?
+img_bounding_boxes = True
+#decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
+delete_prediction_images = False
+
+conf_threshold = .50
+batch_size = 16
+imgsz = 1280
+classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+# classnames = ['Insect']
+# source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
+source = r"C:\MASTERTHESIS\Data\Testdatensatz_Programming\test\images"
+save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -22,26 +37,63 @@ import torch
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
 
-#decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Braucht Valentin das?
-img_bounding_boxes = True
-#decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
-delete_prediction_images = False
-
-conf_threshold = .50
-batch_size = 16
-imgsz = 1280
-# classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
-classnames = ['Insect']
-source = r"C:\MASTERTHESIS\Data\ARCHIV\test_dataset_for_ev_metrics\test\images"
-save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
-weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_ID_200_yolov5m6\weights\best.pt"
+# Confusion Matrix Function:
+def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(12,9)):
+    """
+    Generate matrix plot of confusion matrix with pretty annotations.
+    The plot image is saved to disk.
+    args:
+      y_true:    true label of the data, with shape (nsamples,)
+      y_pred:    prediction of the data, with shape (nsamples,)
+      filename:  filename of figure file to save
+      labels:    string array, name the order of class labels in the confusion matrix.
+                 use `clf.classes_` if using scikit-learn models.
+                 with shape (nclass,).
+      ymap:      dict: any -> string, length == nclass.
+                 if not None, map the labels & ys to more understandable strings.
+                 Caution: original y_true, y_pred and labels must align.
+      figsize:   the size of the figure plotted.
+    """
+    if ymap is not None:
+        y_pred = [ymap[yi] for yi in y_pred]
+        y_true = [ymap[yi] for yi in y_true]
+        labels = [ymap[yi] for yi in labels]
+    cm = confusion_matrix(y_true, y_pred) #, labels=labels)
+    cm_sum = np.sum(cm, axis=1, keepdims=True)
+    cm_perc = cm / cm_sum.astype(float) * 100
+    annot = np.empty_like(cm).astype(str)
+    nrows, ncols = cm.shape
+    for i in range(nrows):
+        for j in range(ncols):
+            c = cm[i, j]
+            p = cm_perc[i, j]
+            if i == j:
+                s = cm_sum[i]
+                annot[i, j] = '%.1f%%\n%d/%d' % (p, c, s)
+            elif c == 0:
+                annot[i, j] = ''
+            else:
+                annot[i, j] = '%.1f%%\n%d' % (p, c)
+    # cm = pd.DataFrame(cm, index=labels, columns=labels)
+    cm = pd.DataFrame(cm_perc, index=labels, columns=labels)
+    # cm.index.name = 'Actual'
+    # cm.columns.name = 'Predicted'
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='Blues', square=True)
+    ax.set_xlabel('\nPredicted');
+    ax.set_ylabel('Actual\n');
+    ax.figure.tight_layout()
+    ax.figure.subplots_adjust(bottom=0.2)
+    #plt.savefig(filename)
+    plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'), dpi=250)
+    plt.show()
 
 #make folder to save predictions if not exist
 sourcename = source.split("\\")[3]
 weightsname = weights.split("\\")[4]
 save_dir = os.path.join(save_dir, (sourcename + "_" + weightsname + "_best_" + 'Threshhold_' + str(int(conf_threshold*100)) + '%'))
+save_metrics_info_path = os.path.join(save_dir, "exp")
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
@@ -112,10 +164,9 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
             labels.append([-1,0,0,0,0])
 
     # Go through prediction and label to get fitting metrics
-    for prediction_i, prediction in enumerate(predictions):
-
+    for label_i, label in enumerate(labels):
         iou_ = []
-        for label_i, label in enumerate(labels):
+        for prediction_i, prediction in enumerate(predictions):
 
             bbox_label = np.array(label[1:])
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -151,6 +202,9 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
         prediction = predictions[i]
         y_pred_ = int(prediction[0])
         y_pred.append(y_pred_)
+
+y_pred.append(-1)
+y_true.append(-1)
 
 #delete redundant images in exp
 if delete_prediction_images:
@@ -190,57 +244,30 @@ print('[INFO]    F1-score (weighted):    {:5.4f}'.format(f1))
 print('[INFO]    Classification Report:' + "\n")
 print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
 
-
-# #NEW TRY
-# labels_matrix = classnames
-# cm = confusion_matrix(y_true, y_pred, labels=labels_matrix)
-# cm_sum = np.sum(cm, axis=1, keepdims=True)
-# cm_perc = cm / cm_sum.astype(float) * 100
-# annot = np.empty_like(cm).astype(str)
-# nrows, ncols = cm.shape
-# for i in range(nrows):
-#     for j in range(ncols):
-#         c = cm[i, j]
-#         p = cm_perc[i, j]
-#         if i == j:
-#             s = cm_sum[i]
-#             annot[i, j] = '%.1f%%\n%d/%d' % (p, c, s)
-#         elif c == 0:
-#             annot[i, j] = ''
-#         else:
-#             annot[i, j] = '%.1f%%\n%d' % (p, c)
-# cm = pd.DataFrame(cm, index=labels_matrix, columns=labels_matrix)
-# cm.index.name = 'Actual'
-# cm.columns.name = 'Predicted'
-# sns.heatmap(cm, annot=annot, fmt='', ax=ax)
-
-#Another TRY
-# group_counts = ["{0:0.0f}".format(value) for value in cf_matrix.flatten()]
-# group_percentages = ["{0:.2%}".format(value) for value in cf_matrix.flatten()/np.sum(cf_matrix)]
-# labels_matrix = [f"{v1}\n{v2}\n" for v1, v2 in zip(group_counts,group_percentages)]
-# labels_matrix = np.asarray(labels_matrix).reshape(1.4,1.4)
+#New Confusion Matrix (from function above):
+cm_analysis(y_true, y_pred, ['background'] + classnames, ymap=None, figsize=(12,9))
 
 #Seaborn Confusion Matrix Plot:
-cf_matrix = confusion_matrix(y_true, y_pred)
-group_percentages = cf_matrix.astype('float') / cf_matrix.sum(axis=1)[:, np.newaxis]
-plt.subplots(figsize=(12,9))
-ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='Blues', square=True)
+# cf_matrix = confusion_matrix(y_true, y_pred)
+# group_percentages = cf_matrix.astype('float') / cf_matrix.sum(axis=1)[:, np.newaxis]
+# plt.subplots(figsize=(12,9))
+# ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='Blues', square=True)
 # ax = sns.heatmap(cf_matrix, annot=labels_matrix, fmt='', cmap='Blues', square=True)
 # ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='viridis', square=True)
-ax.set_title('Confusion Matrix\n');
-ax.set_xlabel('\nPredicted');
-ax.set_ylabel('Actual\n');
-ax.figure.tight_layout()
-ax.figure.subplots_adjust(bottom = 0.2)
+# ax.set_title('Confusion Matrix\n');
+# ax.set_xlabel('\nPredicted');
+# ax.set_ylabel('Actual\n');
+# ax.figure.tight_layout()
+# ax.figure.subplots_adjust(bottom = 0.2)
 
 ## Ticket labels - List must be in alphabetical order
-ax.xaxis.set_ticklabels(['background FN'] + classnames, rotation = 90)
-ax.yaxis.set_ticklabels(['background FP'] + classnames, rotation = 0)
+# ax.xaxis.set_ticklabels(['background FN'] + classnames, rotation = 90)
+# ax.yaxis.set_ticklabels(['background FP'] + classnames, rotation = 0)
 
 # show and save plot to folder
-save_metrics_info_path = os.path.join(save_dir, "exp")
-plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'), dpi=250)
-plt.show()
+# save_metrics_info_path = os.path.join(save_dir, "exp")
+# plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'), dpi=250)
+# plt.show()
 
 # save metrics to text file
 nameoffile = "_Evaluation_Metrics.txt"

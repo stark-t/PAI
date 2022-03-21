@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # config = 'Config_ArTaxOr_orders.yaml'
     # config = 'Config_ArTaxOr_ID.yaml'
     # config = 'Config_P1_beta_ID.yaml'
-    config = 'Config_P1_beta_ID.yaml'
+    config = 'Config_P1_beta_orders.yaml'
 
     train.run(data=config, weights=weights, batch_size=batch_size, epochs=epochs, imgsz=image_size, project=save_dir)
 

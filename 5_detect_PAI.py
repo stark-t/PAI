@@ -15,16 +15,16 @@ import tqdm
 #decide if you want bounding boxes in the detected images
 img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
-delete_prediction_images = True
+delete_prediction_images = False
 
-conf_threshold = .80
+conf_threshold = .50
 batch_size = 16
 imgsz = 1280
-source = r"C:\MASTERTHESIS\Data\UFZ_field_observation_21_08_raw"
+source = r"C:\MASTERTHESIS\Data\Testdatensatz_Robin"
 # save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
 # save_dir = r"C:\MASTERTHESIS\Results\pollinator_detector"
-save_dir = r"C:\MASTERTHESIS\Results\insect_detector"
-weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_ID_200_yolov5m6\weights\best.pt"
+save_dir = r"C:\MASTERTHESIS\Results\order_classification"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
 """
 
