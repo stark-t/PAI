@@ -11,6 +11,8 @@ README:
 img_bounding_boxes = True
 #decide if you want to delete the predictions (all images from source with predictions) (for checkup for example)
 delete_prediction_images = False
+#decide if you want to replace exp
+replace_exp = True
 
 conf_threshold = .50
 batch_size = 16
@@ -18,7 +20,7 @@ imgsz = 1280
 classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
 # classnames = ['Insect']
 # source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
-source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
+source = r"C:\MASTERTHESIS\Data\Testdatensatz_Programming\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
 weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
@@ -98,8 +100,9 @@ if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
 #delete exp folder if exists
-if os.path.exists(os.path.join(save_dir, "exp")):
-    shutil.rmtree(os.path.join(save_dir, "exp"))
+if replace_exp:
+    if os.path.exists(os.path.join(save_dir, "exp")):
+        shutil.rmtree(os.path.join(save_dir, "exp"))
 
 #run yolo to detect images
 output = detect.run(weights=weights, source=source, imgsz=(imgsz, imgsz), save_txt=True, conf_thres=conf_threshold, project=save_dir)
@@ -115,10 +118,10 @@ labels_dir = os.path.join(save_dir, 'exp', "labels")
 if not os.path.exists(labels_dir):
     shutil.copytree(source_labels, labels_dir, dirs_exist_ok=True)
 
-
 y_true = []
 y_pred = []
 ious = []
+n_bb = 1
 
 #loop through all labels
 print('[INFO]:    calculate metrics for each image')
@@ -140,6 +143,7 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
                 label_info_str = label_lines_str[i].split(" ")
                 label_floats = [float(f) for f in label_info_str]
                 labels.append(label_floats)
+                n_bb += 1
     else:
         labels.append([-1,0,0,0,0])
     predictions = []
@@ -221,7 +225,7 @@ if delete_prediction_images:
 del iou_, iou, iou_torch
 iou_mean = np.mean(ious)
 iou_std = np.std(ious)
-print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with an standard deviation of {:5.4f}'.format(len(ious), len(y_true), iou_mean, iou_std))
+print('[INFO]    Mean overall IOU for {} of {} bounding boxes:    {:5.4f}   with an standard deviation of {:5.4f}'.format(len(ious), n_bb, iou_mean, iou_std))
 
 accuracy = accuracy_score(y_true, y_pred)
 print('[INFO]    Accuracy:    {:5.4f}'.format(accuracy))
