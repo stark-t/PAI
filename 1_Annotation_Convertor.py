@@ -27,13 +27,13 @@ import numpy as np
 
 
 #decide which Conversion you want to use (change "False" to "True")
-json_to_yolo = False
+json_to_yolo = True
 Pascal_VOC_XML_to_yolo = False
-UFZ_to_yolo = True
+UFZ_to_yolo = False
 
 #define the intention. Do you want to use the Labels for training/testing or for the insect detector? (change "False" to "True")
-conversion_training_orders = False
-conversion_insect_detector = True
+conversion_training_orders = True
+conversion_insect_detector = False
 
 #class balance for UFZ_to_YOLO?
 class_balance = False

@@ -18,7 +18,7 @@ imgsz = 1280
 classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
 # classnames = ['Insect']
 # source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
-source = r"C:\MASTERTHESIS\Data\Testdatensatz_Programming\test\images"
+source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
 weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
@@ -203,8 +203,8 @@ for file_number, file_name in tqdm.tqdm(enumerate(os.listdir(labels_dir))):
         y_pred_ = int(prediction[0])
         y_pred.append(y_pred_)
 
-y_pred.append(-1)
-y_true.append(-1)
+# y_pred.append(-1)
+# y_true.append(-1)
 
 #delete redundant images in exp
 if delete_prediction_images:
