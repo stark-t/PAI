@@ -4,7 +4,7 @@ Created on 5th of Jan. 2022
 
 README:
 
-- make adjustments to lines 10-22
+- make adjustments to lines 10-25
 """
 
 #decide if you want bounding boxes in the detected images #! TODO: Ist die Bedingungen hier schon drin? Braucht Valentin das?
@@ -42,21 +42,6 @@ import matplotlib.pyplot as plt
 
 # Confusion Matrix Function:
 def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(12,9)):
-    """
-    Generate matrix plot of confusion matrix with pretty annotations.
-    The plot image is saved to disk.
-    args:
-      y_true:    true label of the data, with shape (nsamples,)
-      y_pred:    prediction of the data, with shape (nsamples,)
-      filename:  filename of figure file to save
-      labels:    string array, name the order of class labels in the confusion matrix.
-                 use `clf.classes_` if using scikit-learn models.
-                 with shape (nclass,).
-      ymap:      dict: any -> string, length == nclass.
-                 if not None, map the labels & ys to more understandable strings.
-                 Caution: original y_true, y_pred and labels must align.
-      figsize:   the size of the figure plotted.
-    """
     if ymap is not None:
         y_pred = [ymap[yi] for yi in y_pred]
         y_true = [ymap[yi] for yi in y_true]
