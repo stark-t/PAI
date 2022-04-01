@@ -20,18 +20,18 @@ import shutil
 
 
 # Define dataset folder
-dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID'
+dataset_PATH = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_raw'
 
 # make train, val and test into your dataset folder:
-train_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID\train'
+train_PATH = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_raw\train'
 if not os.path.exists(train_PATH):
     os.makedirs(train_PATH)
 
-val_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID\val'
+val_PATH = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_raw\val'
 if not os.path.exists(val_PATH):
     os.makedirs(val_PATH)
 
-test_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID\test'
+test_PATH = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_raw\test'
 if not os.path.exists(test_PATH):
     os.makedirs(test_PATH)
 

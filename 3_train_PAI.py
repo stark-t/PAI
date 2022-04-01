@@ -16,18 +16,19 @@ if __name__ == "__main__":
     epochs = 200
     batch_size = 4
     image_size = 1280
+    hyp = r"C:\MASTERTHESIS\PAI\runs\evolve\exp\hyp_evolve.yaml"
     save_dir = r"C:\MASTERTHESIS\Results\Training"
     # config = 'Config_ArTaxOr_orders.yaml'
     # config = 'Config_ArTaxOr_ID.yaml'
     # config = 'Config_P1_beta_ID.yaml'
     config = 'Config_P1_beta_orders.yaml'
 
-    train.run(data=config, weights=weights, batch_size=batch_size, epochs=epochs, imgsz=image_size, project=save_dir)
+    train.run(data=config, weights=weights, hyp=hyp, batch_size=batch_size, epochs=epochs, imgsz=image_size, project=save_dir)
 
     # rename outputfile
-    configname = config.split('.yaml')[0]
-    configname = configname.split('Config_')[1]
-    weightsname = weights.split('.pt')[0]
-    # weightsname = 'P1_beta_ID_100_yolov5m6'
-    newfoldername = os.path.join(save_dir, (configname + '_' + str(int(epochs)) + '_' + weightsname))
-    os.rename(os.path.join(save_dir, 'exp'), newfoldername)
+    # configname = config.split('.yaml')[0]
+    # configname = configname.split('Config_')[1]
+    # weightsname = weights.split('.pt')[0]
+    # # weightsname = 'P1_beta_ID_100_yolov5m6'
+    # newfoldername = os.path.join(save_dir, (configname + '_' + str(int(epochs)) + '_' + weightsname))
+    # os.rename(os.path.join(save_dir, 'exp'), newfoldername)

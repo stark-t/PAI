@@ -15,12 +15,11 @@ delete_prediction_images = False
 replace_exp = True
 
 conf_threshold = .50
-batch_size = 16
+batch_size = 32
 imgsz = 1280
 classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
 # classnames = ['Insect']
-# source = r"C:\MASTERTHESIS\Data\P1_beta_orders\test\images"
-source = r"C:\MASTERTHESIS\Data\Testdatensatz_Programming\test\images"
+source = r"C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_orders_onlytest\test\images"
 save_dir = r"C:\MASTERTHESIS\Results\Evaluation"
 weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
 
@@ -62,10 +61,7 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(12,9)):
                 annot[i, j] = ''
             else:
                 annot[i, j] = '%.1f%%\n%d' % (p, c)
-    # cm = pd.DataFrame(cm, index=labels, columns=labels)
     cm = pd.DataFrame(cm_perc, index=labels, columns=labels)
-    # cm.index.name = 'Actual'
-    # cm.columns.name = 'Predicted'
     fig, ax = plt.subplots(figsize=figsize)
     sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='Blues', square=True)
     ax.set_xlabel('\nPredicted');
@@ -227,36 +223,14 @@ print('[INFO]    Precision (weighted):    {:5.4f}'.format(precision))
 recall = recall_score(y_true, y_pred, average='weighted')
 print('[INFO]    Recall (weighted):    {:5.4f}'.format(recall))
 
-f1 = f1_score(y_true, y_pred, average='weighted') #!TODO Hier mal mit Verena sprechen über micro, weighted, ...
+f1 = f1_score(y_true, y_pred, average='weighted')
 print('[INFO]    F1-score (weighted):    {:5.4f}'.format(f1))
 
 print('[INFO]    Classification Report:' + "\n")
-print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
+# print(classification_report(y_true, y_pred, target_names=['background'] + classnames))
 
 #New Confusion Matrix (from function above):
 cm_analysis(y_true, y_pred, ['background'] + classnames, ymap=None, figsize=(12,9))
-
-#Seaborn Confusion Matrix Plot:
-# cf_matrix = confusion_matrix(y_true, y_pred)
-# group_percentages = cf_matrix.astype('float') / cf_matrix.sum(axis=1)[:, np.newaxis]
-# plt.subplots(figsize=(12,9))
-# ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='Blues', square=True)
-# ax = sns.heatmap(cf_matrix, annot=labels_matrix, fmt='', cmap='Blues', square=True)
-# ax = sns.heatmap(group_percentages, annot=True, fmt='.2f', cmap='viridis', square=True)
-# ax.set_title('Confusion Matrix\n');
-# ax.set_xlabel('\nPredicted');
-# ax.set_ylabel('Actual\n');
-# ax.figure.tight_layout()
-# ax.figure.subplots_adjust(bottom = 0.2)
-
-## Ticket labels - List must be in alphabetical order
-# ax.xaxis.set_ticklabels(['background FN'] + classnames, rotation = 90)
-# ax.yaxis.set_ticklabels(['background FP'] + classnames, rotation = 0)
-
-# show and save plot to folder
-# save_metrics_info_path = os.path.join(save_dir, "exp")
-# plt.savefig(os.path.join(save_metrics_info_path, '_Confusion_Matrix.png'), dpi=250)
-# plt.show()
 
 # save metrics to text file
 nameoffile = "_Evaluation_Metrics.txt"
