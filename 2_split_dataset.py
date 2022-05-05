@@ -20,18 +20,18 @@ import shutil
 
 
 # Define dataset folder
-dataset_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced'
+dataset_PATH = r'C:\MASTERTHESIS\Data\P1_orders'
 
 # make train, val and test into your dataset folder:
-train_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\train'
+train_PATH = r'C:\MASTERTHESIS\Data\P1_orders\train'
 if not os.path.exists(train_PATH):
     os.makedirs(train_PATH)
 
-val_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\val'
+val_PATH = r'C:\MASTERTHESIS\Data\P1_orders\val'
 if not os.path.exists(val_PATH):
     os.makedirs(val_PATH)
 
-test_PATH = r'C:\MASTERTHESIS\Data\Crossover_P1_Beta_ArTaxOr_Insect_Detector_Unbalanced\test'
+test_PATH = r'C:\MASTERTHESIS\Data\P1_orders\test'
 if not os.path.exists(test_PATH):
     os.makedirs(test_PATH)
 
@@ -55,7 +55,7 @@ label_files = os.listdir(os.path.join(dataset_PATH, 'labels'))
 
 #zufällige aufteilung der bilder
 temp = list(zip(image_files, label_files))
-random.shuffle(temp)
+random.Random(555).shuffle(temp)
 image_files, label_files = zip(*temp)
 
 #Aufteilen der Bilder
