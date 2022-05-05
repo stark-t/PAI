@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import glob
 
 
-base_dir = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_orders_onlytest\test'
+base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
 
 prediction_dir = os.path.join(base_dir, 'results', 'exp', 'predictions')
 labels_dir = os.path.join(base_dir, 'labels')
@@ -118,13 +118,17 @@ for image_count_index, image_path in enumerate(images_dirs):
 
     # get matching classes
     for i, class_i in enumerate(iou_max_indicies):
-        label = labels[class_i]
-        y_true_ = int(label[0])
-        y_true.append(y_true_)
-
         prediction = predictions[i]
         y_pred_ = int(prediction[0])
         y_pred.append(y_pred_)
+        if y_pred_ >= 0:
+            label = labels[class_i]
+            y_true_ = int(label[0])
+            y_true.append(y_true_)
+        else:
+            label = labels[i]
+            y_true_ = int(label[0])
+            y_true.append(y_true_)
 
 print('In {} labels are {} objects with BBs'.format(len(labels_dirs), n_BB))
 unique_classes, unique_counts = np.unique(classes, return_counts=True)
@@ -218,6 +222,6 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(12,9)):
     plt.show()
 
 #New Confusion Matrix (from function above):
-classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+classnames = ['Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera', 'Hymenoptera f.', 'Lepidoptera', 'Orthoptera']
 cm_analysis(y_true, y_pred, ['background'] + classnames, ymap=None, figsize=(12,9))
 

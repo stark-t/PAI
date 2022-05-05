@@ -9,11 +9,11 @@ matplotlib.use('TkAgg')
 conf_threshold = .50
 batch_size = 16
 imgsz = 1280
-classnames = ['Araneae','Diptera', 'Hemiptera', 'Hymenoptera f.', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+classnames = ['Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera', 'Hymenoptera f.', 'Lepidoptera', 'Orthoptera']
 
-base_dir = r'C:\MASTERTHESIS\Data\UFZ_field_observation_29_03_22_orders_onlytest\test'
+base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
 source = base_dir + '\\images'
-weights = r"C:\MASTERTHESIS\Results\Training\P1_beta_orders_200_yolov5m6\weights\best.pt"
+weights = r"C:\MASTERTHESIS\Results\Training\P1_orders_200_yolov5m6_70.817hrs\weights\best.pt"
 
 
 # make folder to save predictions if not exist
@@ -27,7 +27,7 @@ if os.path.exists(os.path.join(save_dir, "exp")):
 
 #run yolo to detect images
 output = detect.run(weights=weights, source=source, imgsz=(imgsz,imgsz),
-                    save_txt=True, nosave=True, conf_thres=conf_threshold, project=save_dir)
+                    save_txt=True, nosave=False, conf_thres=conf_threshold, project=save_dir)
 
 # rename labels to predictions
 os.rename(os.path.join(save_dir, 'exp', 'labels'), os.path.join(save_dir, 'exp', 'predictions'))

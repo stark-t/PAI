@@ -27,9 +27,9 @@ import numpy as np
 
 
 #decide which Conversion you want to use (change "False" to "True")
-json_to_yolo = True
+json_to_yolo = False
 Pascal_VOC_XML_to_yolo = False
-UFZ_to_yolo = False
+UFZ_to_yolo = True
 
 #define the intention. Do you want to use the Labels for training/testing or for the insect detector? (change "False" to "True")
 conversion_training_orders = True
@@ -39,9 +39,9 @@ conversion_insect_detector = False
 class_balance = False
 
 # define the input folder / dataset path
-dataset_PATH = r'C:\MASTERTHESIS\Data\P1_beta_raw'
+dataset_PATH = r'C:\MASTERTHESIS\Data\P1_raw'
 # define the output folder(name): (It will create one if it doesn't exist yet)
-output_PATH = r'C:\MASTERTHESIS\Data\P1_beta_ID'
+output_PATH = r'C:\MASTERTHESIS\Data\P1_orders'
 if not os.path.exists(output_PATH):
     os.makedirs(output_PATH)
 
