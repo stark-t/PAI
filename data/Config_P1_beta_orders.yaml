@@ -1,0 +1,7 @@
+path: C:/MASTERTHESIS/Data/P1_beta_orders  # dataset root dir
+train: C:/MASTERTHESIS/Data/P1_beta_orders/train/images
+val: C:/MASTERTHESIS/Data/P1_beta_orders/val/images
+
+# Classes
+nc: 7  # number of classes
+names: [ 'Araneae', 'Diptera', 'Hemiptera', 'Hymenoptera formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ]  # class names

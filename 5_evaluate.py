@@ -12,8 +12,11 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import glob
 
+# base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
+base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
+# base_dir = r'C:\MASTERTHESIS\Data\Holiday_images\test'
+# base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
 
-base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
 
 prediction_dir = os.path.join(base_dir, 'results', 'exp', 'predictions')
 labels_dir = os.path.join(base_dir, 'labels')
@@ -218,10 +221,13 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(12,9)):
     ax.figure.tight_layout()
     ax.figure.subplots_adjust(bottom=0.2)
     #plt.savefig(filename)
-    # plt.savefig(os.path.join(r'F:\202105_PAI\data\test_dataset_for_ev_metrics\results\best_worst.pt_test_dataset_for_ev_metrics\exp\_', '_Confusion_Matrix.png'), dpi=250)
+    # plt.savefig(os.path.join(r'C:\MASTERTHESIS\Data\P1_orders\test\results\exp\0_Confusion_Matrix.png'), dpi=400)
     plt.show()
 
 #New Confusion Matrix (from function above):
 classnames = ['Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera', 'Hymenoptera f.', 'Lepidoptera', 'Orthoptera']
+# classnames = ['Araneae', 'Diptera', 'Hemiptera', 'Hymenoptera', 'Hymenoptera f.', 'Lepidoptera', 'Orthoptera']
+# classnames = ['Insect']
 cm_analysis(y_true, y_pred, ['background'] + classnames, ymap=None, figsize=(12,9))
+
 

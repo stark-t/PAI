@@ -1,0 +1,10 @@
+path: C:/MASTERTHESIS/Data/ArTaxOr_dataset_annotated_insect_detector  # dataset root dir
+train: C:/MASTERTHESIS/Data/ArTaxOr_dataset_annotated_insect_detector/train/images
+val: C:/MASTERTHESIS/Data/ArTaxOr_dataset_annotated_insect_detector/val/images
+#path: C:/MASTERTHESIS/Data/Crossover_ArTaxOr_P1_Beta_Insect_Detector  # dataset root dir
+#train: C:/MASTERTHESIS/Data/Crossover_ArTaxOr_P1_Beta_Insect_Detector/train/images
+#val: C:/MASTERTHESIS/Data/Crossover_ArTaxOr_P1_Beta_Insect_Detector/val/images
+
+# Classes
+nc: 1  # number of classes
+names: [ 'Insect' ]  # class names

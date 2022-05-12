@@ -1,0 +1,7 @@
+path: C:/MASTERTHESIS/Data/P1_beta_ID # dataset root dir
+train: C:/MASTERTHESIS/Data/P1_beta_ID/train/images
+val: C:/MASTERTHESIS/Data/P1_beta_ID/val/images
+
+# Classes
+nc: 1  # number of classes
+names: [ 'Insect' ]  # class names
