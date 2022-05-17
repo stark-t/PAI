@@ -12,11 +12,10 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import glob
 
-# base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
-base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
+base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
+# base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
 # base_dir = r'C:\MASTERTHESIS\Data\Holiday_images\test'
 # base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
-
 
 prediction_dir = os.path.join(base_dir, 'results', 'exp', 'predictions')
 labels_dir = os.path.join(base_dir, 'labels')
@@ -30,6 +29,7 @@ print('\nThere are {} images and {} labeled images'.format(len(images_dirs), len
 y_true = []
 y_pred = []
 ious = []
+ious_correct = []
 classes = []
 n_BB = 1
 
@@ -128,6 +128,7 @@ for image_count_index, image_path in enumerate(images_dirs):
             label = labels[class_i]
             y_true_ = int(label[0])
             y_true.append(y_true_)
+            # ious_correct.append(ious[i]) #! TODO: Die Anzahl der richtigen bounding boxes muss noch errechnet werden!!
         else:
             label = labels[i]
             y_true_ = int(label[0])

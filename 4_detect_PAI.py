@@ -6,7 +6,7 @@ import shutil
 import matplotlib
 matplotlib.use('TkAgg')
 
-conf_threshold = .45
+conf_threshold = .35
 batch_size = 32
 imgsz = 1280
 classnames = ['Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera', 'Hymenoptera f.', 'Lepidoptera', 'Orthoptera']
