@@ -12,10 +12,10 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import glob
 
-base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
+# base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
 # base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
 # base_dir = r'C:\MASTERTHESIS\Data\Holiday_images\test'
-# base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
+base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
 
 prediction_dir = os.path.join(base_dir, 'results', 'exp', 'predictions')
 labels_dir = os.path.join(base_dir, 'labels')

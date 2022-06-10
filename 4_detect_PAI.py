@@ -14,9 +14,9 @@ classnames = ['Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera', 'H
 # classnames = ['Insect']
 
 # base_dir = r'C:\MASTERTHESIS\Data\P1_orders\test'
-base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
+# base_dir = r'C:\MASTERTHESIS\Data\Field_observation\test'
 # base_dir = r'C:\MASTERTHESIS\Data\Holiday_images\test'
-# base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
+base_dir = r'C:\MASTERTHESIS\Data\..Challenges\new\try'
 
 source = base_dir + '\\images'
 weights = r"C:\MASTERTHESIS\Results\Training\P1_orders_200_yolov5m6_70.817hrs\weights\best.pt"
