@@ -3,7 +3,8 @@
 ## Download object detector
 
 download e.g. yolov5 into PAI/code/yolov5
-[] add auto downloader according to issue #23
+
+[ ] add auto downloader according to issue #23
 
 ## Prepare training
 
