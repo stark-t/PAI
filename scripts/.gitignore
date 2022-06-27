@@ -1,32 +1,67 @@
-# Repo-specific DockerIgnore -------------------------------------------------------------------------------------------
-#.git
-.cache
-.idea
-runs
-output
-coco
-storage.googleapis.com
-
-data/samples/*
-**/results*.csv
+# Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
 *.jpg
+*.jpeg
+*.png
+*.bmp
+*.tif
+*.tiff
+*.heic
+*.JPG
+*.JPEG
+*.PNG
+*.BMP
+*.TIF
+*.TIFF
+*.HEIC
+*.mp4
+*.mov
+*.MOV
+*.avi
+*.data
+*.json
+*.cfg
+!setup.cfg
+!cfg/yolov3*.cfg
+
+storage.googleapis.com
+runs/*
+data/*
+data/images/*
+!data/*.yaml
+!data/hyps
+!data/scripts
+!data/images
+!data/images/zidane.jpg
+!data/images/bus.jpg
+!data/*.sh
+
+results*.csv
+
+# Datasets -------------------------------------------------------------------------------------------------------------
+coco/
+coco128/
+VOC/
+
+# MATLAB GitIgnore -----------------------------------------------------------------------------------------------------
+*.m~
+*.mat
+!targets*.mat
 
 # Neural Network weights -----------------------------------------------------------------------------------------------
-**/*.pt
-**/*.pth
-**/*.onnx
-**/*.mlmodel
-**/*.torchscript
-**/*.torchscript.pt
-**/*.tflite
-**/*.h5
-**/*.pb
+*.weights
+*.pt
+*.pb
+*.onnx
+*.engine
+*.mlmodel
+*.torchscript
+*.tflite
+*.h5
 *_saved_model/
 *_web_model/
-
-# Below Copied From .gitignore -----------------------------------------------------------------------------------------
-# Below Copied From .gitignore -----------------------------------------------------------------------------------------
-
+*_openvino_model/
+darknet53.conv.74
+yolov3-tiny.conv.15
 
 # GitHub Python GitIgnore ----------------------------------------------------------------------------------------------
 # Byte-compiled / optimized / DLL files
@@ -53,9 +88,10 @@ sdist/
 var/
 wheels/
 *.egg-info/
-wandb/
+/wandb/
 .installed.cfg
 *.egg
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

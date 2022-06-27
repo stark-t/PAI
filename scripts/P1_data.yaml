@@ -1,0 +1,7 @@
+path: F:\\202105_PAI\\data\\P1_Data_sampled
+train: F:\\202105_PAI\\data\\P1_Data_sampled\\train\\images
+val: F:\\202105_PAI\\data\\P1_Data_sampled\\val\\images
+
+# Classes
+nc: 8  # number of classes
+names: [ 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ]  # class names
