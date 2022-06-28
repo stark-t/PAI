@@ -3,7 +3,7 @@ import os
 
 # import scripts
 import utils_config as config
-from yolov5 import train
+from code.yolov5 import train
 
 def run_training(data_yaml, weights, epochs, batch_size,
                  image_size, hyperparms, save_dir):
