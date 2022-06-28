@@ -31,6 +31,7 @@ data/*
 !data/images/bus.jpg
 !data/*.sh
 code/*
+!code/__init__.py
 
 results*.csv
 
