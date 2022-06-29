@@ -2,9 +2,9 @@
 import os
 import glob
 import pandas as pd
-
+import yaml
 # import scripts
-import utils_config as config
+
 
 def file_names_func(path):
     """
@@ -67,6 +67,15 @@ def get_datapath_func(data_path, verbose=2):
 
 
 if __name__ == '__main__':
-    images_labels_df = get_datapath_func(data_path=config.data_path, verbose=config.verbose)
+
+    # get current dir
+    dirname = os.path.dirname(__file__)
+
+    # read yaml config file
+    data_yaml = os.path.join(dirname, 'config_yolov5.yaml')
+    with open(data_yaml) as file:
+        data = yaml.safe_load(file)
+
+    images_labels_df = get_datapath_func(data_path=data['data_path'], verbose=data['verbose'])
 
     print('finished')

@@ -3,9 +3,9 @@ import os
 import pandas as pd
 import tqdm
 import shutil
+import yaml
 
 # import scripts
-import utils_config as config
 from utils_datasampling import datasampling_func
 from utils_datapaths import get_datapath_func
 
@@ -56,29 +56,38 @@ def create_dataset_func(df, data_path):
 
     return 1
 
+def run_create_datasets():
 
-if __name__ == '__main__':
+    # get current dir
+    dirname = os.path.dirname(__file__)
 
-    df = get_datapath_func(data_path=config.data_path, verbose=config.verbose)
-    df_train, df_test, df_val = datasampling_func(df=df, traintestval_ratio=config.traintestval_ratio,
-                                                  verbose=config.verbose)
+    # read yaml config file
+    data_yaml = os.path.join(dirname, 'config_yolov5.yaml')
+    with open(data_yaml) as file:
+        data = yaml.safe_load(file)
 
+    df = get_datapath_func(data_path=data['data_path'], verbose=data['verbose'])
+    df_train, df_test, df_val = datasampling_func(df=df, traintestval_ratio=data['traintestval_ratio'],
+                                                  seed=data['seed'], verbose=data['verbose'])
 
     # make train, val and test into your dataset folder:
-    train_PATH = config.data_path_sampled + '\\train'
+    train_PATH = data['path'] + '\\train'
     if not os.path.exists(train_PATH):
         os.makedirs(train_PATH)
 
-    val_PATH = config.data_path_sampled + '\\val'
+    val_PATH = data['path'] + '\\val'
     if not os.path.exists(val_PATH):
         os.makedirs(val_PATH)
 
-    test_PATH = config.data_path_sampled + '\\test'
+    test_PATH = data['path'] + '\\test'
     if not os.path.exists(test_PATH):
         os.makedirs(test_PATH)
 
     create_dataset_func(df=df_train, data_path=train_PATH)
     create_dataset_func(df=df_test, data_path=val_PATH)
     create_dataset_func(df=df_val, data_path=test_PATH)
+
+if __name__ == '__main__':
+    run_create_datasets()
 
     print('finished')

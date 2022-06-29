@@ -1,26 +1,26 @@
 # import packages
 import os
 from git import Repo
+import yaml
 
 # import scripts
-import utils_config as config
+from utils_create_datasets import run_create_datasets
 
 
 
 if __name__ == '__main__':
 
-    data_yaml = r'C:\Users\star_th\PycharmProjects\PAI\scripts\P1_data.yaml'
-    weights = 'yolov5s6.pt'
-    epochs = 3
-    batch_size = 8
-    image_size = 1280
-    hyperparms = r'C:\Users\star_th\PycharmProjects\PAI\code\yolov5\data\hyps\hyp.scratch-med.yaml'
-    save_dir = r'F:\202105_PAI\data\P1_yolov5'
-
-    # check if yolo needs to be downloaded
     # get current dir
     dirname = os.path.dirname(__file__)
-    # split and create yolov5 dir
+
+    # read yaml config file
+    data_yaml = os.path.join(dirname, 'config_yolov5.yaml')
+    with open(data_yaml) as file:
+        data = yaml.safe_load(file)
+
+    # check if yolo needs to be downloaded
+
+    # split and create yolov5 dir (should be os independed)
     dirname_splits = os.path.normpath(dirname).split(os.path.sep)[0:-1]
     drive_path = dirname_splits[0] + os.sep
     detectors_path = os.path.join(drive_path, *dirname_splits[1:])
@@ -28,17 +28,20 @@ if __name__ == '__main__':
     detectors_path_yolov5_trainpy = os.path.join(detectors_path, 'train.py')
     # check if train.py exists
     if not os.path.isfile(detectors_path_yolov5_trainpy):
-        print('download yolov5 into /PAI/detectors/yolov5')
-        print('download yolov5 from github')
+        print('Start downloading yolov5 from github into {}'.format(detectors_path))
         Repo.clone_from('https://github.com/ultralytics/yolov5.git', detectors_path)
+        print('Finished cloning')
 
     from detectors.yolov5 import train
 
     # check if dataset exists
+    if not os.path.isdir(data['train']):
+        run_create_datasets()
 
 
     # run yolov5
-    train.run(data=data_yaml, weights=weights, batch_size=batch_size,
-              epochs=epochs, imgsz=image_size,hyp=hyperparms, project=save_dir)
+    train.run(data=data_yaml, weights=data['weights'], batch_size=data['batach_size'],
+              epochs=data['epochs'], imgsz=data['image_size'],
+              hyp=data['hyperparms_path'], project=data['save_path'])
 
     print('finished')
