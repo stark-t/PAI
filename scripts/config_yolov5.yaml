@@ -10,7 +10,7 @@ val: F:\\202105_PAI\\data\\P1_Data_sampled\\val\\images
 save_path: F:\\202105_PAI\\data\\P1_yolov5
 
 # Path to all yolov5 hyperparameters
-hyperparms_path: C:\Users\star_th\PycharmProjects\PAI\code\yolov5\data\hyps\hyp.scratch-med.yaml
+hyperparms_path: C:\\Users\\star_th\\PycharmProjects\\PAI\\detectors\\yolov5\\data\\hyps\\hyp.scratch-med.yaml
 
 # Model(basic) hyperparameters
 weights: yolov5s6.pt

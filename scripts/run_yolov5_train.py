@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
 
     # run yolov5
-    train.run(data=data_yaml, weights=data['weights'], batch_size=data['batach_size'],
+    train.run(data=data_yaml, weights=data['weights'], batch_size=data['batch_size'],
               epochs=data['epochs'], imgsz=data['image_size'],
               hyp=data['hyperparms_path'], project=data['save_path'])
 
