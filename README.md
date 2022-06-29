@@ -1,18 +1,15 @@
 # PAI: Pollination Artificial Intelligence
 
-## Download object detector
 
-download e.g. yolov5 into PAI/code/yolov5
+## Install required packages
+'pip intstall requirements.txt'
 
-[ ] add auto downloader according to issue #23
+## Train pollinator order detector
 
-## Prepare training
+* select object detector py-file (e.g. run_training_yolov5.py)
+** This will download yolov5 if not already exiting
+** This will create train, test, val dataset if not already existing
+** This will train yolov5 on the train and val dataset
 
-1. Set-up local variabels in PAI/scripts/utils_config
-	- path to original dataset
-	- path to sampled dataset (data will be copied in this directory)
-	- ...
-	
-2. Run PAI/scripts/utils_create_dataset
-	This will create a test/val balanced and imbalanced training dataset. 
-	utils_create_dataset will call utils_datapaths to get all data from the original dataset and utils_datasampling will create a val/test balanced and unbalanced training dataset.
+## Test pollinator oders
+!TODO
