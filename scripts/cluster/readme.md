@@ -197,21 +197,36 @@ scancel <jobid> # e.g. scancel 2216373
 
 ## SBATCH header options
 
-Comments regarding the SBATCH header of a job script:
+Comments regarding the SBATCH header of a job script.
 
+This is an example of an SBATCH header:
 ```bash
 #!/bin/bash
-#SBATCH --job-name=train_yolov5 # Give a custom name for the job that will be carried by the Slurm Workload Manager;
-#SBATCH --partition=clara-job # Request for the Clara cluster;
-#SBATCH --nodes=1 # Number of nodes requested;
-#SBATCH --cpus-per-task=32 # Number of CPUs (32 is max per each Clara node). These are important for data loading as workers, so better have plenty, max 8 per GPU: "80% of CPUs assigned as workers, the remaining 20% free, with a maximum of 8 workers per GPU" https://github.com/ultralytics/yolov5/issues/715#issuecomment-672563009
-#SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs; GPU options on Clara are: a) NVIDIA GeForce RTX 2080 Ti, 11 Gb RAM (gpu:rtx2080ti); b) Nvidia Tesla V100 (gpu:v100), 32 Gb RAM;
-#SBATCH --mem-per-gpu=11G # 11 Gb is max per GPU for the NVIDIA GeForce RTX 2080 Ti; 32 Gb for Nvidia Tesla V100 
-#SBATCH --time=50:00:00 # e.g. 50:00:00 = 50 hours;
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log # path for storing the job-id.log; make sure this path exists
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err # path for storing the job-id.err file
+#SBATCH --job-name=train_yolov5
+#SBATCH --partition=clara-job
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:rtx2080ti:8
+#SBATCH --mem-per-gpu=11G
+#SBATCH --time=50:00:00
+#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log
+#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options
 ```
+
+`#!/bin/bash`: Tells the cluster that this is an executable job script.
+
+`#SBATCH --job-name=train_yolov5`: Give a custom name for the job, like `train_yolov5`, that will be carried by the Slurm Workload Manager.
+
+`#SBATCH --partition=clara-job`: Request for the Clara cluster.
+
+`#SBATCH --nodes=1`: Number of requested nodes.
+
+`#SBATCH --cpus-per-task=32`: Number of requested CPUs (32 is max per each Clara node). CPUs are important for data loading as "workers", so better have plenty, with max 8 per GPU as per this comment of Glenn Jocher (author of YOLOv5): "80% of CPUs assigned as workers, the remaining 20% free, with a maximum of 8 workers per GPU" - https://github.com/ultralytics/yolov5/issues/715#issuecomment-672563009
+
+`#SBATCH --gres=gpu:rtx2080ti:8`: Type and number of GPUs. The GPU options on Clara are: a) NVIDIA GeForce RTX 2080 Ti, 11 Gb RAM (`gpu:rtx2080ti`); b) Nvidia Tesla V100 (`gpu:v100`), 32 Gb RAM.
+
+`#SBATCH --mem-per-gpu=11G`: Request 11 Gb per GPU for the NVIDIA GeForce RTX 2080 Ti; or 32 Gb for Nvidia Tesla V100.
 
 Note that, `--mem`, `--mem-per-cpu`, and `--mem-per-gpu` options are mutually exclusive. 
 So, requesting `--mem-per-cpu=16G` will not work if you already requested `--mem-per-gpu=11G`.
@@ -219,14 +234,25 @@ The max memory per node is 16G per each of the 32 CPUs, so a total of 512 Gb/nod
 Might it be that having max of RAM/node is important for data caching?
 Note that `--mem-per-cpu=16G` didn't work with the curent SBATCH header structure.
 
-Note that, all absolute paths (except in the SBATCH header) in a job script can also be written relative to the home directory with the tilda symbol.
+`#SBATCH --time=50:00:00`: Requested time, e.g. `50:00:00` = 50 hours. One needs to have an estimation of how much a cluster job can last. Better overestimate because the Slurm Workload Manager will automatically kill any job when it reaches its time limit.
+
+`#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the <job-id>.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error.
+
+`#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err`: Same as above, but for the <job-id>.err file.
+
+`#SBATCH --mail-type=BEGIN,TIME_LIMIT,END`: Email options. Instruct the Slurm Workload Manager to send emails regarding when a job starts after being put in the waiting list (`BEGIN`), if it reached the time limit (`TIME_LIMIT`) and if it ended (`END`).
+
+More details about the Slurm options can be found at https://slurm.schedmd.com/sbatch.html
+
+
+## `train.py` options
+
+Note that, all absolute paths in a job script (except in the SBATCH header) can also be written relative to the home directory with the tilde (~) symbol.
 For example:
 ```bash
 # /home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/yolov5 can be written as
 # ~/PAI/detectors/yolov5
 ```
-
-## `train.py` options
 
 In a job *.sh script, when calling `train.py`, you have these options:
 
@@ -242,7 +268,7 @@ wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5x6.pt -P
 ```
 You can check for the releases here: https://github.com/ultralytics/yolov5/releases Pick the needed version id and then use that in the `/download/v6.1` part of the download link in `wget`.
 
-`--cfg:, eg `--cfg yolov5m6.yaml` is the model configuration yaml file. It needs to match the `--weights` argument, so if you use an m6 model, make sure is m6 in both arguments. This might be needed only if you train from scratch and not using pre-trained COCO weights. See Start from Scratch section at https://github.com/ultralytics/yolov5/wiki/Tips-for-Best-Training-Results
+`--cfg:`, eg `--cfg yolov5m6.yaml` is the model configuration yaml file. It needs to match the `--weights` argument, so if you use an m6 model, make sure is m6 in both arguments. This might be needed only if you train from scratch and not using pre-trained COCO weights. See Start from Scratch section at https://github.com/ultralytics/yolov5/wiki/Tips-for-Best-Training-Results
 
 `--data`: path to yaml file that contains the data paths
 
