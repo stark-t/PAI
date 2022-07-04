@@ -1,0 +1,3 @@
+logs_train_jobs
+SBATCH_and_train_options_as_comments.txt
+.ipynb_checkpoints
