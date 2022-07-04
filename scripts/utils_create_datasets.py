@@ -16,10 +16,10 @@ def create_dataset_func(df, data_path):
     :return:
     """
 
-    if not os.path.exists(data_path + '\\images'):
-        os.makedirs(data_path + '\\images')
-    if not os.path.exists(data_path + '\\labels'):
-        os.makedirs(data_path + '\\labels')
+    if not os.path.exists(data_path + '/images'):
+        os.makedirs(data_path + '/images')
+    if not os.path.exists(data_path + '/labels'):
+        os.makedirs(data_path + '/labels')
 
     CLASSES = df['class'].unique().tolist()
     for i, row in tqdm.tqdm(df.iterrows()):
@@ -71,15 +71,15 @@ def run_create_datasets():
                                                   seed=data['seed'], verbose=data['verbose'])
 
     # make train, val and test into your dataset folder:
-    train_PATH = data['path'] + '\\train'
+    train_PATH = data['path'] + '/train'
     if not os.path.exists(train_PATH):
         os.makedirs(train_PATH)
 
-    val_PATH = data['path'] + '\\val'
+    val_PATH = data['path'] + '/val'
     if not os.path.exists(val_PATH):
         os.makedirs(val_PATH)
 
-    test_PATH = data['path'] + '\\test'
+    test_PATH = data['path'] + '/test'
     if not os.path.exists(test_PATH):
         os.makedirs(test_PATH)
 
