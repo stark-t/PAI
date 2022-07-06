@@ -38,11 +38,9 @@ pip install -r ~/PAI/detectors/yolov5/requirements.txt
 deactivate
 ```
 
-If you just need to update an existing environment, then run all the lines from above, except the one that creates the existing environment:
+If you just need to update an existing environment:
 ```bash
-cd ~
 module purge 
-module load Python/3.8.6-GCCcore-10.2.0
 source ~/venv/yolov5/bin/activate
 pip install -r ~/PAI/detectors/yolov5/requirements.txt # this will also update installed packages if applicable
 deactivate
@@ -157,7 +155,7 @@ ls ~/datasets/P1_Data_sampled/val/labels | wc -l   #  1680
 
 # Train a model
 
-Create a folder that will contain the log files (*.log & *.err). You only need to create this folder once and then for each train can refer to its path in the SBATCH header of the job scrips:
+Create a folder that will contain the log files (*.log & *.err). We only need to create this folder once and then for each train can refer to its path in the SBATCH header of the job scrips:
 ```bash
 cd ~/PAI/scripts/cluster
 mkdir logs_train_jobs
@@ -178,7 +176,7 @@ A train job can be sent to the cluster using the job *.sh scripts:
 - train_n6_multi_gpu.sh for nano models
 - train_s6_multi_gpu.sh for small models
 
-You can send a train job to the cluster like this (make sure you have the right path and file name):
+We can send a train job to the cluster like this (make sure you have the right path and file name):
 ```bash
 sbatch ~/PAI/scripts/cluster/train_n6_multi_gpu.sh # for nano models
 # or
@@ -211,7 +209,7 @@ This is an example of an SBATCH header:
 #SBATCH --time=50:00:00
 #SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log
 #SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err
-#SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options
+#SBATCH --mail-type=BEGIN,TIME_LIMIT,END
 ```
 
 `#!/bin/bash`: Tells the cluster that this is an executable job script.
@@ -249,12 +247,12 @@ More details about the Slurm options can be found at https://slurm.schedmd.com/s
 
 Note that, all absolute paths in a job script (except in the SBATCH header) can also be written relative to the home directory with the tilde (~) symbol.
 For example:
-```bash
-# /home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/yolov5 can be written as
-# ~/PAI/detectors/yolov5
+```
+/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/yolov5 # can be written as
+~/PAI/detectors/yolov5
 ```
 
-In a job *.sh script, when calling `train.py`, you have these options:
+In a job *.sh script, when calling `train.py`, we have these options:
 
 `-m torch.distributed.run`: for parallel mode, multiple GPUs per node; -m stands for module-name.
 
@@ -283,7 +281,8 @@ You can check for the releases here: https://github.com/ultralytics/yolov5/relea
 
 `--imgsz`: image resolution, eg, 1280 means 1280 x 1280 pixels
 
-`--cache`: cache images in ram (default) or disk; This might improve speed. But it run out of memory for `--cache ram`. See https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data#3-train
+`--cache`: cache images in ram (default) or disk; This might improve speed. But it run out of memory for `--cache ram`. See https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data#3-train 
+See also some experiments at https://github.com/stark-t/PAI/issues/28
 
 `--single-cls`: if there are multiple classes, then treat them all like one (https://github.com/ultralytics/yolov5/issues/128). We will not use this most probably anymore.
 

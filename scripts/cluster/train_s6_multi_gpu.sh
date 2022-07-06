@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=train_yolov5 # custom name for the job
+#SBATCH --job-name=train_yolov5 # name for the job;
 #SBATCH --partition=clara-job # Request for the Clara cluster;
 #SBATCH --nodes=1 # Number of nodes;
-#SBATCH --cpus-per-task=32 # Number of CPUs
-#SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs
+#SBATCH --cpus-per-task=32 # Number of CPUs;
+#SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;
 #SBATCH --mem-per-gpu=11G # RAM per GPU
 #SBATCH --time=50:00:00 # requested time, 50:00:00 = 50 hours;
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log # path job-id.log
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err # path job-id.err file
-#SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options
+#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log # path for job-id.log file;
+#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err # path for job-id.err file;
+#SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options;
 
 
 # Call the helper script session_info.sh which will print in the *.log file info 
@@ -30,7 +30,6 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --epochs 300 \
 --batch-size 64 \
 --imgsz 1280 \
---cache disk \
 --workers 6 \
 --name p1_w-s6_hyp-med_8b_300e
 

@@ -15,13 +15,20 @@ def create_dataset_func(df, data_path):
     :param df: input dataframe
     :return:
     """
+    # get current dir
+    dirname = os.path.dirname(__file__)
 
-    if not os.path.exists(data_path + '/images'):
-        os.makedirs(data_path + '/images')
-    if not os.path.exists(data_path + '/labels'):
-        os.makedirs(data_path + '/labels')
+    # read yaml config file
+    data_yaml = os.path.join(dirname, 'config_yolov5.yaml')
+    with open(data_yaml) as file:
+        data = yaml.safe_load(file)
 
-    CLASSES = df['class'].unique().tolist()
+    if not os.path.exists(os.path.join(data_path, 'images')):
+        os.makedirs(os.path.join(data_path, 'images'))
+    if not os.path.exists(os.path.join(data_path, 'labels')):
+        os.makedirs(os.path.join(data_path, 'labels'))
+
+    CLASSES = data['names']
     for i, row in tqdm.tqdm(df.iterrows()):
         label_PATH_src = row['labels_path']
         image_PATH_src = row['images_path']
@@ -71,15 +78,15 @@ def run_create_datasets():
                                                   seed=data['seed'], verbose=data['verbose'])
 
     # make train, val and test into your dataset folder:
-    train_PATH = data['path'] + '/train'
+    train_PATH = os.path.join(str(data['path']), 'train')
     if not os.path.exists(train_PATH):
         os.makedirs(train_PATH)
 
-    val_PATH = data['path'] + '/val'
+    val_PATH = os.path.join(str(data['path']), 'val')
     if not os.path.exists(val_PATH):
         os.makedirs(val_PATH)
 
-    test_PATH = data['path'] + '/test'
+    test_PATH = os.path.join(str(data['path']), 'test')
     if not os.path.exists(test_PATH):
         os.makedirs(test_PATH)
 
