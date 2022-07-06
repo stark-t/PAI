@@ -13,7 +13,7 @@ def file_names_func(path):
     :return: list of names
     """
 
-    file_names = [f.split('\\')[-1] for f in path]
+    file_names = [f.split(os.sep)[-1] for f in path]
     file_names = [f.split('.')[0] for f in file_names]
 
     return file_names
@@ -25,20 +25,20 @@ def get_datapath_func(data_path, verbose=2):
     :param verbose: select print level
     :return: dataframe of all images and labels per class
     """
-    data_dirs = glob.glob(data_path + '\\*')
+    data_dirs = glob.glob(os.path.join(data_path, '*'))
     data_dirs = [f for f in data_dirs if 'img' in f]
 
     dfs = []
 
     # loop through each data folder
     for data_dir_i, data_dir in enumerate(data_dirs):
-        class_name = data_dir.split('\\')[-1]
+        class_name = data_dir.split(os.sep)[-1]
         class_name = class_name.split('_sample')[0]
         class_name = class_name.split('img_')[1]
-
+        class_name = class_name.title()
         # get all images
-        images_path = glob.glob(data_dir + '\\img\\*')
-        labels_path = glob.glob(data_dir + '\\annotations\\yolo_txt\\*')
+        images_path = glob.glob(os.path.join(data_dir, 'img', '*'))
+        labels_path = glob.glob(os.path.join(data_dir, 'annotations', 'yolo_txt', '*'))
 
         # get id file names
         images_file_names = file_names_func(images_path)

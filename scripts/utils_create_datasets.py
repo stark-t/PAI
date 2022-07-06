@@ -23,12 +23,12 @@ def create_dataset_func(df, data_path):
     with open(data_yaml) as file:
         data = yaml.safe_load(file)
 
-    if not os.path.exists(os.path.join(str(data['path']), 'images')):
-        os.makedirs(os.path.join(str(data['path']), 'images'))
-    if not os.path.exists(os.path.join(str(data['path']), 'labels')):
-        os.makedirs(os.path.join(str(data['path']), 'labels'))
+    if not os.path.exists(os.path.join(data_path, 'images')):
+        os.makedirs(os.path.join(data_path, 'images'))
+    if not os.path.exists(os.path.join(data_path, 'labels')):
+        os.makedirs(os.path.join(data_path, 'labels'))
 
-    CLASSES = df['class'].unique().tolist()
+    CLASSES = data['names']
     for i, row in tqdm.tqdm(df.iterrows()):
         label_PATH_src = row['labels_path']
         image_PATH_src = row['images_path']
