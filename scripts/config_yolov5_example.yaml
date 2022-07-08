@@ -6,18 +6,6 @@ path: F:\202105_PAI\data\P1_Data_sampled
 train: F:\202105_PAI\data\P1_Data_sampled\train\images
 val: F:\202105_PAI\data\P1_Data_sampled\val\images
 
-# Path(base) to save directory
-save_path: F:\202105_PAI\data\P1_yolov5
-
-# Path to all yolov5 hyperparameters
-hyperparms_path: C:\Users\star_th\PycharmProjects\PAI\detectors\yolov5\data\hyps\hyp.scratch-med.yaml
-
-# Model(basic) hyperparameters
-weights: yolov5s6.pt
-epochs: 3
-batch_size: 8
-image_size: 1280
-
 # Classes
 nc: 8  # number of classes
 names: [ 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ]  # class names
