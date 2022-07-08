@@ -35,6 +35,9 @@ data/images/*
 !data/images/bus.jpg
 !data/*.sh
 
+*.yaml
+!scripts/config_yolov5_example.yaml
+
 results*.csv
 
 # Datasets -------------------------------------------------------------------------------------------------------------
