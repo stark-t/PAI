@@ -36,12 +36,9 @@ data/images/*
 !data/*.sh
 
 *.yaml
-!scripts/config_YOLOv5_example.yaml
-!scripts/config_YOLOv4_example.yaml
+!scripts/config_example.yaml
 
 scripts/*.sh
-!scripts/run_YOLOv5_example.sh
-!scripts/run_YOLOv4_example.sh
 
 results*.csv
 
