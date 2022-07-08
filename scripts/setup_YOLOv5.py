@@ -3,6 +3,7 @@ import os
 from git import Repo
 import yaml
 import sys
+import subprocess
 
 # import scripts
 from utils_create_datasets import run_create_datasets
@@ -13,12 +14,12 @@ if __name__ == '__main__':
     dirname = os.path.dirname(__file__)
 
     # read yaml config file
-    data_yaml = os.path.join(dirname, 'config_yolov5.yaml')
+    data_yaml = os.path.join(dirname, 'config.yaml')
     try:
         with open(data_yaml) as file:
             data = yaml.safe_load(file)
     except:
-        print('Create config file for YOLOv4')
+        print('Create config file')
         sys.exit(1)
 
     # check if yolo needs to be downloaded
@@ -39,7 +40,29 @@ if __name__ == '__main__':
         run_create_datasets()
 
     # create save and run dir
-    if not os.path.exists(r'F:\202105_PAI\data\P1_YOLOv5'):
-        os.makedirs(r'F:\202105_PAI\data\P1_YOLOv5')
+    if not os.path.exists(data['runsave_basepath']):
+        os.makedirs(data['runsave_basepath'])
+
+    if os.path.isfile(detectors_path_yolov5_trainpy):
+        if data['run_within_setupfile']:
+            subprocess.call([sys.executable,
+                             "C://Users//star_th//PycharmProjects//PAI//detectors//yolov5//train.py",
+                             "--cfg",
+                             "C://Users//star_th//PycharmProjects//PAI//detectors//yolov5//models//yolov5s.yaml",
+                             "--data", "C://Users//star_th//PycharmProjects//PAI//scripts//config.yaml",
+                             "--hyp",
+                             "C://Users//star_th//PycharmProjects//PAI\detectors//yolov5//data//hyps//hyp.scratch-med.yaml",
+                             "--device", "0",
+                             "--batch-size", str(data['batch_size']),
+                             "--epochs", str(data['epochs']),
+                             "--img", "1280",
+                             "--project", str(data['runsave_basepath']),
+                             "--name", 'yolov5s',
+                             "--exist-ok"],
+                            shell=False)
+        else:
+            print('Cannot run training within setup!')
+            print('Run file again to refresh setup.')
+            sys.exit(1)
 
     print('finished')

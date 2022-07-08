@@ -8,19 +8,18 @@ import subprocess
 # import scripts
 from utils_create_datasets import run_create_datasets
 
-
 if __name__ == '__main__':
 
     # get current dir
     dirname = os.path.dirname(__file__)
 
     # read yaml config file
-    data_yaml = os.path.join(dirname, 'config_yolov4.yaml')
+    data_yaml = os.path.join(dirname, 'config.yaml')
     try:
         with open(data_yaml) as file:
             data = yaml.safe_load(file)
     except:
-        print('Create config file for YOLOv4')
+        print('Create config file')
         sys.exit(1)
 
     # check if yolo needs to be downloaded
@@ -39,5 +38,31 @@ if __name__ == '__main__':
     # check if dataset exists
     if not os.path.isdir(data['train']):
         run_create_datasets()
+
+    # create save and run dir
+    if not os.path.exists(data['runsave_basepath']):
+        os.makedirs(data['runsave_basepath'])
+
+    if os.path.isfile(detectors_path_yolov4_trainpy):
+        if data['run_within_setupfile']:
+            subprocess.call([sys.executable,
+                             "C://Users//star_th//PycharmProjects//PAI//detectors//yolov4//train.py",
+                             "--cfg",
+                             "C://Users//star_th//PycharmProjects//PAI//detectors//yolov4//cfg//yolov4-tiny.cfg",
+                             "--data", "C://Users//star_th//PycharmProjects//PAI//scripts//config.yaml",
+                             "--hyp",
+                             "C://Users//star_th//PycharmProjects//PAI//detectors//yolov4//data//hyp.scratch.s.yaml",
+                             "--device", "0",
+                             "--batch-size", str(data['batch_size']),
+                             "--epochs", str(data['epochs']),
+                             "--img", "640",
+                             "--project", str(data['runsave_basepath']),
+                             "--name", 'yolov4-tiny',
+                             "--exist-ok"],
+                            shell=False)
+        else:
+            print('Cannot run training within setup!')
+            print('Run file again to refresh setup.')
+            sys.exit(1)
 
     print('finished')
