@@ -38,4 +38,8 @@ if __name__ == '__main__':
     if not os.path.isdir(data['train']):
         run_create_datasets()
 
+    # create save and run dir
+    if not os.path.exists(r'F:\202105_PAI\data\P1_YOLOv5'):
+        os.makedirs(r'F:\202105_PAI\data\P1_YOLOv5')
+
     print('finished')
