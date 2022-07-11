@@ -11,16 +11,19 @@
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options;
 
 
-# Call the helper script session_info.sh which will print in the *.log file info 
-# about the used environment and hardware.
-bash ~/PAI/scripts/cluster/session_info.sh
-
-cd ~/PAI/detectors/yolov5
+# Start with a clean environment
+module purge
 
 # Activate virtual environment
 source ~/venv/yolov5/bin/activate
 
-module load Python 
+# Call the helper script session_info.sh which will print in the *.log file info 
+# about the used environment and hardware.
+bash ~/PAI/scripts/cluster/session_info.sh
+
+
+module load Python
+cd ~/PAI/detectors/yolov5
 
 # Train YOLO by calling train.py
 python -m torch.distributed.launch --nproc_per_node 8 train.py \

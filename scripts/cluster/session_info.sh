@@ -20,7 +20,7 @@ module load Python
 
 # Important for reproducibility session-info:
 echo '========================================================================'
-echo 'cat /etc/os-release'
+echo 'Output of: cat /etc/os-release'
 echo '========================================================================'
 cat /etc/os-release
 printf '\n'
@@ -47,6 +47,13 @@ echo '========================================================================'
 echo 'List of Linux kernel modules currently loaded (in alphabetical order)'
 echo '========================================================================'
 lsmod | sort
+printf '\n'
+
+# Print loaded Python version
+echo '========================================================================'
+echo 'Python version'
+echo '========================================================================'
+python -c 'import sys; print(sys.version)'
 printf '\n'
 
 echo '========================================================================'

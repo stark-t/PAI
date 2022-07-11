@@ -30,11 +30,13 @@ cd ~ # move back to home
 # Start from a clean global environment
 module purge 
 
-# Load the tested bundle/toolchain.
-module load Python/3.8.6-GCCcore-10.2.0 
+# Load most up to date Python version on the cluster
+module load Python/3.9.6-GCCcore-11.2.0
 
 # Create a virtual environment named yolov5 in ~/venv
 python -m venv ~/venv/yolov5
+# If you need to delete the environment and start from scratch, then use rm -r ~/venv/yolov5
+# Then use the command from above to create the environment
 
 # Activate virtual environment
 source ~/venv/yolov5/bin/activate
