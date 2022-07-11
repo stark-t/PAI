@@ -195,10 +195,10 @@ We can send a train job to the cluster like this (make sure you have the right p
 sbatch ~/PAI/scripts/cluster/yolov5_train_n6.sh
 ```
 
-To see a job status: `squeue -u &#36;USER`
+To see a job status: `squeue -u $USER`
 
-[comment]: # I had to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830
-[comment]: # For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830
+[comment]: # (I tried to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830 but it didn't work)
+[comment]: # (For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830)
 
 To cancel a job: `scancel <jobid>`, e.g. `scancel 2216373`.
 
