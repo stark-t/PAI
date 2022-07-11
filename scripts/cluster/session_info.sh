@@ -14,7 +14,10 @@ printf '\n'
 module purge
 
 # Activate virtual environment
-source ~/venv/yolov5/bin/activate
+# $1 will be the name of the folder environment created in ~/venv/,
+# For example, $1 can be: yolov5 or yolov7
+source ~/venv/$1/bin/activate
+echo 'Virtual environment set at: ~/venv/'$1
 
 module load Python 
 

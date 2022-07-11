@@ -44,6 +44,11 @@ source ~/venv/yolov5/bin/activate
 # Install the packages listed in requirements.txt file (located where yolov5 was installed)
 pip install -r ~/PAI/detectors/yolov5/requirements.txt
 
+# If you get a warning like:
+# WARNING: You are using pip version 21.1.3; however, version 22.1.2 is available.
+# Then upgrade pip with:
+pip install --upgrade pip
+
 # Deactivate virtual environment
 deactivate
 ```
@@ -61,6 +66,29 @@ If you need to update YOLOv5, then just simply do a `git pull` in its repository
 cd ~/PAI/detectors/yolov5
 git pull
 ```
+
+# YOLOv7 - prepare dependencies and environment
+
+Similar as for YOLOv5.
+
+Clone the YOLOv7 repository in `.../PAI/detectors`:
+```bash
+cd ~/PAI/detectors/
+git clone https://github.com/WongKinYiu/yolov7
+```
+
+Create an environment with the needed dependecies/requirements for YOLOv7:
+```bash
+cd ~
+module purge
+module load Python/3.9.6-GCCcore-11.2.0
+python -m venv ~/venv/yolov7
+source ~/venv/yolov7/bin/activate
+pip install -r ~/PAI/detectors/yolov7/requirements.txt
+pip install --upgrade pip
+deactivate
+```
+
 
 # Data
 
@@ -167,13 +195,15 @@ ls ~/datasets/P1_Data_sampled/val/labels | wc -l   #  1680
 
 # Train a model
 
-## YOLOv5
 
-Create a folder that will contain the log files (*.log & *.err). We only need to create this folder once and then for each train can refer to its path in the SBATCH header of the job scrips:
+Create the folder `logs_train_jobs` in `~/PAI/detectors`. This folder will contain the job log files (*.log & *.err). 
+We only need to create this folder once and then for each train job we can put this path in the SBATCH header of the job script:
 ```bash
 cd ~/PAI/detectors
 mkdir logs_train_jobs
 ```
+
+## YOLOv5
 
 Download the YOLOv5 pre-trained weights on the COCO dataset:
 ```bash
@@ -195,7 +225,7 @@ We can send a train job to the cluster like this (make sure you have the right p
 sbatch ~/PAI/scripts/cluster/yolov5_train_n6.sh
 ```
 
-To see a job status: `squeue -u $USER`
+To see a job status: `squeue -u USER`
 
 [comment]: # (I tried to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830 but it didn't work)
 [comment]: # (For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830)
@@ -263,9 +293,12 @@ For example:
 
 In a job *.sh script, when calling `train.py`, we have these options:
 
-`-m torch.distributed.run`: for parallel mode, multiple GPUs per node; -m stands for module-name.
+`-m torch.distributed.launch`: for DDP parallel mode; `-m` stands for module-name; See also https://pytorch.org/docs/stable/distributed.html#launch-utility
+Note that, the Multiple GPUs DistributedDataParallel (DDP) mode is faster than Multi-GPU DataParallel mode - see https://github.com/ultralytics/yolov5/issues/475
 
 `--nproc_per_node`: specifies how many GPUs to use.
+
+`--sync-bn`: "SyncBatchNorm could increase accuracy for multiple gpu training, however, it will slow down training by a significant factor. It is only available for Multiple GPU DistributedDataParallel training. It is best used when the batch-size on each GPU is small (<= 8)" as per author's suggestion at https://github.com/ultralytics/yolov5/issues/475
 
 `--weights`: path to predefined weights or custom weights. 
 Make sure you have the most up to date ones. 
@@ -279,7 +312,7 @@ You can check for the releases here: https://github.com/ultralytics/yolov5/relea
 
 `--data`: path to yaml file that contains the data paths
 
-`--hyp`: yolov5 hyperparameter configuration yaml file from `yolov5/data/hyps/`. 
+`--hyp`: hyperparameter configuration yaml file from `yolov5/data/hyps/`. 
 "In general the smaller models perform better with low augmentation and the larger models perform better with high augmentation." from: https://github.com/ultralytics/yolov5/issues/5236. 
 "Nano and Small models use hyp.scratch-low.yaml hyps, all others use hyp.scratch-high.yaml." from: https://github.com/ultralytics/yolov5/releases - Pretrained Checkpoints - Table Notes (click to expand).
 "Default hyperparameters are in hyp.scratch-low.yaml. We recommend you train with default hyperparameters first before thinking of modifying any." from: https://github.com/ultralytics/yolov5/wiki/Tips-for-Best-Training-Results
@@ -288,7 +321,7 @@ You can check for the releases here: https://github.com/ultralytics/yolov5/relea
 
 `--batch-size`: when run in parallel is the total batch-size. It will be divided evenly to each GPU. Must be a multiple of the number of GPUs. For example, for 4 GPUs and a batch size of 16, then you need to give 4*16=64, like `--batch-size 64`;
 
-`--imgsz`: image resolution, eg, 1280 means 1280 x 1280 pixels
+`--img-size`: image resolution, eg, 1280 means 1280 x 1280 pixels
 
 `--cache`: cache images in ram (default) or disk; This might improve speed. But it run out of memory for `--cache ram`. See https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data#3-train 
 See also some experiments at https://github.com/stark-t/PAI/issues/28
@@ -300,3 +333,37 @@ See also some experiments at https://github.com/stark-t/PAI/issues/28
 `--project` : Path to folder where to save the detection results. If not specified, then the default is `.../yolov5/runs/train`;
 
 `--name`: name of the folder that will be created in the folder given in --project. If it happens to have multiple runs with the same name, YOLO can add an index to the end of name.
+
+
+## YOLOv7
+
+Download the YOLOv7 pre-trained weights on the COCO dataset:
+```bash
+cd ~/PAI/detectors/yolov7
+mkdir weights_v0_1
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
+```
+
+### Job scripts
+
+A train job can be sent to the cluster using these scripts:
+
+- `yolov7_train_w6.sh` uses the yolov7-w6.pt pretrained weights
+- `yolov7_train_e6.sh` uses the yolov7-e6.pt pretrained weights
+
+We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
+```bash
+sbatch ~/PAI/scripts/cluster/yolov7_train_w6.sh
+```
+
+### SBATCH header options
+
+Same as YOLOv5 (see above).
+
+
+### `train.py` options
+
+Similar to YOLOv5 (see above), with following remarks:
+
+`--hyp`: e.g. `data/hyp.scratch.p5.yaml` looks similar to `yolov5/data/hyps/hyp.scratch-med.yaml`. For comparing, we try to use similar hyperparameter configuration between YOLO versions.
