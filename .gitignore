@@ -33,6 +33,12 @@ data/*
 detectors/*
 !detectors/__init__.py
 
+scripts/*.sh
+!scripts/run_example.sh
+
+scripts/*.yaml
+!scripts/config_example.yaml
+
 results*.csv
 
 

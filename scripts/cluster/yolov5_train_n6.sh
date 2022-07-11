@@ -6,8 +6,8 @@
 #SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;
 #SBATCH --mem-per-gpu=11G # RAM per GPU;
 #SBATCH --time=50:00:00 # requested time, 50:00:00 = 50 hours;
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log # path for job-id.log file;
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err # path for job-id.err file;
+#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.log # path for job-id.log file;
+#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.err # path for job-id.err file;
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options;
 
 
@@ -31,7 +31,7 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --batch-size 64 \
 --imgsz 1280 \
 --workers 6 \
---name p1_w-n6_hyp-med_8b_300e
+--name yolov5_n6_b8_e300_hypmed
 
 # Deactivate virtual environment
 deactivate

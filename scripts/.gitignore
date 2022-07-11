@@ -35,6 +35,11 @@ data/images/*
 !data/images/bus.jpg
 !data/*.sh
 
+*.yaml
+!scripts/config_example.yaml
+
+scripts/*.sh
+
 results*.csv
 
 # Datasets -------------------------------------------------------------------------------------------------------------

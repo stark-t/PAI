@@ -1,6 +1,12 @@
-# Prepare dependencies and environment for YOLOv5
+# Overview
 
-First, clone our PAI repository in the home directory of the landing node:
+This readme file walks you through setting the environments for running the training scripts on a Linux cluster that offers nodes with multiple GPUs. Each training was run on a single node. 
+
+Computations were done using resources of the Leipzig University Computing Centre.
+
+# Clone PAI repository
+
+Clone our PAI repository in the home directory of the landing node:
 ```bash
 pwd
 # Should see something like /home/sc.uni-leipzig.de/your_user_name
@@ -8,13 +14,15 @@ pwd
 git clone https://github.com/stark-t/PAI.git # if you put .git, will require authentication (can also skip .git)
 ```
 
-Then, clone the repository of YOLOv5 in `.../PAI/detectors`:
+# YOLOv5 - prepare dependencies and environment
+
+Clone the repository of YOLOv5 in `.../PAI/detectors`:
 ```bash
 cd ~/PAI/detectors/
 git clone https://github.com/ultralytics/yolov5
 ```
 
-Then, create an environment with the needed dependecies/requirements for YOLOv5:
+Create an environment with the needed dependecies/requirements for YOLOv5:
 
 ```bash
 cd ~ # move back to home
@@ -52,7 +60,9 @@ cd ~/PAI/detectors/yolov5
 git pull
 ```
 
-# Download the raw data
+# Data
+
+## Download the raw data
 
 Download the raw P1_dataset:
 ```bash
@@ -62,7 +72,7 @@ unzip download # unzips in a folder with its original name as stored on NextClou
 rm download # delete the zip file
 ```
 
-# Prepare data
+## Prepare data
 
 Will create a new directory named `P1_Data_sampled` in `~/datasets`. 
 This folder respects the YOLOv5 data structure requirement.
@@ -155,9 +165,11 @@ ls ~/datasets/P1_Data_sampled/val/labels | wc -l   #  1680
 
 # Train a model
 
+## YOLOv5
+
 Create a folder that will contain the log files (*.log & *.err). We only need to create this folder once and then for each train can refer to its path in the SBATCH header of the job scrips:
 ```bash
-cd ~/PAI/scripts/cluster
+cd ~/PAI/detectors
 mkdir logs_train_jobs
 ```
 
@@ -169,31 +181,26 @@ wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5n6.pt -P
 wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s6.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
 ```
 
-## Job scripts
+### Job scripts
 
-A train job can be sent to the cluster using the job *.sh scripts:
+A train job can be sent to the cluster using these scripts:
 
-- train_n6_multi_gpu.sh for nano models
-- train_s6_multi_gpu.sh for small models
+- `yolov5_train_n6.sh` with 'nano' yolov5n6.pt pretrained weights
+- `yolov5_train_s6.sh` with 'small' yolov5s6.pt pretrained weights
 
-We can send a train job to the cluster like this (make sure you have the right path and file name):
+We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/train_n6_multi_gpu.sh # for nano models
-# or
-sbatch ~/PAI/scripts/cluster/train_s6_multi_gpu.sh # for small models
+sbatch ~/PAI/scripts/cluster/yolov5_train_n6.sh
 ```
 
-To see a job status:
-```bash
-squeue -u $USER 
-```
+To see a job status: `squeue -u &#36;USER`
 
-To cancel a job:
-```bash
-scancel <jobid> # e.g. scancel 2216373
-```
+[comment]: # I had to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830
+[comment]: # For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830
 
-## SBATCH header options
+To cancel a job: `scancel <jobid>`, e.g. `scancel 2216373`.
+
+### SBATCH header options
 
 Comments regarding the SBATCH header of a job script.
 
@@ -234,16 +241,16 @@ Note that `--mem-per-cpu=16G` didn't work with the curent SBATCH header structur
 
 `#SBATCH --time=50:00:00`: Requested time, e.g. `50:00:00` = 50 hours. One needs to have an estimation of how much a cluster job can last. Better overestimate because the Slurm Workload Manager will automatically kill any job when it reaches its time limit.
 
-`#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the <job-id>.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error.
+`#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the job-id.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error.
 
-`#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err`: Same as above, but for the <job-id>.err file.
+`#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err`: Same as above, but for the job-id.err file.
 
 `#SBATCH --mail-type=BEGIN,TIME_LIMIT,END`: Email options. Instruct the Slurm Workload Manager to send emails regarding when a job starts after being put in the waiting list (`BEGIN`), if it reached the time limit (`TIME_LIMIT`) and if it ended (`END`).
 
 More details about the Slurm options can be found at https://slurm.schedmd.com/sbatch.html
 
 
-## `train.py` options
+### `train.py` options
 
 Note that, all absolute paths in a job script (except in the SBATCH header) can also be written relative to the home directory with the tilde (~) symbol.
 For example:
