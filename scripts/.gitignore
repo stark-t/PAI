@@ -36,7 +36,7 @@ data/images/*
 !data/*.sh
 
 *.yaml
-!scripts/config_example.yaml
+!scripts/yolo_custom_hyp.yaml
 
 scripts/*.sh
 
