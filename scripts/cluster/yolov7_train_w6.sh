@@ -3,8 +3,8 @@
 #SBATCH --partition=clara-job # Request for the Clara cluster;
 #SBATCH --nodes=1 # Number of nodes;
 #SBATCH --cpus-per-task=32 # Number of CPUs;
-#SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;
-#SBATCH --mem-per-gpu=11G # RAM per GPU;
+#SBATCH --gres=gpu:gpu:v100:4 # Type and number of GPUs;
+#SBATCH --mem-per-gpu=32G # RAM per GPU;
 #SBATCH --time=50:00:00 # requested time, 50:00:00 = 50 hours;
 #SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.log # path for job-id.log file;
 #SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.err # path for job-id.err file;
