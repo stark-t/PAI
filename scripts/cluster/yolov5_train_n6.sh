@@ -36,12 +36,12 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --sync-bn \
 --weights ~/PAI/detectors/yolov5/weights_v6_1/yolov5n6.pt \
 --data ~/PAI/scripts/config_yolov5.yaml \
---hyp ~/PAI/detectors/yolov5/data/hyps/hyp.scratch-med.yaml \
+--hyp ~/PAI/scripts/yolo_custom_hyp.yaml \
 --epochs 300 \
 --batch-size 64 \
 --img-size 1280 \
 --workers 3 \
---name yolov5_n6_b8_e300_hyp_med
+--name yolov5_n6_b8_e300_hyp_custom
 
 # Deactivate virtual environment
 deactivate
