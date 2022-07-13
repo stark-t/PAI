@@ -8,15 +8,21 @@ Computations were done using resources of the Leipzig University Computing Centr
 
 Clone our PAI repository in the home directory of the landing node:
 ```bash
-pwd
+pwd 
+# Make sure you are on the home directory.
 # Should see something like /home/sc.uni-leipzig.de/your_user_name
 
 git clone https://github.com/stark-t/PAI.git # if you put .git, will require authentication (can also skip .git)
 ```
 
-# YOLOv5 - prepare dependencies and environment
+# Set detectors
 
-Clone the repository of YOLOv5 in `.../PAI/detectors`:
+Clone the repository of each detector in `~/PAI/detectors`.
+Then set an environment for each detector at `~/venv` for:
+
+## - YOLOv5
+
+Clone the repository of YOLOv5 in `~/PAI/detectors`:
 ```bash
 cd ~/PAI/detectors/
 git clone https://github.com/ultralytics/yolov5
@@ -30,7 +36,9 @@ cd ~ # move back to home
 # Start from a clean global environment
 module purge 
 
-# Load most up to date Python version on the cluster
+# Load most up to date Python version on the cluster.
+# Can check available versions of the Python module with:
+# module spider Python
 module load Python/3.9.6-GCCcore-11.2.0
 
 # Create a virtual environment named yolov5 in ~/venv
@@ -41,13 +49,13 @@ python -m venv ~/venv/yolov5
 # Activate virtual environment
 source ~/venv/yolov5/bin/activate
 
-# Install the packages listed in requirements.txt file (located where yolov5 was installed)
-pip install -r ~/PAI/detectors/yolov5/requirements.txt
-
 # If you get a warning like:
 # WARNING: You are using pip version 21.1.3; however, version 22.1.2 is available.
 # Then upgrade pip with:
 pip install --upgrade pip
+
+# Install the packages listed in requirements.txt file (located where yolov5 was installed)
+pip install -r ~/PAI/detectors/yolov5/requirements.txt
 
 # Deactivate virtual environment
 deactivate
@@ -56,6 +64,7 @@ deactivate
 If you just need to update an existing environment:
 ```bash
 module purge 
+module load Python/3.9.6-GCCcore-11.2.0
 source ~/venv/yolov5/bin/activate
 pip install -r ~/PAI/detectors/yolov5/requirements.txt # this will also update installed packages if applicable
 deactivate
@@ -67,11 +76,10 @@ cd ~/PAI/detectors/yolov5
 git pull
 ```
 
-# YOLOv7 - prepare dependencies and environment
 
-Similar as for YOLOv5.
+## - YOLOv7
 
-Clone the YOLOv7 repository in `.../PAI/detectors`:
+Clone the YOLOv7 repository in `~/PAI/detectors`:
 ```bash
 cd ~/PAI/detectors/
 git clone https://github.com/WongKinYiu/yolov7
@@ -84,8 +92,62 @@ module purge
 module load Python/3.9.6-GCCcore-11.2.0
 python -m venv ~/venv/yolov7
 source ~/venv/yolov7/bin/activate
-pip install -r ~/PAI/detectors/yolov7/requirements.txt
 pip install --upgrade pip
+pip install -r ~/PAI/detectors/yolov7/requirements.txt
+deactivate
+```
+
+
+## - Scaled-YOLOv4 
+
+Clone the ScaledYOLOv4 repository in `~/PAI/detectors`:
+```bash
+cd ~/PAI/detectors/
+git clone https://github.com/WongKinYiu/ScaledYOLOv4
+```
+
+Create an environment with the needed dependecies/requirements for ScaledYOLOv4.
+
+Use the requirements from [YOLOR](https://github.com/WongKinYiu/yolor/blob/main/requirements.txt), as suggested by the author [here](https://github.com/WongKinYiu/ScaledYOLOv4/issues/282#issuecomment-869368078).
+
+Note that, we had to use an older version of Pyhton module (`Python/3.8.6-GCCcore-10.2.0`) because the more recent one, used for YOLOv5 & YOLOv7, (`Python/3.9.6-GCCcore-11.2.0`) does not satisfy the requirement `torch==1.7.0` and we got this error message:
+```
+ERROR: Could not find a version that satisfies the requirement torch==1.7.0 (from versions: 1.7.1, 1.8.0, 1.8.1, 1.9.0, 1.9.1, 1.10.0, 1.10.1, 1.10.2, 1.11.0, 1.12.0)
+ERROR: No matching distribution found for torch==1.7.0
+```
+
+```bash
+cd ~
+module purge
+module load Python/3.8.6-GCCcore-10.2.0
+# module load Python/3.9.6-GCCcore-11.2.0 # fails for torch==1.7.0 (see above)
+# module load Python/3.9.5-GCCcore-10.3.0 # also fails
+python -m venv ~/venv/ScaledYOLOv4
+source ~/venv/ScaledYOLOv4/bin/activate
+pip install --upgrade pip
+
+# Needed to install in this order, one by one, then the chunk:
+pip install Cython
+pip install numpy>=1.18.5
+
+pip install \
+matplotlib>=3.2.2 \
+opencv-python>=4.1.2 \
+Pillow \
+PyYAML>=5.3.1 \
+scipy>=1.4.1 \
+tensorboard>=1.5 \
+torch==1.7.0 \
+torchvision==0.8.1 \
+tqdm>=4.41.0 \
+seaborn>=0.11.0 \
+pandas \
+thop \
+pycocotools==2.0
+
+# Check if these were installed
+pip list
+
 deactivate
 ```
 
@@ -357,13 +419,21 @@ We can send a train job to the cluster like this (make sure you have the right p
 sbatch ~/PAI/scripts/cluster/yolov7_train_w6.sh
 ```
 
-### SBATCH header options
 
-Same as YOLOv5 (see above).
+## Scaled-YOLOv4
 
+Download the Scaled-YOLOv4 pre-trained weights on the COCO dataset.
 
-### `train.py` options
+Example for **YOLOv4-P6 1280; yolov4-p6.pt**:
 
-Similar to YOLOv5 (see above), with following remarks:
+On your local computer, navigate in your browser to the Google drive link provided in the readme file of the ScaledYOLOv4 repository for YOLOv4-P6 1280: https://drive.google.com/file/d/1aB7May8oPYzBqbgwYSZHuATPXyxh9xnf/view
 
-`--hyp`: e.g. `data/hyp.scratch.p5.yaml` looks similar to `yolov5/data/hyps/hyp.scratch-med.yaml`. For comparing, we try to use similar hyperparameter configuration between YOLO versions.
+Download the file and then can copy it to the cluster with `scp` (256 Mb). 
+On the cluster we created a directory `weights` with `mkdir ~/PAI/detectors/ScaledYOLOv4/weights`.
+
+### Job scripts
+
+We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
+```bash
+sbatch ~/PAI/scripts/cluster/yolov4_scaled_train_p6.sh
+```
