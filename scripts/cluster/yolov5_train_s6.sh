@@ -40,7 +40,7 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --epochs 300 \
 --batch-size 64 \
 --img-size 1280 \
---workers 6 \
+--workers 3 \
 --name yolov5_s6_b8_e300_hyp_med
 
 # Deactivate virtual environment
