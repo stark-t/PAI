@@ -2,7 +2,8 @@
 
 This readme file walks you through setting the environments for running the training scripts on a Linux cluster that offers nodes with multiple GPUs. Each training was run on a single node. 
 
-Computations were done using resources of the Leipzig University Computing Centre.
+Computations were done using resources of the Leipzig University Computing Centre. 
+The setting of the environments below are valid only for the resources made available to us.
 
 # Clone PAI repository
 
@@ -110,43 +111,28 @@ Create an environment with the needed dependecies/requirements for ScaledYOLOv4.
 
 Use the requirements from [YOLOR](https://github.com/WongKinYiu/yolor/blob/main/requirements.txt), as suggested by the author [here](https://github.com/WongKinYiu/ScaledYOLOv4/issues/282#issuecomment-869368078).
 
-Note that, we had to use an older version of Pyhton module (`Python/3.8.6-GCCcore-10.2.0`) because the more recent one, used for YOLOv5 & YOLOv7, (`Python/3.9.6-GCCcore-11.2.0`) does not satisfy the requirement `torch==1.7.0` and we got this error message:
-```
-ERROR: Could not find a version that satisfies the requirement torch==1.7.0 (from versions: 1.7.1, 1.8.0, 1.8.1, 1.9.0, 1.9.1, 1.10.0, 1.10.1, 1.10.2, 1.11.0, 1.12.0)
-ERROR: No matching distribution found for torch==1.7.0
-```
+In order to solve the `No module named 'mish_cuda'` errors, we had to use certain versions of the packages available in the software tree provided by Leipzig University Computing Centre:
 
 ```bash
-cd ~
 module purge
-module load Python/3.8.6-GCCcore-10.2.0
-# module load Python/3.9.6-GCCcore-11.2.0 # fails for torch==1.7.0 (see above)
-# module load Python/3.9.5-GCCcore-10.3.0 # also fails
+module load PyTorch/1.7.1-fosscuda-2019b-Python-3.7.4
+module load TensorFlow/2.4.0-fosscuda-2019b-Python-3.7.4
+module load OpenCV/4.2.0-fosscuda-2019b-Python-3.7.4
+module load matplotlib/3.1.1-fosscuda-2019b-Python-3.7.4
+module load torchvision/0.8.2-fosscuda-2019b-Python-3.7.4-PyTorch-1.7.1
+module load tqdm
+
+# Create environment
 python -m venv ~/venv/ScaledYOLOv4
+# Activate environment
 source ~/venv/ScaledYOLOv4/bin/activate
-pip install --upgrade pip
 
-# Needed to install in this order, one by one, then the chunk:
-pip install Cython
-pip install numpy>=1.18.5
+# mish-cuda installation ss suggested at https://github.com/WongKinYiu/ScaledYOLOv4#installation
+pip install git+https://github.com/JunnYu/mish-cuda
 
-pip install \
-matplotlib>=3.2.2 \
-opencv-python>=4.1.2 \
-Pillow \
-PyYAML>=5.3.1 \
-scipy>=1.4.1 \
-tensorboard>=1.5 \
-torch==1.7.0 \
-torchvision==0.8.1 \
-tqdm>=4.41.0 \
-seaborn>=0.11.0 \
-pandas \
-thop \
-pycocotools==2.0
-
-# Check if these were installed
-pip list
+pip install seaborn
+pip install thop
+pip install pycocotools
 
 deactivate
 ```
