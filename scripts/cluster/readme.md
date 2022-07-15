@@ -152,10 +152,10 @@ rm download # delete the zip file
 
 ## Prepare data
 
-Will create a new directory named `P1_Data_sampled` in `~/datasets`. 
+The data preparation scripts will create a new directory named `P1_Data_sampled` in `~/datasets`. 
 This folder respects the YOLOv5 data structure requirement.
 
-First, make sure that the data preparation scripts respect the Linux path style. 
+Make sure that the data preparation scripts respect the Linux path style. 
 Replace any `\\` with a `/`, or use `os.path.join` (preffered).
 
 ```bash
@@ -229,7 +229,7 @@ orthoptera                     1229         1229
 finished
 ```
 
-FYI: On Linux, can also count the number of files in a folder:
+The number of files in the train, val & test folders will be:
 ```bash
 ls ~/datasets/P1_Data_sampled/train/images | wc -l # 14348
 ls ~/datasets/P1_Data_sampled/train/labels | wc -l # 14348
@@ -241,11 +241,11 @@ ls ~/datasets/P1_Data_sampled/val/images | wc -l   #  1680
 ls ~/datasets/P1_Data_sampled/val/labels | wc -l   #  1680
 ```
 
+
 # Train a model
 
-
 Create the folder `logs_train_jobs` in `~/PAI/detectors`. This folder will contain the job log files (*.log & *.err). 
-We only need to create this folder once and then for each train job we can put this path in the SBATCH header of the job script:
+We only need to create this folder once and then for each train job we can put this path in the SBATCH header of each job script.
 ```bash
 cd ~/PAI/detectors
 mkdir logs_train_jobs
@@ -273,16 +273,15 @@ We can send a train job to the cluster like this (make sure you have the right p
 sbatch ~/PAI/scripts/cluster/yolov5_train_n6.sh
 ```
 
-To see a job status: `squeue -u USER`
+To see a job status: `squeue -u <user_name>`, or use the variable `<dollar sign>USER`.
 
 [comment]: # (I tried to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830 but it didn't work)
 [comment]: # (For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830)
 
 To cancel a job: `scancel <jobid>`, e.g. `scancel 2216373`.
 
-### SBATCH header options
 
-Comments regarding the SBATCH header of a job script.
+### SBATCH header options
 
 This is an example of an SBATCH header:
 ```bash
@@ -339,7 +338,7 @@ For example:
 ~/PAI/detectors/yolov5
 ```
 
-In a job *.sh script, when calling `train.py`, we have these options:
+Comments about some of the `train.py` options:
 
 `-m torch.distributed.launch`: for DDP parallel mode; `-m` stands for module-name; See also https://pytorch.org/docs/stable/distributed.html#launch-utility
 Note that, the Multiple GPUs DistributedDataParallel (DDP) mode is faster than Multi-GPU DataParallel mode - see https://github.com/ultralytics/yolov5/issues/475
@@ -415,7 +414,14 @@ Example for **YOLOv4-P6 1280; yolov4-p6.pt**:
 On your local computer, navigate in your browser to the Google drive link provided in the readme file of the ScaledYOLOv4 repository for YOLOv4-P6 1280: https://drive.google.com/file/d/1aB7May8oPYzBqbgwYSZHuATPXyxh9xnf/view
 
 Download the file and then can copy it to the cluster with `scp` (256 Mb). 
-On the cluster we created a directory `weights` with `mkdir ~/PAI/detectors/ScaledYOLOv4/weights`.
+On the cluster we created a directory `weights`.
+```bash
+# On a cluster terminal
+mkdir ~/PAI/detectors/ScaledYOLOv4/weights
+
+# On your local terminal, send the downloaded *.pt file to the folder created above:
+scp ~/Downloads/yolov4-p6.pt sv127qyji@login01.sc.uni-leipzig.de:~/PAI/detectors/ScaledYOLOv4/weights
+``
 
 ### Job scripts
 

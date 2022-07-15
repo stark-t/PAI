@@ -11,15 +11,12 @@ printf '\n' # print new line
 nvidia-smi
 printf '\n'
 
-module purge
-
-# Activate virtual environment
-# $1 will be the name of the folder environment created in ~/venv/,
-# For example, $1 can be: yolov5 or yolov7
-source ~/venv/$1/bin/activate
+echo '========================================================================'
 echo 'Virtual environment set at: ~/venv/'$1
-
-module load Python 
+# $1 will be the name of the environment created in ~/venv/,
+# For example, $1 can be: yolov5 or yolov7
+echo '========================================================================'
+printf '\n'
 
 # Important for reproducibility session-info:
 echo '========================================================================'
@@ -64,6 +61,3 @@ echo 'List of Python packages currently installed in the loaded environment (in 
 echo '========================================================================'
 pip list # pip displays the packages and their verison in alphabetical order by default.
 printf '\n'
-
-# Deactivate virtual environment
-deactivate
