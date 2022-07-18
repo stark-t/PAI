@@ -6,11 +6,7 @@ import os
 import yaml
 import glob
 # pip install opencv-python # install OpenCV in terminal, in the PAI environment
-import cv2 # OpenCV
-# pip install -U matplotlib # https://matplotlib.org/stable/users/installing/index.html
-import matplotlib.pyplot as plt
-# pip install pybboxes
-import pybboxes
+import cv2
 from utils_annotation import *
 from scripts.utils_datapaths import *
 
@@ -77,3 +73,7 @@ if __name__ == '__main__':
     print(df_check_has_lbl.shape[0])
     print(df_check_has_lbl[['file_name', 'width_via', 'width_pil']])
     # There are 23 cases that need visual inspection. Most probably we need to flip width with height
+    # Write the data frame as CSV file
+    df_check_has_lbl.to_csv('/home/vs66tavy/Nextcloud/insect-photos-url-gbif/gbif-occurences/P1_Data_internal/check_img_statics/df_check_has_lbl.csv',
+                            encoding='utf-8',
+                            index=False)
