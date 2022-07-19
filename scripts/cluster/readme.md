@@ -137,6 +137,64 @@ pip install pycocotools
 deactivate
 ```
 
+## - detectron2
+
+Clone the detectron2 repository in `~/PAI/detectors`:
+```bash
+cd ~/PAI/detectors/
+git clone https://github.com/facebookresearch/detectron2
+```
+
+```bash
+cd ~
+module purge
+module load PyTorch/1.10.0-foss-2021a-CUDA-11.3.1
+module load TensorFlow/2.6.0-foss-2021a-CUDA-11.3.1
+module load torchvision/0.11.1-foss-2021a-CUDA-11.3.1
+
+python -m venv ~/venv/detectron2
+source ~/venv/detectron2/bin/activate
+
+pip install --upgrade pip
+pip install opencv-python
+
+pip install detectron2 -f \
+  https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
+
+# ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. 
+# This behaviour is the source of the following dependency conflicts.
+# pandas 1.2.4 requires pytz>=2017.3, which is not installed.
+
+# Test Inference Demo with Pre-trained Models
+cd PAI/detectors/detectron2/demo
+wget https://farm9.staticflickr.com/8267/8918904805_727d988709_z.jpg -q -O input1.jpg
+wget https://farm1.staticflickr.com/215/492060815_ec07c64c09_z.jpg -q -O input2.jpg
+
+python demo.py --config-file ../configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml \
+  --input input1.jpg input2.jpg \
+  --opts MODEL.WEIGHTS detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
+
+Traceback (most recent call last):
+  File "/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/detectron2/demo/demo.py", line 14, in <module>
+    from detectron2.data.detection_utils import read_image
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/data/__init__.py", line 4, in <module>
+    from .build import (
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/data/build.py", line 13, in <module>
+    from detectron2.structures import BoxMode
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/structures/__init__.py", line 3, in <module>
+    from .image_list import ImageList
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/structures/image_list.py", line 8, in <module>
+    from detectron2.layers.wrappers import shapes_to_tensor
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/layers/__init__.py", line 3, in <module>
+    from .deform_conv import DeformConv, ModulatedDeformConv
+  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/layers/deform_conv.py", line 11, in <module>
+    from detectron2 import _C
+ImportError: libtorch_cuda_cu.so: cannot open shared object file: No such file or directory
+
+
+deactivate
+```
+
 
 # Data
 
@@ -280,6 +338,18 @@ To see a job status: `squeue -u <user_name>`, or use the variable `<dollar sign>
 
 To cancel a job: `scancel <jobid>`, e.g. `scancel 2216373`.
 
+To print ressources consumed by a job: 
+```bash
+# https://slurm.schedmd.com/sacct.html
+# sacct -j <jobid> -format=option1,option2
+sacct --jobs 2216373 --format=JobID,AllocCPUs,AveCPU,TotalCPU,AveVMSize,MaxVMSize,ReqMem,ConsumedEnergy,Elapsed,TresUsageOutMax --units=G
+# or
+sacct --jobs 2216373 --long
+# Save output to txt file
+sacct --jobs 2216373 --long --parsable --delimiter=";" > ~/PAI/detectors/logs_train_jobs/2216373_sacct.txt
+sacct --jobs 3211271 --long --parsable --delimiter=";" > ~/PAI/detectors/logs_inference_speed_jobs/3211271_sacct.txt
+```
+
 
 ### SBATCH header options
 
@@ -421,7 +491,7 @@ mkdir ~/PAI/detectors/ScaledYOLOv4/weights
 
 # On your local terminal, send the downloaded *.pt file to the folder created above:
 scp ~/Downloads/yolov4-p6.pt sv127qyji@login01.sc.uni-leipzig.de:~/PAI/detectors/ScaledYOLOv4/weights
-``
+```
 
 ### Job scripts
 

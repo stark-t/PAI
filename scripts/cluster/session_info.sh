@@ -2,23 +2,21 @@
 
 # Script to display information about the used environment and hardware.
 
-# Display available memory.
-# In the log files it looks like this indicates always the max available per node.
-free -t -h
-printf '\n' # print new line
-
 # Disply NVIDIA System Management Interface and store it in the output log file.
+echo '========================================================================'
+echo 'Output of: nvidia-smi'
+echo '========================================================================'
 nvidia-smi
 printf '\n'
 
+# Display path to virtual environment. 
+# Below, the argument $1 will be the name of the environment created in ~/venv/,
+# For example, $1 can be: yolov5 or yolov7
 echo '========================================================================'
 echo 'Virtual environment set at: ~/venv/'$1
-# $1 will be the name of the environment created in ~/venv/,
-# For example, $1 can be: yolov5 or yolov7
 echo '========================================================================'
 printf '\n'
 
-# Important for reproducibility session-info:
 echo '========================================================================'
 echo 'Output of: cat /etc/os-release'
 echo '========================================================================'
