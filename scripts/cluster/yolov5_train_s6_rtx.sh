@@ -4,8 +4,8 @@
 #SBATCH --nodes=1 # Number of nodes;
 #SBATCH --cpus-per-task=32 # Number of CPUs;
 #SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;
-#SBATCH --mem-per-gpu=11G # RAM per GPU;
-#SBATCH --time=50:00:00 # requested time, 50:00:00 = 50 hours;
+#SBATCH --mem-per-gpu=11G # RAM per GPU
+#SBATCH --time=1-00:00:00 # requested time in d-hh:mm:ss
 #SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.log # path for job-id.log file;
 #SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.err # path for job-id.err file;
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options;
@@ -37,14 +37,14 @@ source ~/PAI/scripts/cluster/session_info.sh yolov5
 cd ~/PAI/detectors/yolov5
 python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --sync-bn \
---weights ~/PAI/detectors/yolov5/weights_v6_1/yolov5n6.pt \
+--weights ~/PAI/detectors/yolov5/weights_v6_1/yolov5s6.pt \
 --data ~/PAI/scripts/config_yolov5.yaml \
 --hyp ~/PAI/scripts/yolo_custom_hyp.yaml \
 --epochs 300 \
 --batch-size 64 \
---img-size 1280 \
+--img-size 640 \
 --workers 3 \
---name yolov5_n6_b8_e300_hyp_custom
+--name yolov5_s6_b8_e300_img640_hyp_custom
 
 
 # Deactivate virtual environment

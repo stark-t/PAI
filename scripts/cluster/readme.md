@@ -99,40 +99,50 @@ deactivate
 ```
 
 
-## - Scaled-YOLOv4 
+## - PyTorch_YOLOv4
 
-Clone the ScaledYOLOv4 repository in `~/PAI/detectors`:
+Clone the repository of YOLOv4 PyTorch implementation in `~/PAI/detectors`:
 ```bash
 cd ~/PAI/detectors/
-git clone https://github.com/WongKinYiu/ScaledYOLOv4
+git clone https://github.com/WongKinYiu/PyTorch_YOLOv4
 ```
 
-Create an environment with the needed dependecies/requirements for ScaledYOLOv4.
+Now, create an environment with the needed dependecies/requirements for YOLOv4.
 
-Use the requirements from [YOLOR](https://github.com/WongKinYiu/yolor/blob/main/requirements.txt), as suggested by the author [here](https://github.com/WongKinYiu/ScaledYOLOv4/issues/282#issuecomment-869368078).
+Note that, we had to use an older version of Pyhton module (`Python/3.8.6-GCCcore-10.2.0`) because the more recent one, used for YOLOv5 & YOLOv7, (`Python/3.9.6-GCCcore-11.2.0`) does not satisfy the requirement `torch==1.6` and we got this error message:
+```
+ERROR: Could not find a version that satisfies the requirement torch==1.6 
+(from versions: 1.7.1, 1.8.0, 1.8.1, 1.9.0, 1.9.1, 1.10.0, 1.10.1, 1.10.2, 1.11.0, 1.12.0)
+ERROR: No matching distribution found for torch==1.6
+```
 
-In order to solve the `No module named 'mish_cuda'` errors, we had to use certain versions of the packages available in the software tree provided by Leipzig University Computing Centre:
+Also, had to manually install the packages from PyTorch_YOLOv4/requirements.txt, because we encountered errors for `numpy==1.17`, so for that one we installed `numpy==1.18`.
+
+Finally, these are the commands for setting the environment for PyTorch_YOLOv4:
 
 ```bash
+cd ~
 module purge
-module load PyTorch/1.7.1-fosscuda-2019b-Python-3.7.4
-module load TensorFlow/2.4.0-fosscuda-2019b-Python-3.7.4
-module load OpenCV/4.2.0-fosscuda-2019b-Python-3.7.4
-module load matplotlib/3.1.1-fosscuda-2019b-Python-3.7.4
-module load torchvision/0.8.2-fosscuda-2019b-Python-3.7.4-PyTorch-1.7.1
-module load tqdm
+module load Python/3.8.6-GCCcore-10.2.0
+# module load Python/3.9.6-GCCcore-11.2.0 # fails for torch==1.6
+# module load Python/3.9.5-GCCcore-10.3.0 # also fails
+python -m venv ~/venv/PyTorch_YOLOv4
+source ~/venv/PyTorch_YOLOv4/bin/activate
 
-# Create environment
-python -m venv ~/venv/ScaledYOLOv4
-# Activate environment
-source ~/venv/ScaledYOLOv4/bin/activate
+pip install --upgrade pip
 
-# mish-cuda installation ss suggested at https://github.com/WongKinYiu/ScaledYOLOv4#installation
-pip install git+https://github.com/JunnYu/mish-cuda
-
-pip install seaborn
-pip install thop
-pip install pycocotools
+pip install \
+'numpy==1.18' \
+'opencv-python>=4.1' \
+'torch==1.6' \
+torchvision \
+matplotlib \
+pycocotools \
+tqdm \
+pillow \
+PyYAML \
+scipy \
+'tensorboard>=1.14'
 
 deactivate
 ```
@@ -323,12 +333,12 @@ wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s6.pt -P
 
 A train job can be sent to the cluster using these scripts:
 
-- `yolov5_train_n6.sh` with 'nano' yolov5n6.pt pretrained weights
-- `yolov5_train_s6.sh` with 'small' yolov5s6.pt pretrained weights
+- `yolov5_train_n6_rtx.sh` with 'nano' yolov5n6.pt pretrained weights
+- `yolov5_train_s6_rtx.sh` with 'small' yolov5s6.pt pretrained weights
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov5_train_n6.sh
+sbatch ~/PAI/scripts/cluster/yolov5_train_n6_rtx.sh
 ```
 
 To see a job status: `squeue -u <user_name>`, or use the variable `<dollar sign>USER`.
@@ -388,7 +398,7 @@ The max memory per node is 16G per each of the 32 CPUs, so a total of 512 Gb/nod
 Might it be that having max of RAM/node is important for data caching?
 Note that `--mem-per-cpu=16G` didn't work with the curent SBATCH header structure.
 
-`#SBATCH --time=50:00:00`: Requested time, e.g. `50:00:00` = 50 hours. One needs to have an estimation of how much a cluster job can last. Better overestimate because the Slurm Workload Manager will automatically kill any job when it reaches its time limit.
+`#SBATCH --time=50:00:00`: Requested time in the format `d-hh:mm:ss`, e.g. `50:00:00` = 50 hours, `4-00:00:00` = 4 days. One needs to have an estimation of how much a cluster job can last. Better overestimate because the Slurm Workload Manager will automatically kill any job when it reaches its time limit.
 
 `#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the job-id.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error.
 
@@ -458,44 +468,36 @@ Download the YOLOv7 pre-trained weights on the COCO dataset:
 ```bash
 cd ~/PAI/detectors/yolov7
 mkdir weights_v0_1
-wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
-wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt \
+-P ~/PAI/detectors/yolov7/weights_v0_1/
 ```
 
 ### Job scripts
 
-A train job can be sent to the cluster using these scripts:
-
-- `yolov7_train_w6.sh` uses the yolov7-w6.pt pretrained weights
-- `yolov7_train_e6.sh` uses the yolov7-e6.pt pretrained weights
-
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov7_train_w6.sh
+sbatch ~/PAI/scripts/cluster/yolov7_train_rtx.sh
 ```
 
 
-## Scaled-YOLOv4
+## PyTorch_YOLOv4
 
-Download the Scaled-YOLOv4 pre-trained weights on the COCO dataset.
+Download the PyTorch_YOLOv4 pre-trained weights.
 
-Example for **YOLOv4-P6 1280; yolov4-p6.pt**:
+Example for **YOLOv4 pacsp-s 640; yolov4-csp-s-leaky.weights**:
 
-On your local computer, navigate in your browser to the Google drive link provided in the readme file of the ScaledYOLOv4 repository for YOLOv4-P6 1280: https://drive.google.com/file/d/1aB7May8oPYzBqbgwYSZHuATPXyxh9xnf/view
+On your local computer, navigate in your browser to the download link provided in the readme file of the PyTorch_YOLOv4 repository for [yolov4.weights](https://github.com/WongKinYiu/PyTorch_YOLOv4#pretrained-models--comparison): https://drive.google.com/file/d/1r1zeY8whdZNUGisxiZQFnbwYSIolCAwi/view
 
-Download the file and then can copy it to the cluster with `scp` (256 Mb). 
-On the cluster we created a directory `weights`.
+Download the file and then can copy it to the cluster with `scp` to `PyTorch_YOLOv4/weights`. 
+There is already a directory `weights`.
 ```bash
-# On a cluster terminal
-mkdir ~/PAI/detectors/ScaledYOLOv4/weights
-
 # On your local terminal, send the downloaded *.pt file to the folder created above:
-scp ~/Downloads/yolov4-p6.pt sv127qyji@login01.sc.uni-leipzig.de:~/PAI/detectors/ScaledYOLOv4/weights
+scp ~/Downloads/yolov4-csp-s-leaky.weights sv127qyji@login01.sc.uni-leipzig.de:~/PAI/detectors/PyTorch_YOLOv4/weights
 ```
 
 ### Job scripts
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov4_scaled_train_p6.sh
+sbatch ~/PAI/scripts/cluster/yolov4_train_pacsp_s_rtx.sh
 ```
