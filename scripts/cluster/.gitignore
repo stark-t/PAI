@@ -3,14 +3,15 @@
 nvidia_smi_check.sh
 SBATCH_and_train_options_as_comments.txt
 
-yolov4_scaled_train_p6_rtx.sh
-yolov4_scaled_train_p6_v100.sh
-yolov4_scaled_train_tiny_rtx.sh
+yolov4_scaled_train_p6_1280_rtx.sh
+yolov4_scaled_train_p6_1280_v100.sh
+yolov4_scaled_train_tiny_1280_rtx.sh
 
-yolov4_train_rtx.sh
-yolov4_train_v100.sh
+yolov4_train_640_rtx.sh
+yolov4_train_640_v100.sh
 
 yolov5_check_node.sh
 
-yolov7_train_w6_gpu_1.sh
-yolov7_train_w6_rtx.sh
+yolov7_train_w6_1280_gpu_1_rtx.sh
+yolov7_train_w6_1280_rtx.sh
+yolov7_train_w6_1280_v100.sh

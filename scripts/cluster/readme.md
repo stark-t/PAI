@@ -325,20 +325,24 @@ Download the YOLOv5 pre-trained weights on the COCO dataset:
 ```bash
 cd ~/PAI/detectors/yolov5
 mkdir weights_v6_1
+
+# for img size 640 x 640
+wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5n.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
+wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
+
+# for img size 1280 x 1280
 wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5n6.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
 wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s6.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
 ```
 
 ### Job scripts
 
-A train job can be sent to the cluster using these scripts:
-
-- `yolov5_train_n6_rtx.sh` with 'nano' yolov5n6.pt pretrained weights
-- `yolov5_train_s6_rtx.sh` with 'small' yolov5s6.pt pretrained weights
-
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov5_train_n6_rtx.sh
+sbatch ~/PAI/scripts/cluster/yolov5_train_n_640_rtx.sh   # uses 'nano' yolov5n.pt pretrained weights, img size 640
+sbatch ~/PAI/scripts/cluster/yolov5_train_s_640_rtx.sh   # uses 'small' yolov5s.pt pretrained weights, img size 640
+sbatch ~/PAI/scripts/cluster/yolov5_train_n6_1280_rtx.sh # uses 'nano' yolov5n6.pt pretrained weights, img size 1280
+sbatch ~/PAI/scripts/cluster/yolov5_train_s6_1280_rtx.sh # uses 'small' yolov5s6.pt pretrained weights, img size 1280
 ```
 
 To see a job status: `squeue -u <user_name>`, or use the variable `<dollar sign>USER`.
@@ -476,7 +480,7 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt \
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov7_train_rtx.sh
+sbatch ~/PAI/scripts/cluster/yolov7_train_640_rtx.sh # uses the yolov7.pt pretrained weights, img size 640
 ```
 
 
