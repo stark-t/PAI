@@ -30,7 +30,7 @@ python3 detect.py \
 --save-txt \
 --save-conf \
 --nosave \
---name infer_speed_syrphidae_220617_n6
+--name "$SLURM_JOB_ID"_infer_speed_syrphidae_220617_n6_img1280
 
 # Deactivate virtual environment
 deactivate

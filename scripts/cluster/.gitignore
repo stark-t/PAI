@@ -7,6 +7,8 @@ yolov4_scaled_train_p6_1280_rtx.sh
 yolov4_scaled_train_p6_1280_v100.sh
 yolov4_scaled_train_tiny_1280_rtx.sh
 
+yolov4_train_pacsp_s_640_rtx_debug.sh
+
 yolov4_train_640_rtx.sh
 yolov4_train_640_v100.sh
 

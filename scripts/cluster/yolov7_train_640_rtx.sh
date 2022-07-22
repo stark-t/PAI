@@ -45,7 +45,7 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --img-size 640 640 \
 --workers 3 \
 --nosave \
---name yolov7_img640_b8_e300_hyp_custom
+--name "$SLURM_JOB_ID"_yolov7_img640_b8_e300_hyp_custom
 
 
 # Deactivate virtual environment

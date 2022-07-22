@@ -503,5 +503,5 @@ scp ~/Downloads/yolov4-csp-s-leaky.weights sv127qyji@login01.sc.uni-leipzig.de:~
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov4_train_pacsp_s_rtx.sh
+sbatch ~/PAI/scripts/cluster/yolov4_train_pacsp_s_640_rtx.sh
 ```
