@@ -14,8 +14,8 @@
 # Delete any cache files in the train and val dataset folders that were created from previous jobs.
 # This is important when ussing different YOLO versions.
 # See https://github.com/WongKinYiu/yolov7/blob/main/README.md#training
-rm --force ~/datasets/P1_Data_sampled/train/*.cache
-rm --force ~/datasets/P1_Data_sampled/val/*.cache
+rm --force ~/datasets/P1_Data_sampled/train/*.cache3
+rm --force ~/datasets/P1_Data_sampled/val/*.cache3
 
 
 # Start with a clean environment

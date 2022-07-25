@@ -40,11 +40,11 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --weights ~/PAI/detectors/yolov7/weights_v0_1/yolov7.pt \
 --data ~/PAI/scripts/config_yolov5.yaml \
 --hyp ~/PAI/scripts/yolo_custom_hyp.yaml \
---epochs 300 \
+--epochs 1000 \
 --batch-size 64 \
 --img-size 640 640 \
 --workers 3 \
---name "$SLURM_JOB_ID"_yolov7_img640_b8_e300_hyp_custom
+--name "$SLURM_JOB_ID"_yolov7_img640_b8_e1000_hyp_custom
 
 
 # Deactivate virtual environment
