@@ -20,7 +20,8 @@ image_size: 1280
 
 # Classes
 nc: 8  # number of classes
-names: [ 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ]  # class names. Must be title case and the order must respect the order in P1_Data img_* folders.
+names: [ 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ] 
+# class names. Must be title case and the order must respect the order in P1_Data img_* folders.
 
 # Verbose
 # select print info 0=quiet, 1=cruicial, 2=all data info, 3=including plots

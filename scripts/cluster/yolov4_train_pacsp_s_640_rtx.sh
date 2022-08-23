@@ -45,7 +45,6 @@ python -m torch.distributed.launch --nproc_per_node 8 train.py \
 --batch-size 64 \
 --img-size 640 640 \
 --workers 3 \
---nosave \
 --name "$SLURM_JOB_ID"_yolov4_pacsp_s_img640_b8_e300_hyp_custom
 
 
