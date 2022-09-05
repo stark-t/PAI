@@ -63,3 +63,7 @@ deactivate
 
 # Run in terminal with:
 # sbatch ~/PAI/scripts/cluster/yolov4_detect_pacsp_s_640_rtx.sh
+
+# To transfer only txt files and ignore the jpg files:
+# rsync -a -e ssh --exclude='*.jpg' path/to/cluster/folder path/to/local/pc/folder
+# see https://www.cyberciti.biz/faq/scp-exclude-files-when-using-command-recursively-on-unix-linux/
