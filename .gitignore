@@ -26,9 +26,10 @@
 storage.googleapis.com
 runs/*
 data/*
-!data/hyps/*
+!data/hyps/*		
 !data/images/zidane.jpg
 !data/images/bus.jpg
+
 !data/*.sh
 detectors/*
 !detectors/__init__.py
@@ -38,6 +39,7 @@ scripts/*.sh
 
 scripts/*.yaml
 !scripts/config_example.yaml
+!scripts/yolo_custom_hyp.yaml
 
 results*.csv
 
