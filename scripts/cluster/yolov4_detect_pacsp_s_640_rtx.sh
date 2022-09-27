@@ -38,7 +38,7 @@ do
         # See https://github.com/WongKinYiu/PyTorch_YOLOv4/blob/master/detect.py
         python detect.py \
         --weights ~/PAI/detectors/PyTorch_YOLOv4/runs/train/yolov4_pacsp_s_b8_e300_img640_hyp_custom/weights/best.pt \
-        --source /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data_sampled/test/images \
+        --source ~/datasets/P1_Data_sampled/test/images \
         --img-size 640 \
         --conf-thres "$conf" \
         --iou-thres "$iou" \

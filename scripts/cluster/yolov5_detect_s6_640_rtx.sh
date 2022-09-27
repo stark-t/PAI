@@ -36,7 +36,7 @@ do
         # See https://github.com/ultralytics/yolov5/blob/master/detect.py
         python detect.py \
         --weights ~/PAI/detectors/yolov5/runs/train/3219884_yolov5_s_img640_b8_e300_hyp_custom/weights/best.pt \
-        --source /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data_sampled/test/images \
+        --source ~/datasets/P1_Data_sampled/test/images \
         --img-size 640 \
         --conf-thres "$conf" \
         --iou-thres "$iou" \
