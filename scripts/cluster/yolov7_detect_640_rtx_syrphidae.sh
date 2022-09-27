@@ -36,7 +36,7 @@ do
         # See https://github.com/WongKinYiu/yolov7/blob/main/detect.py
         python detect.py \
         --weights ~/PAI/detectors/yolov7/runs/train/3219805_yolov7_img640_b8_e300_hyp_custom/weights/best.pt \
-        --source ~/datasets/img_syrphidae_sample_2022_06_17 \
+        --source ~/datasets/img_syrphidae_sample_2022_06_17_annotated \
         --img-size 640 \
         --conf-thres "$conf" \
         --iou-thres "$iou" \
