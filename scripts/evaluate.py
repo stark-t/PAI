@@ -13,10 +13,54 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import tqdm
 from sklearn.metrics import accuracy_score
+from numpy import unravel_index
+import math
+from shutil import copyfile
 
 # import scripts
-from detectors.yolov5.utils.metrics import bbox_iou
+# from detectors.yolov5.utils.metrics import bbox_iou
 from scripts.utils_confusionmatrix import cm_analysis
+
+
+def bbox_iou(box1, box2, xywh=True, GIoU=False, DIoU=False, CIoU=False, eps=1e-7):
+    # Returns Intersection over Union (IoU) of box1(1,4) to box2(n,4)
+
+    # Get the coordinates of bounding boxes
+    if xywh:  # transform from xywh to xyxy
+        (x1, y1, w1, h1), (x2, y2, w2, h2) = box1.chunk(4, 1), box2.chunk(4, 1)
+        w1_, h1_, w2_, h2_ = w1 / 2, h1 / 2, w2 / 2, h2 / 2
+        b1_x1, b1_x2, b1_y1, b1_y2 = x1 - w1_, x1 + w1_, y1 - h1_, y1 + h1_
+        b2_x1, b2_x2, b2_y1, b2_y2 = x2 - w2_, x2 + w2_, y2 - h2_, y2 + h2_
+    else:  # x1, y1, x2, y2 = box1
+        b1_x1, b1_y1, b1_x2, b1_y2 = box1.chunk(4, 1)
+        b2_x1, b2_y1, b2_x2, b2_y2 = box2.chunk(4, 1)
+        w1, h1 = b1_x2 - b1_x1, b1_y2 - b1_y1
+        w2, h2 = b2_x2 - b2_x1, b2_y2 - b2_y1
+
+    # Intersection area
+    inter = (torch.min(b1_x2, b2_x2) - torch.max(b1_x1, b2_x1)).clamp(0) * \
+            (torch.min(b1_y2, b2_y2) - torch.max(b1_y1, b2_y1)).clamp(0)
+
+    # Union Area
+    union = w1 * h1 + w2 * h2 - inter + eps
+
+    # IoU
+    iou = inter / union
+    if CIoU or DIoU or GIoU:
+        cw = torch.max(b1_x2, b2_x2) - torch.min(b1_x1, b2_x1)  # convex (smallest enclosing box) width
+        ch = torch.max(b1_y2, b2_y2) - torch.min(b1_y1, b2_y1)  # convex height
+        if CIoU or DIoU:  # Distance or Complete IoU https://arxiv.org/abs/1911.08287v1
+            c2 = cw ** 2 + ch ** 2 + eps  # convex diagonal squared
+            rho2 = ((b2_x1 + b2_x2 - b1_x1 - b1_x2) ** 2 + (b2_y1 + b2_y2 - b1_y1 - b1_y2) ** 2) / 4  # center dist ** 2
+            if CIoU:  # https://github.com/Zzh-tju/DIoU-SSD-pytorch/blob/master/utils/box/box_utils.py#L47
+                v = (4 / math.pi ** 2) * torch.pow(torch.atan(w2 / (h2 + eps)) - torch.atan(w1 / (h1 + eps)), 2)
+                with torch.no_grad():
+                    alpha = v / (v - iou + (1 + eps))
+                return iou - (rho2 / c2 + v * alpha)  # CIoU
+            return iou - rho2 / c2  # DIoU
+        c_area = cw * ch + eps  # convex area
+        return iou - (c_area - union) / c_area  # GIoU https://arxiv.org/pdf/1902.09630.pdf
+    return iou  # IoU
 
 def percentile(n):
     def percentile_(x):
@@ -78,7 +122,7 @@ def calculate_ious(series):
     indicies_iou_sort_list = list(reversed(indicies_iou_sort_list))
     # 4th get the first n results from label prediction pair
     # n = sqrt(length of all possible label prediction pairs)
-    # e.g 2 labels 2 predction = 4 iou pairs --> n = sqrt(4) = 2 ious
+    # e.g 2 labels 2 prediction = 4 iou pairs --> n = sqrt(4) = 2 ious
     indicies_iou = indicies_iou_sort_list[0:int(np.sqrt(len(df)))]
     # get the actual iou pair by their indicies
     df_iou_pairs = df.iloc[indicies_iou, :]
@@ -228,17 +272,45 @@ def run_evaluate(data_path='1', plot_cm=False):
     # False positive rate
     FPR = np.divide(FP, (FP + TN + 1e-5))
 
-    print('Accuracy: {:.4f}'.format(accuracy_score(y_true_list, y_pred_list)))
-    print('IoU: {:.4f}'.format(df_ious['iou'].mean()))
-    print('FPR: {:.4f}'.format(np.mean(FPR)))
+    # Precision
+    P = np.divide(TP, (TP + FP + 1e-5))
 
-    # return df_ious['iou'].mean()
-    return accuracy_score(y_true_list, y_pred_list), df_ious['iou'].mean(), np.mean(FPR)
+    # Recall
+    R = np.divide(TP, (TP + FN + 1e-5))
+
+    print('Accuracy: {:.4f}'.format(accuracy_score(y_true_list, y_pred_list)))
+    print('FPR: {:.4f}'.format(np.mean(FPR)))
+    print('Precision: {:.4f}'.format(np.mean(P)))
+    print('Recall: {:.4f}'.format(np.mean(R)))
+
+    matching_ids = []
+    for i in range(len(y_true_list)):
+        if y_true_list[i] == y_pred_list[i]:
+            matching_ids.append(i)
+
+    df_ious_matching_classes = df_ious.iloc[matching_ids]
+    iou_match = df_ious_matching_classes['iou'].mean()
+    print('IoU: {:.4f}'.format(iou_match))
+
+    filename_metrics = filename_tex.replace('confusion_matrix_tex', 'metrics')
+    with open(filename_metrics, 'w') as f:
+        f.write('OA: {:6.4f}, FPR: {:6.4f}, Precision: {:6.4f}, Recall: {:6.4f}, IoU: {:6.4f}, matchIoU: {:6.4f}'.
+                format(
+            accuracy_score(y_true_list, y_pred_list),
+            np.mean(FPR),
+            np.mean(P),
+            np.mean(R),
+            df_ious['iou'].mean(),
+            df_ious_matching_classes['iou'].mean()
+        ))
+
+    return accuracy_score(y_true_list, y_pred_list), iou_match, np.mean(FPR)
 
 if __name__ == '__main__':
     # select path to results
     # list all file in path directory
-    all_results = glob.glob(r'F:\202105_PAI\data\P1_results\yolov7_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1\*')
+    source_path = r'F:\202105_PAI\data\P1_results\yolov7_img640_b8_e300_hyp_custom'
+    all_results = glob.glob(source_path + '\*')
     # select yolo-version for naming and searching for labels since process for v4 is different than v5 and v7
     yoloversion = 'yolov7'
     # only select path if it is a folder
@@ -269,6 +341,18 @@ if __name__ == '__main__':
     # hardcode labels for thresholds
     metric_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     conf_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
+    max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
+
+    print('Highest OA at confidence {:.1f} and iou {:.1f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]]))
+    src_file = source_path + r'\results_at_conf_' + \
+            str(conf_threshold[max_oa[0]]) + '_iou_' + \
+            str(conf_threshold[max_oa[1]]) + '\metrics.txt'
+
+    dst_file = source_path + r'\best_metricsat_conf_' + \
+            str(conf_threshold[max_oa[0]]) + '_iou_' + \
+            str(conf_threshold[max_oa[1]]) + '.txt'
+    copyfile(src_file, dst_file)
 
     # create heatmaps for all accuracy metrics
     cm = pd.DataFrame(iou_array, index=conf_threshold, columns=metric_threshold)
