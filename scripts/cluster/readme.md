@@ -5,6 +5,10 @@ This readme file walks you through setting the environments for running the trai
 Computations were done using resources of the Leipzig University Computing Centre. 
 The setting of the environments below are valid only for the resources made available to us.
 
+A major update of the cluster also took place while we were working on our project (Oct 2022). 
+I had to reinstall the environments, but to the best of my knowledge this does not affect the results.
+Other factors, like issues related to the random seed when using multiple GPUs, will impact much more the reproducibility than cluster updates.
+
 # Clone PAI repository
 
 Clone our PAI repository in the home directory of the landing node:
@@ -345,7 +349,7 @@ sbatch ~/PAI/scripts/cluster/yolov5_train_n6_1280_rtx.sh # uses 'nano' yolov5n6.
 sbatch ~/PAI/scripts/cluster/yolov5_train_s6_1280_rtx.sh # uses 'small' yolov5s6.pt pretrained weights, img size 1280
 ```
 
-To see a job status: `squeue -u <user_name>`, or use the variable `<dollar sign>USER`.
+To see a job status: `squeue -u <user_name>`, or use the variable `squeue -u <dollar sign>USER`.
 
 [comment]: # (I tried to use &#36; instead of dollar sign in the line example above because of this https://stackoverflow.com/a/71177841/5193830 but it didn't work)
 [comment]: # (For a markdown comment I followed this https://stackoverflow.com/a/32190021/5193830)
@@ -371,12 +375,12 @@ This is an example of an SBATCH header:
 ```bash
 #!/bin/bash
 #SBATCH --job-name=train_yolov5
-#SBATCH --partition=clara-job
+#SBATCH --partition=clara
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=32
 #SBATCH --gres=gpu:rtx2080ti:8
 #SBATCH --mem-per-gpu=11G
-#SBATCH --time=50:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log
 #SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END
@@ -386,7 +390,7 @@ This is an example of an SBATCH header:
 
 `#SBATCH --job-name=train_yolov5`: Give a custom name for the job, like `train_yolov5`, that will be carried by the Slurm Workload Manager.
 
-`#SBATCH --partition=clara-job`: Request for the Clara cluster.
+`#SBATCH --partition=clara`: Request a certain partition. For late 2022, see https://www.sc.uni-leipzig.de/user-doc/tutorials/slurm/#partitions-after-2022-fall-maintenance Note that, I do not have permission for `clara-prio`.
 
 `#SBATCH --nodes=1`: Number of requested nodes.
 
@@ -439,7 +443,7 @@ wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5x6.pt -P
 ```
 You can check for the releases here: https://github.com/ultralytics/yolov5/releases Pick the needed version id and then use that in the `/download/v6.1` part of the download link in `wget`.
 
-`--cfg:`, eg `--cfg yolov5m6.yaml` is the model configuration yaml file. It needs to match the `--weights` argument, so if you use an m6 model, make sure is m6 in both arguments. This might be needed only if you train from scratch and not using pre-trained COCO weights. See Start from Scratch section at https://github.com/ultralytics/yolov5/wiki/Tips-for-Best-Training-Results
+`--cfg:`, eg `--cfg yolov5m6.yaml` is the model configuration yaml file which defines the model architecture. It needs to match the `--weights` argument, so if you use an m6 model, make sure a corresponding *m6 *.yaml and *.pt file are used in `--cfg:` and `--weights`, respectively.
 
 `--data`: path to yaml file that contains the data paths
 
@@ -472,15 +476,14 @@ Download the YOLOv7 pre-trained weights on the COCO dataset:
 ```bash
 cd ~/PAI/detectors/yolov7
 mkdir weights_v0_1
-wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt \
--P ~/PAI/detectors/yolov7/weights_v0_1/
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
 ```
 
 ### Job scripts
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
-sbatch ~/PAI/scripts/cluster/yolov7_train_640_rtx.sh # uses the yolov7.pt pretrained weights, img size 640
+sbatch ~/PAI/scripts/cluster/yolov7_train_tiny_640_rtx.sh # uses the yolov7-tiny.pt pretrained weights, img size 640 x 640
 ```
 
 
