@@ -1,5 +1,6 @@
 # import packages
 import os
+from os.path import exists as file_exists
 import glob
 import shutil
 
@@ -68,7 +69,7 @@ def percentile(n):
     percentile_.__name__ = 'percentile_%s' % n
     return percentile_
 
-def calculate_ious(series):
+def calculate_ious(series, valid_labels=1):
     # claculate iou, class doenst factor in!
     # input: pair label(s) and prediction(s) from one image/label file
     ious = []
@@ -77,6 +78,8 @@ def calculate_ious(series):
     for i in range(len(series['bbox_label'])):
         # 2nd go through each prediction
         for j in range(len(series['bbox_pred'])):
+            if series['class_label'][i] < 0:
+                d=1
             # convert label bbox from numpy to pytoch tensor
             bbox_label = np.array(series['bbox_label'][i]).squeeze()
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -127,6 +130,15 @@ def calculate_ious(series):
     # get the actual iou pair by their indicies
     df_iou_pairs = df.iloc[indicies_iou, :]
 
+    # change dataframe items to get true class labels corresponding to wrong predictions
+    # set iou and class_pred to -1 if valid_predictions dont fit
+    df_iou_pairs.reset_index(drop=True, inplace=True)
+    for index, row in df_iou_pairs.iterrows():
+        if index > valid_labels -1:
+            df_iou_pairs.at[index, 'class_pred'] = -1.0
+            df_iou_pairs.at[index, 'class_label'] = -1.0
+            df_iou_pairs.at[index, 'iou'] = np.NaN
+
     return df_iou_pairs
 
 def get_file_info(path_list):
@@ -135,28 +147,31 @@ def get_file_info(path_list):
     # function returns a list of dictionaries
     records = []
     for file in path_list:
+        # print(file)
         class_ids = []
         bboxes = []
         file_ids = []
         file_id = file.split(os.sep)[-1]
         file_id = file_id.split('.txt')[0]
-        with open(file) as lf:
-            label_lines_str = lf.readlines()
-            for i, info in enumerate(label_lines_str):
-                file_ids.append(file_id)
-                label_info_str = label_lines_str[i].split(" ")[:5]
-                label_floats = [float(f) for f in label_info_str]
-                class_id = label_floats[0]
-                class_ids.append(class_id)
-                bbox = label_floats[1:]
-                bboxes.append(bbox)
-            record = {
-                'ID': file_ids[0],
-                'file': file,
-                'class': class_ids,
-                'bbox': bboxes,
-            }
-            records.append(record)
+        if file_exists(file) and not 'confusion_matrix_tex' in file and not 'metrics' in file:
+            # print(file)
+            with open(file) as lf:
+                label_lines_str = lf.readlines()
+                for i, info in enumerate(label_lines_str):
+                    file_ids.append(file_id)
+                    label_info_str = label_lines_str[i].split(" ")[:5]
+                    label_floats = [float(f) for f in label_info_str]
+                    class_id = label_floats[0]
+                    class_ids.append(class_id)
+                    bbox = label_floats[1:]
+                    bboxes.append(bbox)
+                record = {
+                    'ID': file_ids[0],
+                    'file': file,
+                    'class': class_ids,
+                    'bbox': bboxes,
+                }
+                records.append(record)
     return records
 
 def run_evaluate(data_path='1', plot_cm=False):
@@ -167,7 +182,7 @@ def run_evaluate(data_path='1', plot_cm=False):
     """
 
     # get all prediction files in data_path
-    predictions_list = glob.glob(data_path + os.sep + '*')
+    predictions_list = glob.glob(data_path + os.sep + '*.txt')
     # if there are any predictions in the threshold folder or not
     if len(predictions_list) > 0:
         # run get_file_info function if there are predictions and read prediction files to create a dataframe
@@ -227,7 +242,12 @@ def run_evaluate(data_path='1', plot_cm=False):
     records = []
     # loop through each prediction and label pair to calculate iou
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        df_iou_combination = calculate_ious(row)
+        if index == 8:
+            d=1
+        # get number of true labels
+        n_valid_labels = [f for f in row['class_label'] if f >= 0]
+        n_valid_labels = len(n_valid_labels)
+        df_iou_combination = calculate_ious(row, valid_labels=n_valid_labels)
         # for each returned iou(s) add single iou to a list
         for _, record in df_iou_combination.iterrows():
             records.append(record.to_dict())
@@ -261,8 +281,13 @@ def run_evaluate(data_path='1', plot_cm=False):
 
     FP = cm.sum(axis=0) - np.diag(cm)
     FN = cm.sum(axis=1) - np.diag(cm)
-    TP = np.diag(cm)
-    TN = cm.sum() - (FP + FN + TP)
+    TP_ = np.diag(cm)
+    TN = cm.sum() - (FP + FN + TP_)
+
+    # fix false and true positives for background
+    FP[0] = FP[0] + TP_[0]
+    TP = np.copy(TP_)
+    TP[0] = 0.
 
     FP = FP.astype(float)
     FN = FN.astype(float)
@@ -309,15 +334,22 @@ def run_evaluate(data_path='1', plot_cm=False):
 if __name__ == '__main__':
     # select path to results
     # list all file in path directory
-    source_path = r'F:\202105_PAI\data\P1_results\yolov7_img640_b8_e300_hyp_custom'
+    source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.9'
     all_results = glob.glob(source_path + '\*')
     # select yolo-version for naming and searching for labels since process for v4 is different than v5 and v7
-    yoloversion = 'yolov7'
-    # only select path if it is a folder
-    yolo_results = [f for f in all_results if os.path.isdir(f)]
-    # get parent directory if only one threshold combination is selected
-    if len(yolo_results) == 1:
-        yolo_results = [(os.path.dirname(yolo_results[0]))]
+    yoloversion = 'yolov5n'
+
+    if 'results_at' in source_path:
+        # only select path if it is a folder
+        yolo_results = [f for f in all_results if os.path.isdir(f)]
+        yolo_results = yolo_results[0].split(os.sep)
+        yolo_results = os.path.join(*yolo_results[:-1])
+        yolo_results = [yolo_results]
+    else:
+        yolo_results = [f for f in all_results if os.path.isdir(f)]
+
     # create empty lists for accuarcy metrics
     mean_iou_list = []
     mean_oa_list = []
@@ -333,63 +365,64 @@ if __name__ == '__main__':
         mean_oa_list.append(mean_oa)
         FPR_list.append(FPR)
 
-    # Turn list of all 81 (9*9) results into 9*9 array
-    iou_array = np.reshape(np.array(mean_iou_list), (-1, 9))
-    oa_array = np.reshape(np.array(mean_oa_list), (-1, 9))
-    FPR_array = np.reshape(np.array(FPR_list), (-1, 9))
+    if len(mean_oa_list) > 1:
+        # Turn list of all 81 (9*9) results into 9*9 array
+        iou_array = np.reshape(np.array(mean_iou_list), (-1, 9))
+        oa_array = np.reshape(np.array(mean_oa_list), (-1, 9))
+        FPR_array = np.reshape(np.array(FPR_list), (-1, 9))
 
-    # hardcode labels for thresholds
-    metric_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    conf_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        # hardcode labels for thresholds
+        metric_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        conf_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
-    max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
+        max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
 
-    print('Highest OA at confidence {:.1f} and iou {:.1f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]]))
-    src_file = source_path + r'\results_at_conf_' + \
-            str(conf_threshold[max_oa[0]]) + '_iou_' + \
-            str(conf_threshold[max_oa[1]]) + '\metrics.txt'
+        print('Highest OA at confidence {:.1f} and iou {:.1f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]]))
+        src_file = source_path + r'\results_at_conf_' + \
+                str(conf_threshold[max_oa[0]]) + '_iou_' + \
+                str(conf_threshold[max_oa[1]]) + '\metrics.txt'
 
-    dst_file = source_path + r'\best_metricsat_conf_' + \
-            str(conf_threshold[max_oa[0]]) + '_iou_' + \
-            str(conf_threshold[max_oa[1]]) + '.txt'
-    copyfile(src_file, dst_file)
+        dst_file = source_path + r'\best_metricsat_conf_' + \
+                str(conf_threshold[max_oa[0]]) + '_iou_' + \
+                str(conf_threshold[max_oa[1]]) + '.txt'
+        copyfile(src_file, dst_file)
 
-    # create heatmaps for all accuracy metrics
-    cm = pd.DataFrame(iou_array, index=conf_threshold, columns=metric_threshold)
-    fig, ax = plt.subplots(figsize=(8,8))
-    sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
-    ax.set_xlabel('\nIoU Threshold')
-    ax.set_ylabel('Confidence Threshold\n')
-    ax.figure.tight_layout()
-    ax.figure.subplots_adjust(bottom=0.2)
-    ax.invert_yaxis()
-    plt.title('IoU')
-    plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_iou.png')
-    plt.show()
+        # create heatmaps for all accuracy metrics
+        cm = pd.DataFrame(iou_array, index=conf_threshold, columns=metric_threshold)
+        fig, ax = plt.subplots(figsize=(8,8))
+        sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
+        ax.set_xlabel('\nIoU Threshold')
+        ax.set_ylabel('Confidence Threshold\n')
+        ax.figure.tight_layout()
+        ax.figure.subplots_adjust(bottom=0.2)
+        ax.invert_yaxis()
+        plt.title('IoU')
+        plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_iou.png')
+        plt.show()
 
-    cm = pd.DataFrame(oa_array, index=conf_threshold, columns=metric_threshold)
-    fig, ax = plt.subplots(figsize=(8,8))
-    sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
-    ax.set_xlabel('\nIoU Threshold')
-    ax.set_ylabel('Confidence Threshold\n')
-    ax.figure.tight_layout()
-    ax.figure.subplots_adjust(bottom=0.2)
-    ax.invert_yaxis()
-    plt.title('Overall Accuracy')
-    plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_oa.png')
-    plt.show()
+        cm = pd.DataFrame(oa_array, index=conf_threshold, columns=metric_threshold)
+        fig, ax = plt.subplots(figsize=(8,8))
+        sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
+        ax.set_xlabel('\nIoU Threshold')
+        ax.set_ylabel('Confidence Threshold\n')
+        ax.figure.tight_layout()
+        ax.figure.subplots_adjust(bottom=0.2)
+        ax.invert_yaxis()
+        plt.title('Overall Accuracy')
+        plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_oa.png')
+        plt.show()
 
-    cm = pd.DataFrame(FPR_array, index=conf_threshold, columns=metric_threshold)
-    fig, ax = plt.subplots(figsize=(8,8))
-    sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
-    ax.set_xlabel('\nIoU Threshold')
-    ax.set_ylabel('Confidence Threshold\n')
-    ax.figure.tight_layout()
-    ax.figure.subplots_adjust(bottom=0.2)
-    ax.invert_yaxis()
-    plt.title('False Positive Rate')
-    plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_FPR.png')
-    plt.show()
+        cm = pd.DataFrame(FPR_array, index=conf_threshold, columns=metric_threshold)
+        fig, ax = plt.subplots(figsize=(8,8))
+        sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
+        ax.set_xlabel('\nIoU Threshold')
+        ax.set_ylabel('Confidence Threshold\n')
+        ax.figure.tight_layout()
+        ax.figure.subplots_adjust(bottom=0.2)
+        ax.invert_yaxis()
+        plt.title('False Positive Rate')
+        plt.savefig(r'F:\202105_PAI\data\P1_results\thresholds_' + yoloversion + '_FPR.png')
+        plt.show()
 
 
     print('finished')
