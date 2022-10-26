@@ -109,6 +109,7 @@ def calculate_ious(series, valid_labels=1):
                 'class_label': series.class_label[i],
                 'bbox_label': series.bbox_label[i],
                 'iou': iou,
+                'n_BB_labels': series.n_BB_labels,
             }
             records.append(record)
 
@@ -138,6 +139,7 @@ def calculate_ious(series, valid_labels=1):
             df_iou_pairs.at[index, 'class_pred'] = -1.0
             df_iou_pairs.at[index, 'class_label'] = -1.0
             df_iou_pairs.at[index, 'iou'] = np.NaN
+            df_iou_pairs.at[index, 'n_BB_labels'] = np.NaN
 
     return df_iou_pairs
 
@@ -193,13 +195,24 @@ def run_evaluate(data_path='1', plot_cm=False):
         df_predictions = pd.DataFrame(columns=['ID', 'file', 'class', 'bbox'])
 
     # get all label files from a fixed path and create label dataframe
-    labels_list = glob.glob(r'F:\202105_PAI\data\P1_Data_sampled\test_valentin\labels' + os.sep + '*')
-    records = get_file_info(labels_list)
-    df_labels = pd.DataFrame(records)
-
+    if not 'syrphidae' in data_path:
+        labels_list = glob.glob(r'F:\202105_PAI\data\P1_Data_sampled\test_valentin\labels' + os.sep + '*')
+        records = get_file_info(labels_list)
+        df_labels = pd.DataFrame(records)
+    else:
+        df_labels = df_predictions.copy()
+        for index, row in df_labels.iterrows():
+            df_labels.at[index, 'class_pred'] = [-1.0]
+            df_labels.at[index, 'bbox_pred'] = [[.0, .0, .0, .0]]
+            df_labels.at[index, 'class_label'] = [-1.0]
+            df_labels.at[index, 'bbox_label'] = [[.0, .0, .0, .0]]
     # merge label and prediction dataframe
     # merge on ID (file name) if there is no matching label/prediction a nan row will be added
     df = pd.merge(df_predictions, df_labels, on='ID', how="outer", suffixes=('_pred', '_label'))
+
+    # for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
+    #     if len(row['class_label']) > 1:
+    #         print(index)
 
     # replace nan in dataframe for labels or predictions with dummy values so ious can be calculated
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
@@ -209,6 +222,16 @@ def run_evaluate(data_path='1', plot_cm=False):
         if not isinstance(row['class_label'], list):
             df.at[index, 'class_label'] = [-1.0]
             df.at[index, 'bbox_label'] = [[.0, .0, .0, .0]]
+
+    # add number of lable bounding boxes into new column
+    for index, row in df.iterrows():
+        n_BB_labels = len(row['class_label'])
+        if n_BB_labels == 1:
+            class_n_BB_labels = 1
+        else:
+            class_n_BB_labels = 2
+
+        df.at[index, 'n_BB_labels'] = class_n_BB_labels
 
     # loop through each label and prediction pair
     # if there is a missmatch of numbers ad a dummy value so iou can be calculated
@@ -242,7 +265,7 @@ def run_evaluate(data_path='1', plot_cm=False):
     records = []
     # loop through each prediction and label pair to calculate iou
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        if index == 8:
+        if index == 65:
             d=1
         # get number of true labels
         n_valid_labels = [f for f in row['class_label'] if f >= 0]
@@ -252,26 +275,41 @@ def run_evaluate(data_path='1', plot_cm=False):
         for _, record in df_iou_combination.iterrows():
             records.append(record.to_dict())
 
-    # for each single iou
+    # calculate IoU percentiles
     df_ious = pd.DataFrame(records)
     df_ious_groupPercentile = df_ious.groupby('class_label')['iou'].agg([percentile(1), percentile(25), percentile(50),
                                                                          percentile(75), percentile(99)])
     # print(df_ious_groupPercentile)
 
 
+
+    # OA_single = accuracy_score(df_singels['class_label'].to_list(), df_singels['class_pred'].to_list())
+    # OA_multiple = accuracy_score(df_mutliples['class_label'].to_list(), df_mutliples['class_pred'].to_list())
+
+    # create a list for labels and predictions, ranging from 0 to n_classes
     y_true_list = list(df_ious['class_label'])
     y_true_list = [int(f) + 1 if f >= 0 else 0 for f in y_true_list]
-    y_pred_list = list(df_ious['class_pred'])
-    y_pred_list = [int(f) + 1 if f >= 0 else 0 for f in y_pred_list]
 
-    labels = ['Background', 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera',
+    y_pred_list = list(df_ious['class_pred'])
+    # y_pred_list = [int(f) + 1 if f >= 0 else 0 for f in y_pred_list]
+    y_pred_list = [int(f) + 1 if f >= 0 else int(f) for f in y_pred_list]
+
+
+    y_true_list[0] = -1
+    y_pred_list[0] = 0
+    y_pred_unique = np.unique(y_pred_list, return_counts=True)
+    y_true_unique = np.unique(y_true_list, return_counts=True)
+
+    labels = ['Background_FP', 'Background', 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera',
               'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
 
+    # create path to save metrics, confusion matrix, etc
     results_path = data_path.split(os.sep)
     results_path = os.path.join(*results_path[:-1])
     filename = os.path.join(results_path, 'confusion_matrix.png')
     filename_tex = os.path.join(results_path, 'confusion_matrix_tex.txt')
     df_ious_groupPercentile.to_csv(os.path.join(results_path, 'class_ious_percentiles.csv'))
+
     if plot_cm:
         cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
                          filename=filename, filename_tex=filename_tex, plot='plot')
@@ -279,15 +317,19 @@ def run_evaluate(data_path='1', plot_cm=False):
         cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
                          filename=filename, filename_tex=filename_tex, plot=None)
 
+    # from confusion matrix create metrics
     FP = cm.sum(axis=0) - np.diag(cm)
     FN = cm.sum(axis=1) - np.diag(cm)
-    TP_ = np.diag(cm)
-    TN = cm.sum() - (FP + FN + TP_)
+    TP = np.diag(cm)
+    TN = cm.sum() - (FP + FN + TP)
+    # TP_ = np.diag(cm)
+    # TN = cm.sum() - (FP + FN + TP_)
 
     # fix false and true positives for background
-    FP[0] = FP[0] + TP_[0]
-    TP = np.copy(TP_)
-    TP[0] = 0.
+    # we need to do this because there are generally no images with zero bounding boxes from the labels
+    # FP[0] = FP[0] + TP_[0]
+    # TP = np.copy(TP_)
+    # TP[0] = 0.
 
     FP = FP.astype(float)
     FN = FN.astype(float)
@@ -303,11 +345,6 @@ def run_evaluate(data_path='1', plot_cm=False):
     # Recall
     R = np.divide(TP, (TP + FN + 1e-5))
 
-    print('Accuracy: {:.4f}'.format(accuracy_score(y_true_list, y_pred_list)))
-    print('FPR: {:.4f}'.format(np.mean(FPR)))
-    print('Precision: {:.4f}'.format(np.mean(P)))
-    print('Recall: {:.4f}'.format(np.mean(R)))
-
     matching_ids = []
     for i in range(len(y_true_list)):
         if y_true_list[i] == y_pred_list[i]:
@@ -317,26 +354,50 @@ def run_evaluate(data_path='1', plot_cm=False):
     iou_match = df_ious_matching_classes['iou'].mean()
     print('IoU: {:.4f}'.format(iou_match))
 
+    # group df by single and multiple bounding boxes
+    df_ious_nBBs = df_ious_matching_classes.groupby('n_BB_labels')['iou'].mean()
+    IoU_single = df_ious_nBBs.iloc[0]
+    IoU_multiples = df_ious_nBBs.iloc[1]
+    # print(df_ious_nBBs)
+    df_singels = df_ious_matching_classes.loc[df_ious_matching_classes['n_BB_labels'] == 1]
+    df_mutliples = df_ious_matching_classes.loc[df_ious_matching_classes['n_BB_labels'] == 2]
+
+    n_singels = df_singels.shape[0]
+    n_mutliples = df_mutliples.shape[0]
+
+
     filename_metrics = filename_tex.replace('confusion_matrix_tex', 'metrics')
     with open(filename_metrics, 'w') as f:
-        f.write('OA: {:6.4f}, FPR: {:6.4f}, Precision: {:6.4f}, Recall: {:6.4f}, IoU: {:6.4f}, matchIoU: {:6.4f}'.
+        f.write('OA: {:6.4f}, FPR: {:6.4f}, Precision: {:6.4f}, Recall: {:6.4f}, IoU: {:6.4f}, matchIoU: {:6.4f}, singelIoU: {:6.4f}, multipleIoU: {:6.4f}'.
                 format(
             accuracy_score(y_true_list, y_pred_list),
             np.mean(FPR),
             np.mean(P),
             np.mean(R),
             df_ious['iou'].mean(),
-            df_ious_matching_classes['iou'].mean()
+            df_ious_matching_classes['iou'].mean(),
+            IoU_single,
+            IoU_multiples,
         ))
 
-    return accuracy_score(y_true_list, y_pred_list), iou_match, np.mean(FPR)
+    # Print metrics
+    print('Accuracy: {:.4f}'.format(accuracy_score(y_true_list, y_pred_list)))
+    print('FPR: {:.4f}'.format(np.mean(FPR)))
+    print('Precision: {:.4f}'.format(np.mean(P)))
+    print('Recall: {:.4f}'.format(np.mean(R)))
+    print('{} images with one bounding box: {:.4f}'.format(n_singels, IoU_single))
+    print('{} images with multiple bounding box: {:.4f}'.format(n_mutliples, IoU_multiples))
+    print('Number of false positives: {:.0f}'.format(FP[0]))
+
+    return accuracy_score(y_true_list, y_pred_list), iou_match, np.mean(FPR), np.mean(P), np.mean(R), FP[0]
 
 if __name__ == '__main__':
     # select path to results
     # list all file in path directory
-    source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.9'
+    source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom'
     all_results = glob.glob(source_path + '\*')
     # select yolo-version for naming and searching for labels since process for v4 is different than v5 and v7
     yoloversion = 'yolov5n'
@@ -354,30 +415,54 @@ if __name__ == '__main__':
     mean_iou_list = []
     mean_oa_list = []
     FPR_list = []
+    P_list = []
+    R_list = []
+    FP_list = []
 
     # go through each folder and calculate accuracy metrics and append it to lists
     for data_i, data_path in enumerate(yolo_results):
         print('{} of {} datasets'.format(data_i, len(yolo_results)))
         if not yoloversion == 'yolov4':
             data_path = os.path.join(data_path, 'labels')
-        mean_oa, mean_iou, FPR = run_evaluate(data_path=data_path, plot_cm=False)
+        mean_oa, mean_iou, FPR, P, R, FP = run_evaluate(data_path=data_path, plot_cm=False)
         mean_iou_list.append(mean_iou)
         mean_oa_list.append(mean_oa)
         FPR_list.append(FPR)
+        P_list.append(P)
+        R_list.append(R)
+        FP_list.append(FP)
 
     if len(mean_oa_list) > 1:
         # Turn list of all 81 (9*9) results into 9*9 array
         iou_array = np.reshape(np.array(mean_iou_list), (-1, 9))
         oa_array = np.reshape(np.array(mean_oa_list), (-1, 9))
         FPR_array = np.reshape(np.array(FPR_list), (-1, 9))
+        P_array = np.reshape(np.array(P_list), (-1, 9))
+        R_array = np.reshape(np.array(R_list), (-1, 9))
+        FP_array = np.reshape(np.array(FP_list), (-1, 9))
 
         # hardcode labels for thresholds
         metric_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         conf_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
-        max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
+        # max_iou = unravel_index(iou_array.argmax(), iou_array.shape)
+        # print('Highest IoU at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_iou[0]], metric_threshold[max_iou[1]], iou_array[max_iou[0], max_iou[1]]))
 
-        print('Highest OA at confidence {:.1f} and iou {:.1f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]]))
+        low_FPR = unravel_index(FPR_array.argmin(), FPR_array.shape)
+        print('Lowest FPR at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[low_FPR[0]], metric_threshold[low_FPR[1]], iou_array[FPR_array[0], FPR_array[1]]))
+
+        # max_P = unravel_index(P_array.argmax(), P_array.shape)
+        # print('Highest precission at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_P[0]], metric_threshold[max_P[1]], iou_array[max_P[0], max_P[1]]))
+        #
+        # max_R = unravel_index(R_array.argmax(), R_array.shape)
+        # print('Highest recall at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_R[0]], metric_threshold[max_R[1]], iou_array[max_R[0], max_R[1]]))
+
+        max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
+        print('Highest OA at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]], oa_array[max_oa[0], oa_array[1]]))
+
+        low_FP = unravel_index(FP_array.argmin(), FP_array.shape)
+        print('Lowest FP at {:.1f} and iou {:.1f}'.format(conf_threshold[low_FP[0]], metric_threshold[low_FP[1]]))
+
         src_file = source_path + r'\results_at_conf_' + \
                 str(conf_threshold[max_oa[0]]) + '_iou_' + \
                 str(conf_threshold[max_oa[1]]) + '\metrics.txt'
