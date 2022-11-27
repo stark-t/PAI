@@ -21,6 +21,8 @@ from shutil import copyfile
 # import scripts
 # from detectors.yolov5.utils.metrics import bbox_iou
 from scripts.utils_confusionmatrix import cm_analysis
+from scripts.plot_predlabel import plot_labelprediction
+from scripts.utils_getfileinfo import get_file_info
 
 
 def bbox_iou(box1, box2, xywh=True, GIoU=False, DIoU=False, CIoU=False, eps=1e-7):
@@ -78,8 +80,8 @@ def calculate_ious(series, valid_labels=1):
     for i in range(len(series['bbox_label'])):
         # 2nd go through each prediction
         for j in range(len(series['bbox_pred'])):
-            if series['class_label'][i] < 0:
-                d=1
+            # if series['class_label'][i] < 0:
+            #     d=1
             # convert label bbox from numpy to pytoch tensor
             bbox_label = np.array(series['bbox_label'][i]).squeeze()
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -143,38 +145,6 @@ def calculate_ious(series, valid_labels=1):
 
     return df_iou_pairs
 
-def get_file_info(path_list):
-    # function to get necessary information of label or prediction
-    # get file ID name, path to file, class, bounding box
-    # function returns a list of dictionaries
-    records = []
-    for file in path_list:
-        # print(file)
-        class_ids = []
-        bboxes = []
-        file_ids = []
-        file_id = file.split(os.sep)[-1]
-        file_id = file_id.split('.txt')[0]
-        if file_exists(file) and not 'confusion_matrix_tex' in file and not 'metrics' in file:
-            # print(file)
-            with open(file) as lf:
-                label_lines_str = lf.readlines()
-                for i, info in enumerate(label_lines_str):
-                    file_ids.append(file_id)
-                    label_info_str = label_lines_str[i].split(" ")[:5]
-                    label_floats = [float(f) for f in label_info_str]
-                    class_id = label_floats[0]
-                    class_ids.append(class_id)
-                    bbox = label_floats[1:]
-                    bboxes.append(bbox)
-                record = {
-                    'ID': file_ids[0],
-                    'file': file,
-                    'class': class_ids,
-                    'bbox': bboxes,
-                }
-                records.append(record)
-    return records
 
 def run_evaluate(data_path='1', plot_cm=False):
     """
@@ -200,12 +170,17 @@ def run_evaluate(data_path='1', plot_cm=False):
         records = get_file_info(labels_list)
         df_labels = pd.DataFrame(records)
     else:
-        df_labels = df_predictions.copy()
+        labels_list = glob.glob(r'F:\202105_PAI\data\P1_results\img_syrphidae_sample_2022_06_17_annotated\labels' +
+                                os.sep + '*')
+        records = get_file_info(labels_list)
+        df_labels = pd.DataFrame(records)
         for index, row in df_labels.iterrows():
-            df_labels.at[index, 'class_pred'] = [-1.0]
-            df_labels.at[index, 'bbox_pred'] = [[.0, .0, .0, .0]]
-            df_labels.at[index, 'class_label'] = [-1.0]
-            df_labels.at[index, 'bbox_label'] = [[.0, .0, .0, .0]]
+            class_label_list = []
+            for l in range(len(row['bbox'])):
+                class_label_list.append(2.0)
+            df_labels.at[index, 'class'] = class_label_list
+            # df_labels.at[index, 'class'] = [2.0]
+
     # merge label and prediction dataframe
     # merge on ID (file name) if there is no matching label/prediction a nan row will be added
     df = pd.merge(df_predictions, df_labels, on='ID', how="outer", suffixes=('_pred', '_label'))
@@ -265,7 +240,7 @@ def run_evaluate(data_path='1', plot_cm=False):
     records = []
     # loop through each prediction and label pair to calculate iou
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        if index == 65:
+        if index == 132:
             d=1
         # get number of true labels
         n_valid_labels = [f for f in row['class_label'] if f >= 0]
@@ -281,7 +256,52 @@ def run_evaluate(data_path='1', plot_cm=False):
                                                                          percentile(75), percentile(99)])
     # print(df_ious_groupPercentile)
 
+    test_hymenoptera = False
+    if test_hymenoptera:
+        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 5) & (df_ious['iou'] > .95))]
+        for index, row in hymenoptera_df.iterrows():
+            image_path_file = row['ID']
+            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_hymenoptera_sample_2021_09_22\img', (image_path_file + '.jpg'))
+            label_file = row['file_label']
+            prediction_file = row['file_pred']
 
+            if os.path.isfile(image_path_file) and \
+                    os.path.isfile(label_file) and \
+                    os.path.isfile(prediction_file):
+                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+                                     plot_show=False)
+
+    test_syrphidae = False
+    if test_syrphidae:
+        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .95))]
+        for index, row in hymenoptera_df.iterrows():
+            image_path_file = row['ID']
+            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_results\img_syrphidae_sample_2022_06_17_annotated\images',
+                                           (image_path_file + '.jpg'))
+            label_file = row['file_label']
+            prediction_file = row['file_pred']
+
+            if os.path.isfile(image_path_file) and \
+                    os.path.isfile(label_file) and \
+                    os.path.isfile(prediction_file):
+                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+                                     plot_show=False)
+
+    test_multiple = True
+    if test_multiple:
+        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .8) & (df_ious['n_BB_labels'] > 1))]
+        for index, row in hymenoptera_df.iterrows():
+            image_path_file = row['ID']
+            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_diptera_sample_2021_09_20\img',
+                                           (image_path_file + '.jpg'))
+            label_file = row['file_label']
+            prediction_file = row['file_pred']
+
+            if os.path.isfile(image_path_file) and \
+                    os.path.isfile(label_file) and \
+                    os.path.isfile(prediction_file):
+                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+                                     plot_show=False)
 
     # OA_single = accuracy_score(df_singels['class_label'].to_list(), df_singels['class_pred'].to_list())
     # OA_multiple = accuracy_score(df_mutliples['class_label'].to_list(), df_mutliples['class_pred'].to_list())
@@ -302,6 +322,12 @@ def run_evaluate(data_path='1', plot_cm=False):
 
     labels = ['Background_FP', 'Background', 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera',
               'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+    labels_i = list(range(len(labels)))
+    lable_pred_i = list(y_pred_unique[0] + 1)
+    label_match = list(set(labels_i).intersection(lable_pred_i))
+    labels = [labels[i] for i in label_match]
+    labels = [f for fi, f in enumerate(lable_pred_i) if 1==1]
+
 
     # create path to save metrics, confusion matrix, etc
     results_path = data_path.split(os.sep)
@@ -315,21 +341,13 @@ def run_evaluate(data_path='1', plot_cm=False):
                          filename=filename, filename_tex=filename_tex, plot='plot')
     else:
         cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
-                         filename=filename, filename_tex=filename_tex, plot=None)
+                         filename=filename, filename_tex=None, plot=None)
 
     # from confusion matrix create metrics
     FP = cm.sum(axis=0) - np.diag(cm)
     FN = cm.sum(axis=1) - np.diag(cm)
     TP = np.diag(cm)
     TN = cm.sum() - (FP + FN + TP)
-    # TP_ = np.diag(cm)
-    # TN = cm.sum() - (FP + FN + TP_)
-
-    # fix false and true positives for background
-    # we need to do this because there are generally no images with zero bounding boxes from the labels
-    # FP[0] = FP[0] + TP_[0]
-    # TP = np.copy(TP_)
-    # TP[0] = 0.
 
     FP = FP.astype(float)
     FN = FN.astype(float)
@@ -394,19 +412,27 @@ def run_evaluate(data_path='1', plot_cm=False):
 if __name__ == '__main__':
     # select path to results
     # list all file in path directory
-    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
-    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.2_iou_0.9'
-    # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.9'
-    source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    source_path = r'F:\202105_PAI\data\P1_results\job_191869_syrphidae_loop_detect_with_191623_yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom'
+
+
     all_results = glob.glob(source_path + '\*')
     # select yolo-version for naming and searching for labels since process for v4 is different than v5 and v7
-    yoloversion = 'yolov5n'
+    yoloversion = source_path.split(os.sep)[-2]
+    if not 'syrphidae_loop' in yoloversion:
+        yoloversion = yoloversion.split('_')[0:2]
+        yoloversion = '_'.join(yoloversion)
+    else:
+        yoloversion = 'yolov7_tiny_syrphidae'
 
     if 'results_at' in source_path:
         # only select path if it is a folder
         yolo_results = [f for f in all_results if os.path.isdir(f)]
         yolo_results = yolo_results[0].split(os.sep)
-        yolo_results = os.path.join(*yolo_results[:-1])
+        yolo_results = os.path.join(*yolo_results[:])
         yolo_results = [yolo_results]
     else:
         yolo_results = [f for f in all_results if os.path.isdir(f)]
@@ -422,8 +448,6 @@ if __name__ == '__main__':
     # go through each folder and calculate accuracy metrics and append it to lists
     for data_i, data_path in enumerate(yolo_results):
         print('{} of {} datasets'.format(data_i, len(yolo_results)))
-        if not yoloversion == 'yolov4':
-            data_path = os.path.join(data_path, 'labels')
         mean_oa, mean_iou, FPR, P, R, FP = run_evaluate(data_path=data_path, plot_cm=False)
         mean_iou_list.append(mean_iou)
         mean_oa_list.append(mean_oa)
@@ -449,7 +473,7 @@ if __name__ == '__main__':
         # print('Highest IoU at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_iou[0]], metric_threshold[max_iou[1]], iou_array[max_iou[0], max_iou[1]]))
 
         low_FPR = unravel_index(FPR_array.argmin(), FPR_array.shape)
-        print('Lowest FPR at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[low_FPR[0]], metric_threshold[low_FPR[1]], iou_array[FPR_array[0], FPR_array[1]]))
+        print('Lowest FPR at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[low_FPR[0]], metric_threshold[low_FPR[1]], FPR_array[low_FPR[0], low_FPR[1]]))
 
         # max_P = unravel_index(P_array.argmax(), P_array.shape)
         # print('Highest precission at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_P[0]], metric_threshold[max_P[1]], iou_array[max_P[0], max_P[1]]))
@@ -458,7 +482,7 @@ if __name__ == '__main__':
         # print('Highest recall at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_R[0]], metric_threshold[max_R[1]], iou_array[max_R[0], max_R[1]]))
 
         max_oa = unravel_index(oa_array.argmax(), oa_array.shape)
-        print('Highest OA at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]], oa_array[max_oa[0], oa_array[1]]))
+        print('Highest OA at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_oa[0]], metric_threshold[max_oa[1]], oa_array[max_oa[0], max_oa[1]]))
 
         low_FP = unravel_index(FP_array.argmin(), FP_array.shape)
         print('Lowest FP at {:.1f} and iou {:.1f}'.format(conf_threshold[low_FP[0]], metric_threshold[low_FP[1]]))
@@ -499,7 +523,7 @@ if __name__ == '__main__':
 
         cm = pd.DataFrame(FPR_array, index=conf_threshold, columns=metric_threshold)
         fig, ax = plt.subplots(figsize=(8,8))
-        sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=1)
+        sns.heatmap(cm, annot=True, fmt='.4f', ax=ax, cmap='Blues', square=True, vmin=0, vmax=cm.max())
         ax.set_xlabel('\nIoU Threshold')
         ax.set_ylabel('Confidence Threshold\n')
         ax.figure.tight_layout()
