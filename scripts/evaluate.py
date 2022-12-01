@@ -24,6 +24,105 @@ from scripts.utils_confusionmatrix import cm_analysis
 from scripts.plot_predlabel import plot_labelprediction
 from scripts.utils_getfileinfo import get_file_info
 
+def get_ytrue_y_pred(df):
+    y_true_list = list(df['class_label'])
+    y_true_list = [int(f) + 1 if f >= 0 else 0 for f in y_true_list]
+
+    y_pred_list = list(df['class_pred'])
+    # y_pred_list = [int(f) + 1 if f >= 0 else 0 for f in y_pred_list]
+    y_pred_list = [int(f) + 1 if f >= 0 else int(f) for f in y_pred_list]
+
+    y_true_list[0] = -1
+    y_true_list[1] = 0
+    y_pred_list[0] = 0
+    y_pred_list[1] = -1
+    y_pred_unique = np.unique(y_pred_list, return_counts=True)
+    y_true_unique = np.unique(y_true_list, return_counts=True)
+
+    return y_true_list, y_pred_list, y_pred_unique
+
+def accuracy_metrics(df, df_name='all'):
+    y_true_list, y_pred_list, y_pred_unique = get_ytrue_y_pred(df)
+
+    labels = ['Background_FP', 'Background', 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera',
+              'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
+
+    labels_i = list(range(len(labels)))
+    label_pred_i = list(y_pred_unique[0] + 1)
+    label_match = list(set(labels_i).intersection(label_pred_i))
+    labels = [labels[i] for i in label_match]
+    labels = [f for fi, f in enumerate(label_pred_i) if 1 == 1]
+    if df_name == 'df_mutliples':
+        d=1
+    # create path to save metrics, confusion matrix, etc
+    results_path = data_path.split(os.sep)
+    results_path = os.path.join(*results_path[:-1])
+    filename = os.path.join(results_path, 'confusion_matrix.png')
+    filename_tex = os.path.join(results_path, 'confusion_matrix_tex.txt')
+    # df_ious_groupPercentile.to_csv(os.path.join(results_path, 'class_ious_percentiles.csv'))
+
+    cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
+                     filename=filename, filename_tex=None, plot=None)
+
+    # from confusion matrix create metrics
+    FP = cm.sum(axis=0) - np.diag(cm)
+    FN = cm.sum(axis=1) - np.diag(cm)
+    TP = np.diag(cm)
+    TN = cm.sum() - (FP + FN + TP)
+
+    FP = FP.astype(float)
+    FN = FN.astype(float)
+    TP = TP.astype(float)
+    TN = TN.astype(float)
+
+    # Accuarcy
+    OA = np.divide((TN + TP), (TN + FP + TP + FN + 1e-5))
+    OA = [np.nan if x == 0 else x for x in OA]
+    # False positive rate
+    FPR = np.divide(FP, (FP + TN + 1e-5))
+    FPR = [np.nan if x == 0 else x for x in FPR]
+    # Precision
+    P = np.divide(TP, (TP + FP + 1e-5))
+    P = [np.nan if x == 0 else x for x in P]
+    # Recall
+    R = np.divide(TP, (TP + FN + 1e-5))
+    R = [np.nan if x == 0 else x for x in R]
+
+    IoU = df['iou'].mean()
+
+    matching_ids = []
+    for i in range(len(y_true_list)):
+        if y_true_list[i] == y_pred_list[i]:
+            matching_ids.append(i)
+
+    df_ious_matching_classes = df.iloc[matching_ids]
+    IoU_match = df_ious_matching_classes['iou'].mean()
+
+    filename_metrics = filename_tex.replace('confusion_matrix_tex', ('metrics_') + df_name)
+    with open(filename_metrics, 'w') as f:
+        f.write('OA: {:6.4f}, FPR: {:6.4f}, Precision: {:6.4f}, Recall: {:6.4f}, IoU_all: {:6.4f}, IoU_match: {:6.4f}'.
+                format(
+            np.nanmean(OA),
+            np.nanmean(FPR),
+            np.nanmean(P),
+            np.nanmean(R),
+            IoU,
+            IoU_match,
+        ))
+
+    # Print metrics
+    print('Metrics for: {}'.format(df_name))
+    print('Accuracy: {:.4f}'.format(np.nanmean(OA)))
+    print('FPR: {:.4f}'.format(np.nanmean(FPR)))
+    print('Precision: {:.4f}'.format(np.nanmean(P)))
+    print('Recall: {:.4f}'.format(np.nanmean(R)))
+    print('{} images with an IoU of: {:.4f}'.format(df.shape[0], IoU))
+    print('{} images with matching classes and an IoU of: {:.4f}'.format(df_ious_matching_classes.shape[0], IoU_match))
+    print('\n')
+
+    return OA, P, R, FPR, IoU, IoU_match, cm
+
+
 
 def bbox_iou(box1, box2, xywh=True, GIoU=False, DIoU=False, CIoU=False, eps=1e-7):
     # Returns Intersection over Union (IoU) of box1(1,4) to box2(n,4)
@@ -80,8 +179,6 @@ def calculate_ious(series, valid_labels=1):
     for i in range(len(series['bbox_label'])):
         # 2nd go through each prediction
         for j in range(len(series['bbox_pred'])):
-            # if series['class_label'][i] < 0:
-            #     d=1
             # convert label bbox from numpy to pytoch tensor
             bbox_label = np.array(series['bbox_label'][i]).squeeze()
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -185,10 +282,6 @@ def run_evaluate(data_path='1', plot_cm=False):
     # merge on ID (file name) if there is no matching label/prediction a nan row will be added
     df = pd.merge(df_predictions, df_labels, on='ID', how="outer", suffixes=('_pred', '_label'))
 
-    # for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-    #     if len(row['class_label']) > 1:
-    #         print(index)
-
     # replace nan in dataframe for labels or predictions with dummy values so ious can be calculated
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
         if not isinstance(row['class_pred'], list):
@@ -254,7 +347,6 @@ def run_evaluate(data_path='1', plot_cm=False):
     df_ious = pd.DataFrame(records)
     df_ious_groupPercentile = df_ious.groupby('class_label')['iou'].agg([percentile(1), percentile(25), percentile(50),
                                                                          percentile(75), percentile(99)])
-    # print(df_ious_groupPercentile)
 
     test_hymenoptera = False
     if test_hymenoptera:
@@ -303,119 +395,38 @@ def run_evaluate(data_path='1', plot_cm=False):
                 plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
                                      plot_show=False)
 
-    # OA_single = accuracy_score(df_singels['class_label'].to_list(), df_singels['class_pred'].to_list())
-    # OA_multiple = accuracy_score(df_mutliples['class_label'].to_list(), df_mutliples['class_pred'].to_list())
+    OA, P, R, FPR, IoU, IoU_match, cm = accuracy_metrics(
+        df_ious, df_name='df_all')
+    df_singels = df_ious.loc[df_ious['n_BB_labels'] == 1]
+    OA_singels, P_singels, R_singels, FPR_singels, IoU_singels, IoU_match_singels, cm = accuracy_metrics(
+        df_singels, df_name='df_singels')
+    df_mutliples = df_ious.loc[df_ious['n_BB_labels'] == 2]
+    OA_mutliples, P_mutliples, R_mutliples, FPR_mutliples, IoU_mutliples, IoU_match_mutliples, cm = accuracy_metrics(
+        df_mutliples, df_name='df_mutliples')
 
-    # create a list for labels and predictions, ranging from 0 to n_classes
-    y_true_list = list(df_ious['class_label'])
-    y_true_list = [int(f) + 1 if f >= 0 else 0 for f in y_true_list]
+    if 'syrphidae' in data_path:
+        df_syrphidae = df_ious.loc[df_ious['class_label'] == 2]
+        OA_syrphidae, P_syrphidae, R_syrphidae, FPR_syrphidae, IoU_syrphidae, IoU_match_syrphidae, cm = accuracy_metrics(
+            df_syrphidae, df_name='df_syrphidae')
 
-    y_pred_list = list(df_ious['class_pred'])
-    # y_pred_list = [int(f) + 1 if f >= 0 else 0 for f in y_pred_list]
-    y_pred_list = [int(f) + 1 if f >= 0 else int(f) for f in y_pred_list]
+    if not 'syrphidae' in data_path:
+        df_hymenoptera = df_ious.loc[df_ious['class_label'] == 5]
+        OA_hymenoptera, P_hymenoptera, R_hymenoptera, FPR_hymenoptera, IoU_hymenoptera, IoU_match_hymenoptera, cm = accuracy_metrics(
+            df_hymenoptera, df_name='df_hymenoptera')
 
+        df_diptera = df_ious.loc[df_ious['class_label'] == 2]
+        OA_diptera, P_diptera, R_diptera, FPR_diptera, IoU_diptera, IoU_match_diptera, cm = accuracy_metrics(
+            df_diptera, df_name='df_diptera')
 
-    y_true_list[0] = -1
-    y_pred_list[0] = 0
-    y_pred_unique = np.unique(y_pred_list, return_counts=True)
-    y_true_unique = np.unique(y_true_list, return_counts=True)
-
-    labels = ['Background_FP', 'Background', 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera',
-              'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera']
-    labels_i = list(range(len(labels)))
-    lable_pred_i = list(y_pred_unique[0] + 1)
-    label_match = list(set(labels_i).intersection(lable_pred_i))
-    labels = [labels[i] for i in label_match]
-    labels = [f for fi, f in enumerate(lable_pred_i) if 1==1]
-
-
-    # create path to save metrics, confusion matrix, etc
-    results_path = data_path.split(os.sep)
-    results_path = os.path.join(*results_path[:-1])
-    filename = os.path.join(results_path, 'confusion_matrix.png')
-    filename_tex = os.path.join(results_path, 'confusion_matrix_tex.txt')
-    df_ious_groupPercentile.to_csv(os.path.join(results_path, 'class_ious_percentiles.csv'))
-
-    if plot_cm:
-        cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
-                         filename=filename, filename_tex=filename_tex, plot='plot')
-    else:
-        cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
-                         filename=filename, filename_tex=None, plot=None)
-
-    # from confusion matrix create metrics
-    FP = cm.sum(axis=0) - np.diag(cm)
-    FN = cm.sum(axis=1) - np.diag(cm)
-    TP = np.diag(cm)
-    TN = cm.sum() - (FP + FN + TP)
-
-    FP = FP.astype(float)
-    FN = FN.astype(float)
-    TP = TP.astype(float)
-    TN = TN.astype(float)
-
-    # False positive rate
-    FPR = np.divide(FP, (FP + TN + 1e-5))
-
-    # Precision
-    P = np.divide(TP, (TP + FP + 1e-5))
-
-    # Recall
-    R = np.divide(TP, (TP + FN + 1e-5))
-
-    matching_ids = []
-    for i in range(len(y_true_list)):
-        if y_true_list[i] == y_pred_list[i]:
-            matching_ids.append(i)
-
-    df_ious_matching_classes = df_ious.iloc[matching_ids]
-    iou_match = df_ious_matching_classes['iou'].mean()
-    print('IoU: {:.4f}'.format(iou_match))
-
-    # group df by single and multiple bounding boxes
-    df_ious_nBBs = df_ious_matching_classes.groupby('n_BB_labels')['iou'].mean()
-    IoU_single = df_ious_nBBs.iloc[0]
-    IoU_multiples = df_ious_nBBs.iloc[1]
-    # print(df_ious_nBBs)
-    df_singels = df_ious_matching_classes.loc[df_ious_matching_classes['n_BB_labels'] == 1]
-    df_mutliples = df_ious_matching_classes.loc[df_ious_matching_classes['n_BB_labels'] == 2]
-
-    n_singels = df_singels.shape[0]
-    n_mutliples = df_mutliples.shape[0]
-
-
-    filename_metrics = filename_tex.replace('confusion_matrix_tex', 'metrics')
-    with open(filename_metrics, 'w') as f:
-        f.write('OA: {:6.4f}, FPR: {:6.4f}, Precision: {:6.4f}, Recall: {:6.4f}, IoU: {:6.4f}, matchIoU: {:6.4f}, singelIoU: {:6.4f}, multipleIoU: {:6.4f}'.
-                format(
-            accuracy_score(y_true_list, y_pred_list),
-            np.mean(FPR),
-            np.mean(P),
-            np.mean(R),
-            df_ious['iou'].mean(),
-            df_ious_matching_classes['iou'].mean(),
-            IoU_single,
-            IoU_multiples,
-        ))
-
-    # Print metrics
-    print('Accuracy: {:.4f}'.format(accuracy_score(y_true_list, y_pred_list)))
-    print('FPR: {:.4f}'.format(np.mean(FPR)))
-    print('Precision: {:.4f}'.format(np.mean(P)))
-    print('Recall: {:.4f}'.format(np.mean(R)))
-    print('{} images with one bounding box: {:.4f}'.format(n_singels, IoU_single))
-    print('{} images with multiple bounding box: {:.4f}'.format(n_mutliples, IoU_multiples))
-    print('Number of false positives: {:.0f}'.format(FP[0]))
-
-    return accuracy_score(y_true_list, y_pred_list), iou_match, np.mean(FPR), np.mean(P), np.mean(R), FP[0]
+    return OA, IoU_match, FPR, P, R
 
 if __name__ == '__main__':
     # select path to results
     # list all file in path directory
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
-    # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
-    source_path = r'F:\202105_PAI\data\P1_results\job_191869_syrphidae_loop_detect_with_191623_yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    # source_path = r'F:\202105_PAI\data\P1_results\job_191869_syrphidae_loop_detect_with_191623_yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom'
 
 
@@ -448,13 +459,12 @@ if __name__ == '__main__':
     # go through each folder and calculate accuracy metrics and append it to lists
     for data_i, data_path in enumerate(yolo_results):
         print('{} of {} datasets'.format(data_i, len(yolo_results)))
-        mean_oa, mean_iou, FPR, P, R, FP = run_evaluate(data_path=data_path, plot_cm=False)
+        mean_oa, mean_iou, FPR, P, R = run_evaluate(data_path=data_path, plot_cm=False)
         mean_iou_list.append(mean_iou)
         mean_oa_list.append(mean_oa)
         FPR_list.append(FPR)
         P_list.append(P)
         R_list.append(R)
-        FP_list.append(FP)
 
     if len(mean_oa_list) > 1:
         # Turn list of all 81 (9*9) results into 9*9 array
@@ -468,9 +478,6 @@ if __name__ == '__main__':
         # hardcode labels for thresholds
         metric_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         conf_threshold = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-
-        # max_iou = unravel_index(iou_array.argmax(), iou_array.shape)
-        # print('Highest IoU at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[max_iou[0]], metric_threshold[max_iou[1]], iou_array[max_iou[0], max_iou[1]]))
 
         low_FPR = unravel_index(FPR_array.argmin(), FPR_array.shape)
         print('Lowest FPR at confidence {:.1f} and iou {:.1f} with {:.4f}'.format(conf_threshold[low_FPR[0]], metric_threshold[low_FPR[1]], FPR_array[low_FPR[0], low_FPR[1]]))
