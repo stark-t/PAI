@@ -9,7 +9,8 @@ import numpy as np
 import torch
 import tqdm as t
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
+# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tqdm
@@ -179,6 +180,7 @@ def calculate_ious(series, valid_labels=1):
     for i in range(len(series['bbox_label'])):
         # 2nd go through each prediction
         for j in range(len(series['bbox_pred'])):
+
             # convert label bbox from numpy to pytoch tensor
             bbox_label = np.array(series['bbox_label'][i]).squeeze()
             bbox_label_torch = torch.from_numpy(bbox_label)
@@ -189,9 +191,13 @@ def calculate_ious(series, valid_labels=1):
             bbox_prediction_torch = torch.from_numpy(bbox_prediction)
             bbox_prediction_torch = bbox_prediction_torch[None, :]
 
-            # if there is a dummy predcition or label present, set iou to -1
-            if series['class_label'][i] < 0 or series['class_pred'][j] < 0:
+            # check if classes match, else set label and bbox to false
+            if series['class_label'][i] != series['class_pred'][j] and \
+                    series['class_label'][i] >= 0 and series['class_pred'][j] >= 0:
                 iou = -1.0
+            # if there is a dummy predcition or label present, set iou to -2
+            elif series['class_label'][i] < 0 or series['class_pred'][j] < 0:
+                iou = -2.0
             # calculate actual iou
             else:
                 iou_torch = bbox_iou(bbox_label_torch, bbox_prediction_torch)
@@ -329,11 +335,15 @@ def run_evaluate(data_path='1', plot_cm=False):
                 class_bbox.append([.0, .0, .0, .0])
                 df.at[index, 'bbox_pred'] = class_bbox
 
+    for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
+        if len(row['class_label']) > 1 and row['class_label'] != row['class_pred']:
+            print(index, row['class_label'], row['class_pred'])
+
     # calclulate iou pairs
     records = []
     # loop through each prediction and label pair to calculate iou
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        if index == 132:
+        if index == 187:
             d=1
         # get number of true labels
         n_valid_labels = [f for f in row['class_label'] if f >= 0]
@@ -352,8 +362,8 @@ def run_evaluate(data_path='1', plot_cm=False):
     if test_hymenoptera:
         hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 5) & (df_ious['iou'] > .95))]
         for index, row in hymenoptera_df.iterrows():
-            image_path_file = row['ID']
-            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_hymenoptera_sample_2021_09_22\img', (image_path_file + '.jpg'))
+            image_path_file_ID = row['ID']
+            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
             label_file = row['file_label']
             prediction_file = row['file_pred']
 
@@ -367,9 +377,8 @@ def run_evaluate(data_path='1', plot_cm=False):
     if test_syrphidae:
         hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .95))]
         for index, row in hymenoptera_df.iterrows():
-            image_path_file = row['ID']
-            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_results\img_syrphidae_sample_2022_06_17_annotated\images',
-                                           (image_path_file + '.jpg'))
+            image_path_file_ID = row['ID']
+            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
             label_file = row['file_label']
             prediction_file = row['file_pred']
 
@@ -379,13 +388,30 @@ def run_evaluate(data_path='1', plot_cm=False):
                 plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
                                      plot_show=False)
 
+    # test_multiple = True
+    # if test_multiple:
+    #     hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .8) & (df_ious['n_BB_labels'] > 1))]
+    #     for index, row in hymenoptera_df.iterrows():
+    #         image_path_file = row['ID']
+    #         image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_diptera_sample_2021_09_20\img',
+    #                                        (image_path_file + '.jpg'))
+    #         label_file = row['file_label']
+    #         prediction_file = row['file_pred']
+    #
+    #         if os.path.isfile(image_path_file) and \
+    #                 os.path.isfile(label_file) and \
+    #                 os.path.isfile(prediction_file):
+    #             plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+    #                                  plot_show=False)
+
     test_multiple = True
     if test_multiple:
-        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .8) & (df_ious['n_BB_labels'] > 1))]
-        for index, row in hymenoptera_df.iterrows():
-            image_path_file = row['ID']
-            image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_diptera_sample_2021_09_20\img',
-                                           (image_path_file + '.jpg'))
+        # df_m = df_ious.loc[df_ious['n_BB_labels'] > 1]
+        df_m = df_ious.loc[df_ious['iou'] > .8]
+        for index, row in df_m.iterrows():
+            image_path_file_ID = row['ID']
+            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' +
+                                        os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
             label_file = row['file_label']
             prediction_file = row['file_pred']
 
