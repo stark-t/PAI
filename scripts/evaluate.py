@@ -60,7 +60,6 @@ def accuracy_metrics(df, df_name='all'):
     results_path = os.path.join(*results_path[:-1])
     filename = os.path.join(results_path, 'confusion_matrix.png')
     filename_tex = os.path.join(results_path, 'confusion_matrix_tex.txt')
-    # df_ious_groupPercentile.to_csv(os.path.join(results_path, 'class_ious_percentiles.csv'))
 
     cm = cm_analysis(y_true_list, y_pred_list, labels, ymap=None, figsize=(9, 9),
                      filename=filename, filename_tex=None, plot=None)
@@ -89,6 +88,7 @@ def accuracy_metrics(df, df_name='all'):
     R = np.divide(TP, (TP + FN + 1e-5))
     R = [np.nan if x == 0 else x for x in R]
 
+    df['iou'].loc[df['iou'] == -1] = np.nan
     IoU = df['iou'].mean()
 
     matching_ids = []
@@ -176,6 +176,11 @@ def calculate_ious(series, valid_labels=1):
     # input: pair label(s) and prediction(s) from one image/label file
     ious = []
     records = []
+
+    # valid predictions
+    valid_predictions = [f for f in series['class_pred'] if f >= 0]
+    valid_predictions = len(valid_predictions)
+
     # 1st go through each label
     for i in range(len(series['bbox_label'])):
         # 2nd go through each prediction
@@ -240,11 +245,10 @@ def calculate_ious(series, valid_labels=1):
     # set iou and class_pred to -1 if valid_predictions dont fit
     df_iou_pairs.reset_index(drop=True, inplace=True)
     for index, row in df_iou_pairs.iterrows():
-        if index > valid_labels -1:
+        # if index > (valid_labels - 1):
+        if index >= valid_predictions:
             df_iou_pairs.at[index, 'class_pred'] = -1.0
-            df_iou_pairs.at[index, 'class_label'] = -1.0
             df_iou_pairs.at[index, 'iou'] = np.NaN
-            df_iou_pairs.at[index, 'n_BB_labels'] = np.NaN
 
     return df_iou_pairs
 
@@ -335,15 +339,15 @@ def run_evaluate(data_path='1', plot_cm=False):
                 class_bbox.append([.0, .0, .0, .0])
                 df.at[index, 'bbox_pred'] = class_bbox
 
-    for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        if len(row['class_label']) > 1 and row['class_label'] != row['class_pred']:
-            print(index, row['class_label'], row['class_pred'])
+    # for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
+    #     if len(row['class_label']) > 1 and row['class_label'] != row['class_pred']:
+    #         print(index, row['class_label'], row['class_pred'])
 
     # calclulate iou pairs
     records = []
     # loop through each prediction and label pair to calculate iou
     for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-        if index == 187:
+        if index == 36:
             d=1
         # get number of true labels
         n_valid_labels = [f for f in row['class_label'] if f >= 0]
@@ -355,46 +359,48 @@ def run_evaluate(data_path='1', plot_cm=False):
 
     # calculate IoU percentiles
     df_ious = pd.DataFrame(records)
-    df_ious_groupPercentile = df_ious.groupby('class_label')['iou'].agg([percentile(1), percentile(25), percentile(50),
-                                                                         percentile(75), percentile(99)])
-
-    test_hymenoptera = False
-    if test_hymenoptera:
-        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 5) & (df_ious['iou'] > .95))]
-        for index, row in hymenoptera_df.iterrows():
-            image_path_file_ID = row['ID']
-            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
-            label_file = row['file_label']
-            prediction_file = row['file_pred']
-
-            if os.path.isfile(image_path_file) and \
-                    os.path.isfile(label_file) and \
-                    os.path.isfile(prediction_file):
-                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
-                                     plot_show=False)
-
-    test_syrphidae = False
-    if test_syrphidae:
-        hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .95))]
-        for index, row in hymenoptera_df.iterrows():
-            image_path_file_ID = row['ID']
-            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
-            label_file = row['file_label']
-            prediction_file = row['file_pred']
-
-            if os.path.isfile(image_path_file) and \
-                    os.path.isfile(label_file) and \
-                    os.path.isfile(prediction_file):
-                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
-                                     plot_show=False)
-
-    # test_multiple = True
-    # if test_multiple:
-    #     hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .8) & (df_ious['n_BB_labels'] > 1))]
+    # df_ious_groupPercentile = df_ious.groupby('class_label')['iou'].agg([percentile(1), percentile(25), percentile(50),
+    #                                                                      percentile(75), percentile(99)])
+    #
+    # test_hymenoptera = False
+    # if test_hymenoptera:
+    #     hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 5) & (df_ious['iou'] > .95))]
     #     for index, row in hymenoptera_df.iterrows():
-    #         image_path_file = row['ID']
-    #         image_path_file = os.path.join(r'F:\202105_PAI\data\P1_Data\img_diptera_sample_2021_09_20\img',
-    #                                        (image_path_file + '.jpg'))
+    #         image_path_file_ID = row['ID']
+    #         image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
+    #         label_file = row['file_label']
+    #         prediction_file = row['file_pred']
+    #
+    #         if os.path.isfile(image_path_file) and \
+    #                 os.path.isfile(label_file) and \
+    #                 os.path.isfile(prediction_file):
+    #             plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+    #                                  plot_show=False)
+    #
+    # test_syrphidae = False
+    # if test_syrphidae:
+    #     hymenoptera_df = df_ious.loc[((df_ious['class_label'] == 2) & (df_ious['iou'] > .95))]
+    #     for index, row in hymenoptera_df.iterrows():
+    #         image_path_file_ID = row['ID']
+    #         image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' + os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
+    #         label_file = row['file_label']
+    #         prediction_file = row['file_pred']
+    #
+    #         if os.path.isfile(image_path_file) and \
+    #                 os.path.isfile(label_file) and \
+    #                 os.path.isfile(prediction_file):
+    #             plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
+    #                                  plot_show=False)
+    #
+    #
+    # test_multiple = False
+    # if test_multiple:
+    #     # df_m = df_ious.loc[df_ious['n_BB_labels'] > 1]
+    #     df_m = df_ious.loc[df_ious['iou'] > .8]
+    #     for index, row in df_m.iterrows():
+    #         image_path_file_ID = row['ID']
+    #         image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' +
+    #                                     os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
     #         label_file = row['file_label']
     #         prediction_file = row['file_pred']
     #
@@ -404,45 +410,30 @@ def run_evaluate(data_path='1', plot_cm=False):
     #             plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
     #                                  plot_show=False)
 
-    test_multiple = True
-    if test_multiple:
-        # df_m = df_ious.loc[df_ious['n_BB_labels'] > 1]
-        df_m = df_ious.loc[df_ious['iou'] > .8]
-        for index, row in df_m.iterrows():
-            image_path_file_ID = row['ID']
-            image_path_file = glob.glob(r'F:\202105_PAI\data\P1_Data' + os.sep + '**' +
-                                        os.sep + 'img' + os.sep + image_path_file_ID + '*')[0]
-            label_file = row['file_label']
-            prediction_file = row['file_pred']
-
-            if os.path.isfile(image_path_file) and \
-                    os.path.isfile(label_file) and \
-                    os.path.isfile(prediction_file):
-                plot_labelprediction(path_file=image_path_file, label_file=label_file, prediction_file=prediction_file,
-                                     plot_show=False)
-
     OA, P, R, FPR, IoU, IoU_match, cm = accuracy_metrics(
         df_ious, df_name='df_all')
-    df_singels = df_ious.loc[df_ious['n_BB_labels'] == 1]
-    OA_singels, P_singels, R_singels, FPR_singels, IoU_singels, IoU_match_singels, cm = accuracy_metrics(
-        df_singels, df_name='df_singels')
-    df_mutliples = df_ious.loc[df_ious['n_BB_labels'] == 2]
-    OA_mutliples, P_mutliples, R_mutliples, FPR_mutliples, IoU_mutliples, IoU_match_mutliples, cm = accuracy_metrics(
-        df_mutliples, df_name='df_mutliples')
 
-    if 'syrphidae' in data_path:
-        df_syrphidae = df_ious.loc[df_ious['class_label'] == 2]
-        OA_syrphidae, P_syrphidae, R_syrphidae, FPR_syrphidae, IoU_syrphidae, IoU_match_syrphidae, cm = accuracy_metrics(
-            df_syrphidae, df_name='df_syrphidae')
-
-    if not 'syrphidae' in data_path:
-        df_hymenoptera = df_ious.loc[df_ious['class_label'] == 5]
-        OA_hymenoptera, P_hymenoptera, R_hymenoptera, FPR_hymenoptera, IoU_hymenoptera, IoU_match_hymenoptera, cm = accuracy_metrics(
-            df_hymenoptera, df_name='df_hymenoptera')
-
-        df_diptera = df_ious.loc[df_ious['class_label'] == 2]
-        OA_diptera, P_diptera, R_diptera, FPR_diptera, IoU_diptera, IoU_match_diptera, cm = accuracy_metrics(
-            df_diptera, df_name='df_diptera')
+    # df_singels = df_ious.loc[df_ious['n_BB_labels'] == 1]
+    # OA_singels, P_singels, R_singels, FPR_singels, IoU_singels, IoU_match_singels, cm = accuracy_metrics(
+    #     df_singels, df_name='df_singels')
+    #
+    # df_mutliples = df_ious.loc[df_ious['n_BB_labels'] == 2]
+    # OA_mutliples, P_mutliples, R_mutliples, FPR_mutliples, IoU_mutliples, IoU_match_mutliples, cm = accuracy_metrics(
+    #     df_mutliples, df_name='df_mutliples')
+    #
+    # if 'syrphidae' in data_path:
+    #     df_syrphidae = df_ious.loc[df_ious['class_label'] == 2]
+    #     OA_syrphidae, P_syrphidae, R_syrphidae, FPR_syrphidae, IoU_syrphidae, IoU_match_syrphidae, cm = accuracy_metrics(
+    #         df_syrphidae, df_name='df_syrphidae')
+    #
+    # if not 'syrphidae' in data_path:
+    #     df_hymenoptera = df_ious.loc[df_ious['class_label'] == 5]
+    #     OA_hymenoptera, P_hymenoptera, R_hymenoptera, FPR_hymenoptera, IoU_hymenoptera, IoU_match_hymenoptera, cm = accuracy_metrics(
+    #         df_hymenoptera, df_name='df_hymenoptera')
+    #
+    #     df_diptera = df_ious.loc[df_ious['class_label'] == 2]
+    #     OA_diptera, P_diptera, R_diptera, FPR_diptera, IoU_diptera, IoU_match_diptera, cm = accuracy_metrics(
+    #         df_diptera, df_name='df_diptera')
 
     return OA, IoU_match, FPR, P, R
 
@@ -451,7 +442,8 @@ if __name__ == '__main__':
     # list all file in path directory
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_s_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
-    source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    # source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
+    source_path = r'F:\202105_PAI\data\P1_results\yolov7_tiny_img640_b8_e300_hyp_custom'
     # source_path = r'F:\202105_PAI\data\P1_results\job_191869_syrphidae_loop_detect_with_191623_yolov7_tiny_img640_b8_e300_hyp_custom\results_at_conf_0.3_iou_0.1'
     # source_path = r'F:\202105_PAI\data\P1_results\yolov5_n_img640_b8_e300_hyp_custom'
 
@@ -472,7 +464,8 @@ if __name__ == '__main__':
         yolo_results = os.path.join(*yolo_results[:])
         yolo_results = [yolo_results]
     else:
-        yolo_results = [f for f in all_results if os.path.isdir(f)]
+        yolo_results = [os.path.join(f, 'labels') for f in all_results if os.path.isdir(f)]
+
 
     # create empty lists for accuarcy metrics
     mean_iou_list = []
