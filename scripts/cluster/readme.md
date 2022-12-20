@@ -5,22 +5,19 @@ This readme file walks you through setting the environments for running the trai
 Computations were done using resources of the Leipzig University Computing Centre. 
 The setting of the environments below are valid only for the resources made available to us.
 
-A major update of the cluster also took place while we were working on our project (Oct 2022). 
-I had to reinstall the environments, but to the best of my knowledge this does not affect the results.
-Other factors, like issues related to the random seed when using multiple GPUs, will impact much more the reproducibility than cluster updates.
-
 # Clone PAI repository
 
-Clone our PAI repository in the home directory of the landing node:
+Clone this PAI repository in the home directory of the landing node:
 ```bash
 pwd 
 # Make sure you are on the home directory.
 # Should see something like /home/sc.uni-leipzig.de/your_user_name
 
-git clone https://github.com/stark-t/PAI.git # if you put .git, will require authentication (can also skip .git)
+git clone https://github.com/stark-t/PAI
+# if you decide to use /PAI.git, it will require git authentication
 ```
 
-# Set detectors
+# Set detectors for:
 
 Clone the repository of each detector in `~/PAI/detectors`.
 Then set an environment for each detector at `~/venv` for:
@@ -80,6 +77,7 @@ If you need to update YOLOv5, then just simply do a `git pull` in its repository
 cd ~/PAI/detectors/yolov5
 git pull
 ```
+Then update the environment as well as indicated above.
 
 
 ## - YOLOv7
@@ -101,114 +99,6 @@ pip install --upgrade pip
 pip install -r ~/PAI/detectors/yolov7/requirements.txt
 deactivate
 ```
-
-
-## - PyTorch_YOLOv4
-
-Clone the repository of YOLOv4 PyTorch implementation in `~/PAI/detectors`:
-```bash
-cd ~/PAI/detectors/
-git clone https://github.com/WongKinYiu/PyTorch_YOLOv4
-```
-
-Now, create an environment with the needed dependecies/requirements for YOLOv4.
-
-Note that, we had to use an older version of Pyhton module (`Python/3.8.6-GCCcore-10.2.0`) because the more recent one, used for YOLOv5 & YOLOv7, (`Python/3.9.6-GCCcore-11.2.0`) does not satisfy the requirement `torch==1.6` and we got this error message:
-```
-ERROR: Could not find a version that satisfies the requirement torch==1.6 
-(from versions: 1.7.1, 1.8.0, 1.8.1, 1.9.0, 1.9.1, 1.10.0, 1.10.1, 1.10.2, 1.11.0, 1.12.0)
-ERROR: No matching distribution found for torch==1.6
-```
-
-Also, had to manually install the packages from PyTorch_YOLOv4/requirements.txt, because we encountered errors for `numpy==1.17`, so for that one we installed `numpy==1.18`.
-
-Finally, these are the commands for setting the environment for PyTorch_YOLOv4:
-
-```bash
-cd ~
-module purge
-module load Python/3.8.6-GCCcore-10.2.0
-# module load Python/3.9.6-GCCcore-11.2.0 # fails for torch==1.6
-# module load Python/3.9.5-GCCcore-10.3.0 # also fails
-python -m venv ~/venv/PyTorch_YOLOv4
-source ~/venv/PyTorch_YOLOv4/bin/activate
-
-pip install --upgrade pip
-
-pip install \
-'numpy==1.18' \
-'opencv-python>=4.1' \
-'torch==1.6' \
-torchvision \
-matplotlib \
-pycocotools \
-tqdm \
-pillow \
-PyYAML \
-scipy \
-'tensorboard>=1.14'
-
-deactivate
-```
-
-## - detectron2
-
-Clone the detectron2 repository in `~/PAI/detectors`:
-```bash
-cd ~/PAI/detectors/
-git clone https://github.com/facebookresearch/detectron2
-```
-
-```bash
-cd ~
-module purge
-module load PyTorch/1.10.0-foss-2021a-CUDA-11.3.1
-module load TensorFlow/2.6.0-foss-2021a-CUDA-11.3.1
-module load torchvision/0.11.1-foss-2021a-CUDA-11.3.1
-
-python -m venv ~/venv/detectron2
-source ~/venv/detectron2/bin/activate
-
-pip install --upgrade pip
-pip install opencv-python
-
-pip install detectron2 -f \
-  https://dl.fbaipublicfiles.com/detectron2/wheels/cu113/torch1.10/index.html
-
-# ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. 
-# This behaviour is the source of the following dependency conflicts.
-# pandas 1.2.4 requires pytz>=2017.3, which is not installed.
-
-# Test Inference Demo with Pre-trained Models
-cd PAI/detectors/detectron2/demo
-wget https://farm9.staticflickr.com/8267/8918904805_727d988709_z.jpg -q -O input1.jpg
-wget https://farm1.staticflickr.com/215/492060815_ec07c64c09_z.jpg -q -O input2.jpg
-
-python demo.py --config-file ../configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml \
-  --input input1.jpg input2.jpg \
-  --opts MODEL.WEIGHTS detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl
-
-Traceback (most recent call last):
-  File "/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/detectron2/demo/demo.py", line 14, in <module>
-    from detectron2.data.detection_utils import read_image
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/data/__init__.py", line 4, in <module>
-    from .build import (
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/data/build.py", line 13, in <module>
-    from detectron2.structures import BoxMode
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/structures/__init__.py", line 3, in <module>
-    from .image_list import ImageList
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/structures/image_list.py", line 8, in <module>
-    from detectron2.layers.wrappers import shapes_to_tensor
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/layers/__init__.py", line 3, in <module>
-    from .deform_conv import DeformConv, ModulatedDeformConv
-  File "/home/sc.uni-leipzig.de/sv127qyji/venv/detectron2/lib/python3.9/site-packages/detectron2/layers/deform_conv.py", line 11, in <module>
-    from detectron2 import _C
-ImportError: libtorch_cuda_cu.so: cannot open shared object file: No such file or directory
-
-
-deactivate
-```
-
 
 # Data
 
@@ -254,7 +144,7 @@ hymenoptera_formicidae         1474         1051
 lepidoptera                    5102         4576
 orthoptera                     1792         1649
 
-Number of image tiles per class in 20.0% valdiation dataset
+Number of image tiles per class in 20.0% test dataset
 /home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/utils_datasampling.py:46: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
   print_df = df_test.groupby(['class'])['images_path', 'labels_path'].count()
                         images_path  labels_path
@@ -330,23 +220,17 @@ Download the YOLOv5 pre-trained weights on the COCO dataset:
 cd ~/PAI/detectors/yolov5
 mkdir weights_v6_1
 
-# for img size 640 x 640
+# For img size 640 x 640, nano and small weights
 wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5n.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
 wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
-
-# for img size 1280 x 1280
-wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5n6.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
-wget https://github.com/ultralytics/yolov5/releases/download/v6.1/yolov5s6.pt -P ~/PAI/detectors/yolov5/weights_v6_1/
 ```
 
-### Job scripts
+### YOLOv5 cluster job scripts
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
 sbatch ~/PAI/scripts/cluster/yolov5_train_n_640_rtx.sh   # uses 'nano' yolov5n.pt pretrained weights, img size 640
 sbatch ~/PAI/scripts/cluster/yolov5_train_s_640_rtx.sh   # uses 'small' yolov5s.pt pretrained weights, img size 640
-sbatch ~/PAI/scripts/cluster/yolov5_train_n6_1280_rtx.sh # uses 'nano' yolov5n6.pt pretrained weights, img size 1280
-sbatch ~/PAI/scripts/cluster/yolov5_train_s6_1280_rtx.sh # uses 'small' yolov5s6.pt pretrained weights, img size 1280
 ```
 
 To see a job status: `squeue -u <user_name>`, or use the variable `squeue -u <dollar sign>USER`.
@@ -479,32 +363,9 @@ mkdir weights_v0_1
 wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt -P ~/PAI/detectors/yolov7/weights_v0_1/
 ```
 
-### Job scripts
+### YOLOv7 cluster job scripts
 
 We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
 ```bash
 sbatch ~/PAI/scripts/cluster/yolov7_train_tiny_640_rtx.sh # uses the yolov7-tiny.pt pretrained weights, img size 640 x 640
-```
-
-
-## PyTorch_YOLOv4
-
-Download the PyTorch_YOLOv4 pre-trained weights.
-
-Example for **YOLOv4 pacsp-s 640; yolov4-csp-s-leaky.weights**:
-
-On your local computer, navigate in your browser to the download link provided in the readme file of the PyTorch_YOLOv4 repository for [yolov4.weights](https://github.com/WongKinYiu/PyTorch_YOLOv4#pretrained-models--comparison): https://drive.google.com/file/d/1r1zeY8whdZNUGisxiZQFnbwYSIolCAwi/view
-
-Download the file and then can copy it to the cluster with `scp` to `PyTorch_YOLOv4/weights`. 
-There is already a directory `weights`.
-```bash
-# On your local terminal, send the downloaded *.pt file to the folder created above:
-scp ~/Downloads/yolov4-csp-s-leaky.weights sv127qyji@login01.sc.uni-leipzig.de:~/PAI/detectors/PyTorch_YOLOv4/weights
-```
-
-### Job scripts
-
-We can send a train job to the cluster like this (make sure you have the right path and file name of the .sh script):
-```bash
-sbatch ~/PAI/scripts/cluster/yolov4_train_pacsp_s_640_rtx.sh
 ```

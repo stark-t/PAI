@@ -42,7 +42,7 @@ def datasampling_func(df=pd.DataFrame(), traintestval_ratio=[.7, .15, .15], seed
 
     df_test = get_balanced_testval_df(df, int(min_count * traintestval_ratio[1]))
     if verbose >= 2:
-        print('\nNumber of image tiles per class in {}% valdiation dataset'.format(traintestval_ratio[1]*100))
+        print('\nNumber of image tiles per class in {}% test dataset'.format(traintestval_ratio[1]*100))
         print_df = df_test.groupby(['class'])['images_path', 'labels_path'].count()
         print(print_df)
 
