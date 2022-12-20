@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=train_yolov5 # name for the job;
-#SBATCH --partition=clara-job # Request for the Clara cluster;
+#SBATCH --partition=clara # Request a certain partition;
 #SBATCH --nodes=1 # Number of nodes;
 #SBATCH --cpus-per-task=32 # Number of CPUs;
 #SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;

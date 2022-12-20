@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=detect_yolov5_gpu # give a custom name
-#SBATCH --partition=clara-job # use clara-job for GPU usage and clara-cpu for cpu usage
+#SBATCH --partition=clara # use clara for GPU usage and clara-cpu for cpu usage
 #SBATCH --cpus-per-task=4 # request number of CPUs
 #SBATCH --gres=gpu:rtx2080ti:1 # type and number of requested GPUs; Options are rtx2080ti:1 or gpu:v100:1
 #SBATCH --mem-per-gpu=11G # RAM per GPU - 11 Gb is for NVIDIA GeForce RTX 2080 Ti; 32 Gb for Nvidia Tesla V100 
