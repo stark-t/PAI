@@ -6,8 +6,8 @@
 #SBATCH --gres=gpu:rtx2080ti:8 # Type and number of GPUs;
 #SBATCH --mem-per-gpu=11G # RAM per GPU;
 #SBATCH --time=2-00:00:00 # requested time in d-hh:mm:ss
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.log # path for job-id.log file;
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_train_jobs/%j.err # path for job-id.err file;
+#SBATCH --output=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_train_jobs/%j.log # path for job-id.log file;
+#SBATCH --error=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_train_jobs/%j.err # path for job-id.err file;
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options;
 
 

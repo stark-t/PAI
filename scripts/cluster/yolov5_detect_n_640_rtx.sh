@@ -5,8 +5,8 @@
 #SBATCH --gres=gpu:rtx2080ti:1 # type and number of requested GPUs; Options are rtx2080ti:1 or gpu:v100:1
 #SBATCH --mem-per-gpu=11G # RAM per GPU - 11 Gb is for NVIDIA GeForce RTX 2080 Ti; 32 Gb for Nvidia Tesla V100 
 #SBATCH --time=5:00:00 # requested time in d-hh:mm:ss e.g. 10-00:00:00 = 10 days, 100:00:00 = 100 hours; 00:30:00 = 30 min
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_detect_jobs/%j.log # path for job-id.log file;
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/logs_detect_jobs/%j.err # path for job-id.err file;
+#SBATCH --output=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_detect_jobs/%j.log # path for job-id.log file;
+#SBATCH --error=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_detect_jobs/%j.err # path for job-id.err file;
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END # email options
 
 
