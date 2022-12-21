@@ -213,6 +213,12 @@ cd ~/PAI/detectors
 mkdir logs_train_jobs
 ```
 
+Also, for testing the inference speed, we created this folder:
+```bash
+cd ~/PAI/detectors
+mkdir logs_detect_jobs_speed
+```
+
 ## YOLOv5
 
 Download the YOLOv5 pre-trained weights on the COCO dataset:
