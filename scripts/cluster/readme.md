@@ -131,7 +131,7 @@ deactivate
 During the creation of the dataset, when executing `python ~/PAI/scripts/utils_create_datasets.py`, you should see something like:
 ```
 Original dataset
-/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/utils_datapaths.py:63: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
+/home/sc.uni-leipzig.de/user_name/PAI/scripts/utils_datapaths.py:63: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
   print_df = df.groupby(['class'])['images_path', 'labels_path'].count()
                         images_path  labels_path
 class                                           
@@ -145,7 +145,7 @@ lepidoptera                    5102         4576
 orthoptera                     1792         1649
 
 Number of image tiles per class in 20.0% test dataset
-/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/utils_datasampling.py:46: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
+/home/sc.uni-leipzig.de/user_name/PAI/scripts/utils_datasampling.py:46: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
   print_df = df_test.groupby(['class'])['images_path', 'labels_path'].count()
                         images_path  labels_path
 class                                           
@@ -159,7 +159,7 @@ lepidoptera                     210          210
 orthoptera                      210          210
 
 Number of image tiles per class in 20.0% valdiation dataset
-/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/utils_datasampling.py:58: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
+/home/sc.uni-leipzig.de/user_name/PAI/scripts/utils_datasampling.py:58: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
   print_df = df_val.groupby(['class'])['images_path', 'labels_path'].count()
                         images_path  labels_path
 class                                           
@@ -173,7 +173,7 @@ lepidoptera                     210          210
 orthoptera                      210          210
 
 Number of image tiles per class in training dataset
-/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/utils_datasampling.py:66: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
+/home/sc.uni-leipzig.de/user_name/PAI/scripts/utils_datasampling.py:66: FutureWarning: Indexing with multiple keys (implicitly converted to a tuple of keys) will be deprecated, use a list instead.
   print_df = df_train.groupby(['class'])['images_path', 'labels_path'].count()
                         images_path  labels_path
 class                                           
@@ -271,8 +271,8 @@ This is an example of an SBATCH header:
 #SBATCH --gres=gpu:rtx2080ti:8
 #SBATCH --mem-per-gpu=11G
 #SBATCH --time=2-00:00:00
-#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log
-#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err
+#SBATCH --output=/home/sc.uni-leipzig.de/%u/PAI/scripts/cluster/logs_train_jobs/%j.log
+#SBATCH --error=/home/sc.uni-leipzig.de/%u/PAI/scripts/cluster/logs_train_jobs/%j.err
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END
 ```
 
@@ -298,9 +298,9 @@ Note that `--mem-per-cpu=16G` didn't work with the curent SBATCH header structur
 
 `#SBATCH --time=50:00:00`: Requested time in the format `d-hh:mm:ss`, e.g. `50:00:00` = 50 hours, `4-00:00:00` = 4 days. One needs to have an estimation of how much a cluster job can last. Better overestimate because the Slurm Workload Manager will automatically kill any job when it reaches its time limit.
 
-`#SBATCH --output=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the job-id.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error.
+`#SBATCH --output=/home/sc.uni-leipzig.de/%u/PAI/scripts/cluster/logs_train_jobs/%j.log`: The path for storing the job-id.log file. Make sure this path exists beforing running a script because an incorrect or unexisting path will not trigger an error. `%u` refers to the user_name and `%j` refers to the job id.
 
-`#SBATCH --error=/home/sc.uni-leipzig.de/sv127qyji/PAI/scripts/cluster/logs_train_jobs/%j.err`: Same as above, but for the job-id.err file.
+`#SBATCH --error=/home/sc.uni-leipzig.de/%u/PAI/scripts/cluster/logs_train_jobs/%j.err`: Same as above, but for the job-id.err file.
 
 `#SBATCH --mail-type=BEGIN,TIME_LIMIT,END`: Email options. Instruct the Slurm Workload Manager to send emails regarding when a job starts after being put in the waiting list (`BEGIN`), if it reached the time limit (`TIME_LIMIT`) and if it ended (`END`).
 
@@ -312,8 +312,9 @@ More details about the Slurm options can be found at https://slurm.schedmd.com/s
 Note that, all absolute paths in a job script (except in the SBATCH header) can also be written relative to the home directory with the tilde (~) symbol.
 For example:
 ```
-/home/sc.uni-leipzig.de/sv127qyji/PAI/detectors/yolov5 # can be written as
+/home/sc.uni-leipzig.de/%u/PAI/detectors/yolov5 # can be written as
 ~/PAI/detectors/yolov5
+# %u refers to the user_name
 ```
 
 Comments about some of the `train.py` options:
