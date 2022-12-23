@@ -31,11 +31,11 @@ array=()
 # Run detection on the test dataset several times in a loop so that we 
 # measure detection time and time variability.
 # Give the confidence & IoU thresholds that will pass to detect.py 
-conf=0.2
-iou=0.5
+conf=0.3
+iou=0.6
 
 # This path & name will be used for --project and for the txt file with the time records
-results_folder=runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_nano_gpurtx_results_at_"$conf"_iou_"$iou"
+results_folder=runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_small_gpurtx_results_at_"$conf"_iou_"$iou"
 
 # How many times should it run detect.py?
 # This will help to get a better time estimate.
@@ -46,7 +46,7 @@ do
     start_time=$(date -u +%s.%N)
     
     python detect.py \
-    --weights ~/PAI/detectors/yolov5/runs/train/3219882_yolov5_n_img640_b8_e300_hyp_custom/weights/best.pt \
+    --weights ~/PAI/detectors/yolov5/runs/train/3219884_yolov5_s_img640_b8_e300_hyp_custom/weights/best.pt \
     --source ~/datasets/P1_Data_sampled/test/images \
     --imgsz 640 \
     --conf-thres $conf \
@@ -84,4 +84,4 @@ sacct -j $SLURM_JOB_ID --format=Elapsed
 
 
 # Run in terminal with:
-# sbatch ~/PAI/scripts/cluster/inference_speed/yolov5_detect_n_640_gpu_rtx_speed_test.sh
+# sbatch ~/PAI/scripts/cluster/inference_speed/yolov5_detect_s_640_gpu_rtx_speed_test.sh

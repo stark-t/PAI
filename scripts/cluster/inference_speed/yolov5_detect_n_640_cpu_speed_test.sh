@@ -3,8 +3,7 @@
 #SBATCH --partition=clara
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=4G
-#SBATCH --gres=gpu:rtx2080ti:0
-#SBATCH --time=04:00:00 
+#SBATCH --time=02:00:00 
 #SBATCH --output=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_detect_jobs_speed/%j.log
 #SBATCH --error=/home/sc.uni-leipzig.de/%u/PAI/detectors/logs_detect_jobs_speed/%j.err
 #SBATCH --mail-type=BEGIN,TIME_LIMIT,END
@@ -31,8 +30,11 @@ array=()
 # Run detection on the test dataset several times in a loop so that we 
 # measure detection time and time variability.
 # Give the confidence & IoU thresholds that will pass to detect.py 
-conf=0.3
-iou=0.1
+conf=0.2
+iou=0.5
+
+# This path & name will be used for --project and for the txt file with the time records
+results_folder=runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_nano_cpu_results_at_"$conf"_iou_"$iou"
 
 # How many times should it run detect.py?
 # This will help to get a better time estimate.
@@ -52,7 +54,7 @@ do
     --save-txt \
     --save-conf \
     --nosave \
-    --project runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_nano_cpu_results_at_"$conf"_iou_"$iou" \
+    --project $results_folder \
     --name iteration_"$i"
     
     end_time=$(date -u +%s.%N)
@@ -66,8 +68,9 @@ do
     array+=($elapsed)
 done
 
-# Save time array to file, values separated by new-line
-printf "%s\n" ${array[@]} > runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_nano_runtime_"$conf"_iou_"$iou".txt
+# Save time array to txt file, values separated by new-line
+extension='.txt'
+printf "%s\n" ${array[@]} > $results_folder$extension
 
 
 # Deactivate virtual environment
