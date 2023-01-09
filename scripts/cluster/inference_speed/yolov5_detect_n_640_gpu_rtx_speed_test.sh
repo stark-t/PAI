@@ -39,7 +39,9 @@ results_folder=runs/detect/detect_speed_jobs/job_"$SLURM_JOB_ID"_yolov5_nano_gpu
 
 # How many times should it run detect.py?
 # This will help to get a better time estimate.
-n_iter=5
+# I noticed that the first iteration will be slower (2-3 time slower than the next ones),
+# so it will be discarded. In this case, we will average the time of the last 5 iterations.
+n_iter=6
 for i in $(seq 1 $n_iter)
 do
     # Will measure time in seconds %s and nanoseconds %N
