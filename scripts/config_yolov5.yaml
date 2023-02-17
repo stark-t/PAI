@@ -1,0 +1,34 @@
+# Path to original dataset
+data_path: /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data
+
+# Path to sampled dataset
+path: /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data_sampled
+train: /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data_sampled/train/images
+val: /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_Data_sampled/val/images
+
+# Path(base) to save directory
+save_path: /home/sc.uni-leipzig.de/sv127qyji/datasets/P1_yolov5
+
+# Path to all yolov5 hyperparameters
+hyperparms_path: /home/sc.uni-leipzig.de/sv127qyji/yolov5/data/hyps/hyp.scratch-med.yaml
+
+# Model(basic) hyperparameters
+weights: yolov5n6.pt
+epochs: 3
+batch_size: 8
+image_size: 1280
+
+# Classes
+nc: 8  # number of classes
+names: [ 'Araneae', 'Coleoptera', 'Diptera', 'Hemiptera', 'Hymenoptera_Formicidae', 'Hymenoptera', 'Lepidoptera', 'Orthoptera' ] 
+# class names. Must be title case and the order must respect the order in P1_Data img_* folders.
+
+# Verbose
+# select print info 0=quiet, 1=cruicial, 2=all data info, 3=including plots
+verbose: 2
+
+# Seed
+seed: 99
+
+# ratio to split training testing and validation
+traintestval_ratio: [.6, .2, .2]
