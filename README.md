@@ -1,17 +1,26 @@
 # PAI: Pollination Artificial Intelligence
 
+This repository is associated with the paper:
 
-## Install required packages
-`pip intstall requirements.txt`
+- preprint
+> Stark, T., Stefan, V., Wurm, M., Spanier, R., Taubenboeck, H., & Knight, T. M. (2023). YOLO object detection models can locate and classify broad groups of flower-visiting arthropods in images. https://assets.researchsquare.com/files/rs-2673814/v1/ed1dd10c2de6319cc445a1ac.pdf?c=1678851330
 
-## Train pollinator order detector
+Computations were done using resources of the Leipzig University Computing Centre. Note that the setting of the environments are valid only for the resources made available to us. You will need to edit most of the data paths to fit your local settings.
+# How to use this repository
 
-Select object detector py-file (e.g. run_yolov5_train.py):
-* This will download yolov5 if not already exiting
-* This will create train, test, val dataset if not already existing
-* This will train yolov5 on the train and val dataset
+Before you proceed, make sure you have Git installed on your machine - see this https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
-## Test pollinator oders
-- [ ] update evaluta.py
-or
-- [ ] use yolov5 val.py on test dataset
+You can clone this repository with these git command line suggestions:
+```sh
+cd ~/path/to/desired/folder
+
+git clone https://github.com/stark-t/PAI
+```
+
+For training the models on a GPU cluster see our steps documented at https://github.com/stark-t/PAI/tree/main/scripts/cluster#readme
+
+For using our trained weights, see the suggestions at https://github.com/stark-t/PAI/tree/main/detectors#readme
+
+# Data
+
+Check https://github.com/stark-t/PAI/tree/main/data#readme
