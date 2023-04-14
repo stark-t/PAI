@@ -1,0 +1,16 @@
+# Folders ---------------------------------------------------------------
+
+# These are on the cluster side (some from previous trials & tests):
+detectron2
+logs_detect_jobs
+logs_detect_jobs_speed
+logs_train_jobs
+PyTorch_YOLOv4
+ScaledYOLOv4
+yolov5
+yolov7
+
+
+# Files ----------------------------------------------------------------
+
+__init__.py
