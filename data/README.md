@@ -1,8 +1,10 @@
 # Image download & annotation processing scripts
 
-This folder contains the data files and Python scripts required to download the images and generate the YOLO annotation txt files. Start by running the download_img.py script to download the necessary images. Afterward, create the YOLO annotation txt files by executing the make_yolo_txt_files.py script.
+This folder contains the data files with image URLs and image annotation and the Python scripts required to download the images and generate their corresponding YOLO annotation txt files. Start by running the download_img.py script to download the necessary images from the provided URLs (see img_url.txt and syrphid_img_url.txt). Afterward, create the YOLO annotation txt files by executing the make_yolo_txt_files.py script.
 
-The original occurrence datasets were obtained from the Global Biodiversity Information Facility (GBIF):
+The data tables (img_url.txt and syrphid_img_url.txt) containing the URLs for the images used in this project were obtained after sampling the public metadata of the GBIF occurrence datasets listed below. Please understand that due to legal and ethical concerns we cannot re-publish the images themselves. However, the provided URLs constitute public information already available on GBIF.
+
+The original occurrence datasets were obtained from the Global Biodiversity Information Facility (GBIF). These tables can be of several Gb each. The following table cites the GBIF occurrence datasets used in this project:
 
 | ID | Insect class           | Citation |
 |----|------------------------|----------|
@@ -15,7 +17,7 @@ The original occurrence datasets were obtained from the Global Biodiversity Info
 | 6  | Lepidoptera            | GBIF.org (16 September 2021) GBIF Occurrence Download https://doi.org/10.15468/dl.8jm4zg |
 | 7  | Orthoptera             | GBIF.org (23 September 2021) GBIF Occurrence Download  https://doi.org/10.15468/dl.pxjjz7 |
 
-We curated and sampled these occurrence tables to construct the data tables available in this repository.
+A significant proportion of the images, precisely 96.77%, are sourced from the citizen science platforms, iNaturalist and Observation.org, which account for 53.86% and 42.91% of the contributions respectively.
 
 The images were manually annotated with the VIA Annotation Software:
 > Abhishek Dutta and Andrew Zisserman. 2019. The VIA Annotation Software for Images, Audio and Video. In Proceedings of the 27th ACM International Conference on Multimedia (MM ’19), October 21–25, 2019, Nice, France. ACM, New York, NY, USA, 4 pages. https://doi.org/10.1145/3343031.3350535.
