@@ -1,0 +1,237 @@
+suborder,gbif_family,gbif_genus,taxonomicStatus,family,genus,duchenne_2020,deguines_2016,kugler_1984,mueller,thomson,family_jeroen_include,decision_vs,genus_in_2_families,gbif_genus_in_2_families,family_taxonomy_issues,family_taxonomy_notes,genus_taxonomy_notes,sum_url,seen_on_flower_gbif,notes_seen_on_flower_gbif,general_notes
+Polyphaga,Aphodiidae,Aphodius,accepted,Scarabaeidae,Aphodius,no,no,no,yes,no,yes,yes,yes,yes,NA,NA,NA,60,no,looks like spending its time on the ground,NA
+Polyphaga,Buprestidae,Acmaeodera,accepted,Buprestidae,Acmaeodera,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,325,yes,"It has several species on flowers. Later maybe we can check them all, for now we can take all genus",NA
+Polyphaga,Buprestidae,Anthaxia,accepted,Buprestidae,Anthaxia,yes,yes,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,3882,yes,common on flowers,NA
+Polyphaga,Buprestidae,Aphanisticus,accepted,Buprestidae,Aphanisticus,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,10,no,NA,NA
+Polyphaga,Buprestidae,Buprestis,accepted,Buprestidae,Buprestis,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,1066,yes,NA,NA
+Polyphaga,Buprestidae,Phaenops,accepted,Buprestidae,Phaenops,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,269,no,NA,NA
+Polyphaga,Byturidae,Byturus,accepted,Byturidae,Byturus,yes,no,no,yes,yes,NA,yes,NA,NA,NA,NA,NA,946,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cantharidae,Cantharis,accepted,Cantharidae,Cantharis,yes,yes,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,21078,yes,NA,NA
+Polyphaga,Cantharidae,Malthinus,accepted,Cantharidae,Malthinus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,317,yes,rare event,NA
+Polyphaga,Cantharidae,Malthodes,accepted,Cantharidae,Malthodes,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,207,yes,rare event,NA
+Polyphaga,Cantharidae,Podabrus,accepted,Cantharidae,Podabrus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,297,yes,NA,NA
+Polyphaga,Cantharidae,Podistra,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cantharidae,Rhagonycha,accepted,Cantharidae,Rhagonycha,yes,no,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,19385,yes,looks like carrying pollen on its body,NA
+Adephaga,Carabidae,NA,NA,Carabidae,no_id,no,no,no,yes,no,no,no,NA,NA,NA,NA,NA,NA,NA,NA,Jeroen citing Proctor: “Suborder Adephaga are not flower visitors”. There is just one not ID-ed in Mueller present dataset.
+Adephaga,Carabidae,Poecilus,accepted,NA,NA,no,no,no,no,yes,NA,no,NA,NA,NA,NA,NA,NA,NA,NA,Jeroen citing Proctor: “Suborder Adephaga are not flower visitors”
+Polyphaga,Cerambycidae,Acmaeops,accepted,Cerambycidae,Acmaeops,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,17,yes,NA,NA
+Polyphaga,Cerambycidae,Agapanthia,accepted,Cerambycidae,Agapanthia,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,6596,yes,NA,NA
+Polyphaga,Cerambycidae,Alocerus,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cerambycidae,Alosterna,accepted,Cerambycidae,Alosterna,yes,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,1364,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Anaglyptus,accepted,Cerambycidae,Anaglyptus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,579,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Anastrangalia,accepted,Cerambycidae,Anastrangalia,yes,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,2383,yes,NA,NA
+Polyphaga,Cerambycidae,Anisarthron,accepted,Cerambycidae,Anisarthron,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,12,no,NA,NA
+Polyphaga,Cerambycidae,Anisorus,accepted,Cerambycidae,Anisorus,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,NA,NA,no GBIF images for this genus,no GBIF images for this genus
+Polyphaga,Cerambycidae,Anoplodera,accepted,Cerambycidae,Anoplodera,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,363,yes,NA,NA
+Polyphaga,Cerambycidae,Aromia,accepted,Cerambycidae,Aromia,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,5035,yes,NA,NA
+Polyphaga,Cerambycidae,Brachyta,accepted,Cerambycidae,Brachyta,yes,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,931,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Cerambyx,accepted,Cerambycidae,Cerambyx,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,2909,yes,NA,NA
+Polyphaga,Cerambycidae,Chlorophorus,accepted,Cerambycidae,Chlorophorus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,2270,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Clytus,accepted,Cerambycidae,Clytus,yes,yes,yes,no,no,yes,yes,NA,NA,NA,NA,NA,6853,yes,NA,NA
+Polyphaga,Cerambycidae,Cortodera,accepted,Cerambycidae,Cortodera,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,290,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Cyrtoclytus,accepted,Cerambycidae,Cyrtoclytus,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,92,yes,NA,NA
+Polyphaga,Cerambycidae,Deilus,accepted,Cerambycidae,Deilus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,99,yes,NA,NA
+Polyphaga,Cerambycidae,Dinoptera,accepted,Cerambycidae,Dinoptera,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,788,yes,NA,NA
+Polyphaga,Cerambycidae,Evodinus,accepted,Cerambycidae,Evodinus,no,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,81,yes,NA,NA
+Polyphaga,Cerambycidae,Gaurotes,accepted,Cerambycidae,Gaurotes,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,1421,yes,NA,NA
+Polyphaga,Cerambycidae,Glaphyra,accepted,Cerambycidae,Glaphyra,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,NA,NA,no GBIF images for this genus,no GBIF images for this genus
+Polyphaga,Cerambycidae,Gnathacmaeops,accepted,Cerambycidae,Gnathacmaeops,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,336,yes,NA,NA
+Polyphaga,Cerambycidae,Grammoptera,accepted,Cerambycidae,Grammoptera,yes,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,1524,yes,NA,NA
+Polyphaga,Cerambycidae,Judolia,accepted,Cerambycidae,Judolia,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,389,yes,NA,NA
+Polyphaga,Cerambycidae,Leptura,accepted,Cerambycidae,Leptura,yes,yes,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,7045,yes,NA,NA
+Polyphaga,Cerambycidae,Lepturobosca,accepted,Cerambycidae,Lepturobosca,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,1106,yes,NA,NA
+Polyphaga,Cerambycidae,Molorchus,accepted,Cerambycidae,Molorchus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,968,yes,NA,NA
+Polyphaga,Cerambycidae,Morimus,accepted,Cerambycidae,Morimus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,1625,no,Looks like could be,NA
+Polyphaga,Cerambycidae,Nathrius,accepted,Cerambycidae,Nathrius,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,9,no,NA,NA
+Polyphaga,Cerambycidae,Necydalis,accepted,Cerambycidae,Necydalis,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,243,yes,NA,NA
+Polyphaga,Cerambycidae,Obrium,accepted,Cerambycidae,Obrium,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,318,yes,NA,NA
+Polyphaga,Cerambycidae,Oxymirus,accepted,Cerambycidae,Oxymirus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,748,yes,NA,NA
+Polyphaga,Cerambycidae,Pachyta,accepted,Cerambycidae,Pachyta,yes,yes,yes,yes,no,yes,yes,NA,NA,NA,NA,NA,831,yes,NA,NA
+Polyphaga,Cerambycidae,Pachytodes,accepted,Cerambycidae,Pachytodes,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,1904,yes,NA,NA
+Polyphaga,Cerambycidae,Paracorymbia,accepted,Cerambycidae,Paracorymbia,yes,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,3241,yes,NA,NA
+Polyphaga,Cerambycidae,Pedostrangalia,accepted,Cerambycidae,Pedostrangalia,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,83,yes,NA,NA
+Polyphaga,Cerambycidae,Phymatodes,accepted,Cerambycidae,Phymatodes,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,1524,yes,rare events,NA
+Polyphaga,Cerambycidae,Poecilium,accepted,Cerambycidae,Poecilium,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,325,yes,rare events,NA
+Polyphaga,Cerambycidae,Pseudovadonia,accepted,Cerambycidae,Pseudovadonia,yes,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,2152,yes,looks like carrying pollen on its body,NA
+Polyphaga,Cerambycidae,Pyrrhidium,accepted,Cerambycidae,Pyrrhidium,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,1113,yes,rare events,NA
+Polyphaga,Cerambycidae,Rhagium,accepted,Cerambycidae,Rhagium,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,8386,yes,rare events,NA
+Polyphaga,Cerambycidae,Ropalopus,accepted,Cerambycidae,Ropalopus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,249,yes,rare event,NA
+Polyphaga,Cerambycidae,Rutpela,accepted,Cerambycidae,Rutpela,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,8201,yes,NA,NA
+Polyphaga,Cerambycidae,Saperda,accepted,Cerambycidae,Saperda,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,3511,yes,rare event,NA
+Polyphaga,Cerambycidae,Semanotus,accepted,Cerambycidae,Semanotus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,96,no,NA,NA
+Polyphaga,Cerambycidae,Stenocorus,accepted,Cerambycidae,Stenocorus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,935,yes,NA,NA
+Polyphaga,Cerambycidae,Stenopterus,accepted,Cerambycidae,Stenopterus,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,1897,yes,NA,NA
+Polyphaga,Cerambycidae,Stenurella,accepted,Cerambycidae,Stenurella,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,7573,yes,NA,NA
+Polyphaga,Cerambycidae,Stictoleptura,accepted,Cerambycidae,Stictoleptura,yes,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,11528,yes,NA,NA
+Polyphaga,Cerambycidae,Strangalia,accepted,Cerambycidae,Strangalia,yes,yes,yes,no,yes,yes,yes,NA,NA,NA,NA,NA,1002,yes,NA,NA
+Polyphaga,Cerambycidae,Tetropium,accepted,Cerambycidae,Tetropium,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,435,no,NA,NA
+Polyphaga,Cerambycidae,Vesperus,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cerambycidae,Xylotrechus,accepted,Cerambycidae,Xylotrechus,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,1688,no,NA,NA
+Polyphaga,Cetoniidae,Cetonia,accepted,Cetoniidae,Cetonia,no,yes,yes,no,yes,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Cetoniidae,Cetonia,accepted,Scarabaeidae,Cetonia,yes,no,no,yes,yes,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Cetoniidae,Gnorimus,accepted,Cetoniidae,Gnorimus,no,yes,no,no,yes,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,NA,NA,NA
+Polyphaga,Cetoniidae,Gnorimus,accepted,Scarabaeidae,Gnorimus,yes,no,no,no,yes,yes,no,yes,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cetoniidae,Oxythyrea,accepted,Cetoniidae,Oxythyrea,no,yes,no,no,yes,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae.",NA
+Polyphaga,Cetoniidae,Oxythyrea,accepted,Scarabaeidae,Oxythyrea,yes,no,no,yes,yes,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae.",NA
+Polyphaga,Cetoniidae,Protaetia,accepted,Cetoniidae,Protaetia,no,yes,no,no,no,yes,yes,yes,yes,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,Looks like being a synonim of Miksicus from Scarabaeidae. Gbif places Protaetia in Cetoniidae,NA,yes,added manually. Note that this one belongs to Cetoniidae in GBIF,NA
+Polyphaga,Cetoniidae,Protaetia,accepted,Scarabaeidae,Protaetia,yes,no,no,yes,no,yes,no,yes,yes,NA,NA,NA,NA,yes,added manually. Note that this one belongs to Cetoniidae in GBIF,NA
+Polyphaga,Cetoniidae,Trichius,accepted,Cetoniidae,Trichius,no,yes,yes,no,no,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,NA,NA,NA
+Polyphaga,Cetoniidae,Trichius,accepted,Scarabaeidae,Trichius,yes,no,no,yes,no,yes,no,yes,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cetoniidae,Tropinota,accepted,Cetoniidae,Tropinota,no,yes,no,no,yes,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Cetoniidae,Tropinota,accepted,Scarabaeidae,Tropinota,yes,no,no,no,yes,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Cetoniidae,Valgus,accepted,Cetoniidae,Valgus,no,yes,no,no,yes,yes,yes,yes,NA,yes,Is a subfamily of Scarabaeidae (Wikipedia) though it appears in the GBIF as its own family. I didn’t see it in Mueller’s dataset but was in jeroen’s list.,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Cetoniidae,Valgus,accepted,Scarabaeidae,Valgus,yes,no,no,no,yes,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Cetoniidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Chrysomelidae,Acalymma,accepted,Chrysomelidae,Acalymma,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,299,yes,NA,NA
+Polyphaga,Chrysomelidae,Altica,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Chrysomelidae,Bruchidius,accepted,Chrysomelidae,Bruchidius,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,513,yes,NA,NA
+Polyphaga,Chrysomelidae,Bruchus,accepted,Chrysomelidae,Bruchus,no,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,354,yes,NA,NA
+Polyphaga,Chrysomelidae,Callosobruchus,accepted,Chrysomelidae,Callosobruchus,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,40,no,NA,NA
+Polyphaga,Chrysomelidae,Cassida,accepted,Chrysomelidae,Cassida,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,4038,yes,rare events,NA
+Polyphaga,Chrysomelidae,Chiridopsis,accepted,Chrysomelidae,Chiridopsis,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,464,yes,NA,NA
+Polyphaga,Chrysomelidae,Chrysolina,accepted,Chrysomelidae,Chrysolina,yes,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,19043,yes,NA,NA
+Polyphaga,Chrysomelidae,Chrysomela,accepted,Chrysomelidae,Chrysomela,yes,no,no,no,yes,yes,yes,NA,NA,NA,NA,NA,8504,yes,NA,NA
+Polyphaga,Chrysomelidae,Clytra,accepted,Chrysomelidae,Clytra,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,3136,yes,NA,NA
+Polyphaga,Chrysomelidae,Coptocephala,accepted,Chrysomelidae,Coptocephala,no,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,66,yes,NA,NA
+Polyphaga,Chrysomelidae,Crioceris,accepted,Chrysomelidae,Crioceris,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,2449,yes,NA,NA
+Polyphaga,Chrysomelidae,Cryptocephalus,accepted,Chrysomelidae,Cryptocephalus,yes,yes,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,3538,yes,NA,NA
+Polyphaga,Chrysomelidae,Donacia,accepted,Chrysomelidae,Donacia,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,2620,yes,NA,NA
+Polyphaga,Chrysomelidae,Entomoscelis,accepted,Chrysomelidae,Entomoscelis,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,111,yes,NA,NA
+Polyphaga,Chrysomelidae,Exosoma,accepted,Chrysomelidae,Exosoma,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,903,yes,NA,NA
+Polyphaga,Chrysomelidae,Labidostomis,accepted,Chrysomelidae,Labidostomis,yes,yes,no,yes,yes,yes,yes,NA,NA,NA,NA,NA,184,yes,NA,NA
+Polyphaga,Chrysomelidae,Lachnaia,accepted,Chrysomelidae,Lachnaia,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,444,yes,NA,NA
+Polyphaga,Chrysomelidae,Lema,accepted,Chrysomelidae,Lema,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,55,no,Looks like could be,NA
+Polyphaga,Chrysomelidae,Leptinotarsa,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Chrysomelidae,Lilioceris,accepted,Chrysomelidae,Lilioceris,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,4823,yes,NA,NA
+Polyphaga,Chrysomelidae,Lochmaea,accepted,Chrysomelidae,Lochmaea,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,1067,yes,NA,NA
+Polyphaga,Chrysomelidae,Longitarsus,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Chrysomelidae,Luperus,accepted,Chrysomelidae,Luperus,no,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,344,yes,NA,NA
+Polyphaga,Chrysomelidae,Neocrepidodera,accepted,Chrysomelidae,Neocrepidodera,no,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,155,yes,NA,NA
+Polyphaga,Chrysomelidae,Oreina,accepted,Chrysomelidae,Oreina,no,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,47,no,Looks like could be,NA
+Polyphaga,Chrysomelidae,Oulema,accepted,Chrysomelidae,Oulema,no,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,702,yes,NA,NA
+Polyphaga,Chrysomelidae,Plateumaris,accepted,Chrysomelidae,Plateumaris,yes,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,767,yes,NA,NA
+Polyphaga,Chrysomelidae,Podagrica,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Chrysomelidae,Psylliodes,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Chrysomelidae,Timarcha,accepted,Chrysomelidae,Timarcha,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,2312,no,NA,NA
+Polyphaga,Cleridae,Trichodes,accepted,Cleridae,Trichodes,yes,yes,yes,yes,no,yes,yes,NA,NA,NA,NA,NA,5363,yes,NA,NA
+Polyphaga,Coccinellidae,Adalia,accepted,Coccinellidae,Adalia,no,no,no,yes,yes,no,yes,NA,NA,NA,NA,NA,15054,yes,NA,NA
+Polyphaga,Coccinellidae,Anatis,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Coccidula,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Coccinella,accepted,Coccinellidae,Coccinella,no,yes,yes,no,yes,no,yes,NA,NA,NA,NA,NA,85438,yes,NA,NA
+Polyphaga,Coccinellidae,Coccinula,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Harmonia,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Hippodamia,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Propylaea,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Coccinellidae,Tytthaspis,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Cryptophagidae,Antherophagus,accepted,Cryptophagidae,Antherophagus,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,78,yes,NA,NA
+Polyphaga,Curculionidae,Anthonomus,accepted,Curculionidae,Anthonomus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,2026,yes,rare event,NA
+Polyphaga,Curculionidae,Curculio,accepted,Curculionidae,Curculio,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,1521,yes,rare event,NA
+Polyphaga,Curculionidae,Cyphocleonus,accepted,Curculionidae,Cyphocleonus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,162,yes,NA,NA
+Polyphaga,Curculionidae,Dascillus,accepted,Dascillidae,Dascillus,yes,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,458,yes,NA,NA
+Polyphaga,Curculionidae,Dermestes,accepted,Dermestidae,Dermestes,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,2977,no,NA,NA
+Polyphaga,Curculionidae,Gymnetron,accepted,Curculionidae,Gymnetron,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,40,yes,NA,NA
+Polyphaga,Curculionidae,Larinus,accepted,Curculionidae,Larinus,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,3297,yes,NA,NA
+Polyphaga,Curculionidae,Lixus,accepted,Curculionidae,Lixus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,2046,yes,NA,NA
+Polyphaga,Curculionidae,Phyllobius,accepted,Curculionidae,Phyllobius,no,yes,no,no,yes,no,yes,NA,NA,NA,NA,NA,8237,yes,NA,NA
+Polyphaga,Curculionidae,Pissodes,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Curculionidae,Polydrusus,accepted,Curculionidae,Polydrusus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,9344,yes,NA,NA
+Polyphaga,Curculionidae,Sciaphilus,accepted,Curculionidae,Sciaphilus,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,1012,yes,NA,NA
+Polyphaga,Curculionidae,Zacladus,accepted,Curculionidae,Zacladus,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,184,yes,NA,NA
+Polyphaga,Dasytidae,Aplocnemus,accepted,Dasytidae,Aplocnemus,no,yes,no,no,no,yes,yes,NA,NA,yes,Dasytes alpigradus and D. plumbeus from Mueller dataset belong now to Melyridae family and not Dasytidae in GBIF. Dasytinae is a subfamily of Melyridae (wikipedia). Dasytes is mentioned in Duchenne in fam Melyridae.,NA,NA,NA,NA,NA
+Polyphaga,Dasytidae,Psilothrix,accepted,Dasytidae,Psilothrix,no,yes,no,no,no,yes,yes,NA,NA,yes,Dasytes alpigradus and D. plumbeus from Mueller dataset belong now to Melyridae family and not Dasytidae in GBIF. Dasytinae is a subfamily of Melyridae (wikipedia). Dasytes is mentioned in Duchenne in fam Melyridae.,NA,NA,NA,NA,NA
+Polyphaga,Dermestidae,NA,NA,Dermestidae,The skin beetles,no,yes,no,no,no,NA,no,NA,NA,NA,NA,NA,NA,NA,NA,common name for Dermestidae family (Wikipedia). There are already 2 genera from this family in this table
+Polyphaga,Dermestidae,Anthrenus,accepted,Dermestidae,Anthrenus,no,no,yes,no,no,NA,yes,NA,NA,NA,NA,NA,8257,yes,NA,NA
+Polyphaga,Dermestidae,Attagenus,accepted,Dermestidae,Attagenus,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,1222,yes,NA,NA
+Polyphaga,Elateridae,Actenicerus,accepted,Elateridae,Actenicerus,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,406,yes,NA,NA
+Polyphaga,Elateridae,Agriotes,accepted,Elateridae,Agriotes,no,no,yes,no,no,no,yes,NA,NA,NA,NA,NA,968,yes,NA,NA
+Polyphaga,Elateridae,Agrypnus,accepted,Elateridae,Agrypnus,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,3500,yes,NA,NA
+Polyphaga,Elateridae,Ampedus,accepted,Elateridae,Ampedus,no,yes,no,no,yes,no,yes,NA,NA,NA,NA,NA,1974,yes,NA,NA
+Polyphaga,Elateridae,Anostirus,accepted,Elateridae,Anostirus,no,yes,no,yes,no,no,yes,NA,NA,NA,NA,NA,539,yes,NA,NA
+Polyphaga,Elateridae,Aplotarsus,accepted,Elateridae,Aplotarsus,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,32,yes,NA,NA
+Polyphaga,Elateridae,Athous,accepted,Elateridae,Athous,yes,no,no,no,yes,no,yes,NA,NA,NA,NA,NA,1818,yes,NA,NA
+Polyphaga,Elateridae,Calambus,accepted,Elateridae,Calambus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,24,no,NA,NA
+Polyphaga,Elateridae,Cardiophorus,accepted,Elateridae,Cardiophorus,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,287,yes,NA,NA
+Polyphaga,Elateridae,Ctenicera,accepted,Elateridae,Ctenicera,yes,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,1029,yes,NA,NA
+Polyphaga,Elateridae,Dalopius,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Elateridae,Denticollis,accepted,Elateridae,Denticollis,yes,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,990,yes,NA,NA
+Polyphaga,Elateridae,Hemicrepidius,accepted,Elateridae,Hemicrepidius,yes,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,279,yes,might even pollinate,NA
+Polyphaga,Elateridae,Hypnoidus,accepted,Elateridae,Hypnoidus,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,90,no,NA,NA
+Polyphaga,Elateridae,Limoniscus,accepted,Elateridae,Limoniscus,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Elateridae,Limonius,accepted,Elateridae,Limonius,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,50,yes,NA,NA
+Polyphaga,Elateridae,Megapenthes,accepted,Elateridae,Megapenthes,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Elateridae,Melanotus,accepted,Elateridae,Melanotus,yes,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,383,yes,NA,NA
+Polyphaga,Elateridae,Paraphotistus,accepted,Elateridae,Paraphotistus,yes,no,no,no,no,no,yes,NA,NA,NA,NA,NA,197,yes,NA,NA
+Polyphaga,Elateridae,Pheletes,accepted,Elateridae,Pheletes,yes,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,99,yes,might even pollinate,NA
+Polyphaga,Elateridae,Procraerus,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Elateridae,Prosternon,accepted,Elateridae,Prosternon,yes,no,no,yes,yes,no,yes,NA,NA,NA,NA,NA,1280,yes,NA,NA
+Polyphaga,Elateridae,Selatosomus,accepted,Elateridae,Selatosomus,yes,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,1428,yes,NA,NA
+Polyphaga,Elateridae,Sericus,accepted,Elateridae,Sericus,yes,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,210,yes,NA,NA
+Polyphaga,Hydrophilidae,Cercyon,accepted,Hydrophilidae,Cercyon,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,366,no,NA,NA
+Polyphaga,Kateretidae,Kateretes,accepted,Kateretidae,Kateretes,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,84,yes,NA,NA
+Polyphaga,Leiodidae,Leiodes,accepted,Leiodidae,Leiodes,no,no,no,yes,no,no,yes,NA,NA,NA,NA,NA,29,yes,NA,NA
+Polyphaga,Lycidae,NA,NA,Lycidae,The net-winged beetles,no,yes,no,no,no,NA,no,NA,NA,NA,NA,NA,NA,NA,NA,common name for Lycidae  family (Wikipedia). We have 3 genera from this family in this list already.
+Polyphaga,Lycidae,Dictyoptera,accepted,Lycidae,Dictyoptera,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,1013,yes,NA,NA
+Polyphaga,Lycidae,Lygistopterus,accepted,Lycidae,Lygistopterus,yes,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,1309,yes,NA,NA
+Polyphaga,Lycidae,Platycis,accepted,Lycidae,Platycis,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,358,yes,rare event,NA
+Polyphaga,Malachiidae,Clanoptilus,accepted,Malachiidae,Clanoptilus,no,yes,no,yes,no,yes,yes,NA,NA,yes,"The 3 genera that appear in Mueller (Clanoptilus Cordylepherus Nepachys ) are all observed on flowers in GBIF gallery. However, NCBI taxanomy places these genera in Melyridae family and Malachiidae doesn’t exist. But GBIF places them in Malachiidae. Cordylepherus is mentioned in Duchenne in family Melyridae.",NA,651,yes,NA,NA
+Polyphaga,Malachiidae,Cordylepherus,accepted,Melyridae,Cordylepherus,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,348,yes,NA,NA
+Polyphaga,Malachiidae,Nepachys,accepted,Malachiidae,Nepachys,no,no,no,yes,no,yes,yes,NA,NA,yes,"The 3 genera that appear in Mueller (Clanoptilus Cordylepherus Nepachys ) are all observed on flowers in GBIF gallery. However, NCBI taxanomy places these genera in Melyridae family and Malachiidae doesn’t exist. But GBIF places them in Malachiidae. Cordylepherus is mentioned in Duchenne in family Melyridae.",NA,10,yes,NA,NA
+Polyphaga,Melandryidae,Melandrya,accepted,Melandryidae,Melandrya,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,123,no,NA,NA
+Polyphaga,Melandryidae,Wanachia,accepted,Melandryidae,Wanachia,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,no,added manually; just 2 images on GBIF gallery,NA
+Polyphaga,Meloidae,Actenodia,accepted,Meloidae,Actenodia,no,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Meloidae,Hycleus,accepted,Meloidae,Hycleus,no,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Meloidae,Meloe,accepted,Meloidae,Meloe,no,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Meloidae,Mylabris,accepted,Meloidae,Mylabris,no,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Melolonthidae,Hoplia,accepted,Rutelidae,Hoplia,no,yes,no,no,no,NA,yes,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Melolonthidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Melolonthidae,Hoplia,accepted,Scarabaeidae,Hoplia,no,no,no,yes,no,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Melolonthidae in GBIF, but is now Scarabaeidae",NA
+Polyphaga,Melyridae,Anthocomus,accepted,Malachiidae,Anthocomus,no,yes,no,no,no,yes,yes,yes,NA,yes,"The 3 genera that appear in Mueller (Clanoptilus Cordylepherus Nepachys ) are all observed on flowers in GBIF gallery. However, NCBI taxanomy places these genera in Melyridae family and Malachiidae doesn’t exist. But GBIF places them in Malachiidae. Cordylepherus is mentioned in Duchenne in family Melyridae.",NA,2865,yes,NA,NA
+Polyphaga,Melyridae,Anthocomus,accepted,Melyridae,Anthocomus,yes,no,no,no,no,NA,no,yes,NA,NA,NA,NA,2865,yes,NA,NA
+Polyphaga,Melyridae,Axinotarsus,accepted,Malachiidae,Axinotarsus,no,yes,no,no,no,yes,yes,NA,NA,yes,"The 3 genera that appear in Mueller (Clanoptilus Cordylepherus Nepachys ) are all observed on flowers in GBIF gallery. However, NCBI taxanomy places these genera in Melyridae family and Malachiidae doesn’t exist. But GBIF places them in Malachiidae. Cordylepherus is mentioned in Duchenne in family Melyridae.",NA,168,yes,NA,NA
+Polyphaga,Melyridae,Dasytes,accepted,Dasytidae,Dasytes,no,yes,no,yes,yes,yes,no,yes,NA,yes,Dasytes alpigradus and D. plumbeus from Mueller dataset belong now to Melyridae family and not Dasytidae in GBIF. Dasytinae is a subfamily of Melyridae (wikipedia). Dasytes is mentioned in Duchenne in fam Melyridae.,NA,927,yes,This one looks like pollinating,NA
+Polyphaga,Melyridae,Dasytes,accepted,Melyridae,Dasytes,yes,no,yes,no,yes,NA,yes,yes,NA,NA,NA,NA,927,yes,This one looks like pollinating,NA
+Polyphaga,Melyridae,Dolichosoma,accepted,Melyridae,Dolichosoma,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,234,yes,NA,NA
+Polyphaga,Melyridae,Enicopus,accepted,Dasytidae,Enicopus,no,yes,no,no,no,yes,yes,NA,NA,yes,Dasytes alpigradus and D. plumbeus from Mueller dataset belong now to Melyridae family and not Dasytidae in GBIF. Dasytinae is a subfamily of Melyridae (wikipedia). Dasytes is mentioned in Duchenne in fam Melyridae.,NA,27,yes,NA,NA
+Polyphaga,Melyridae,Malachius,accepted,Malachiidae,Malachius,no,yes,no,no,yes,yes,no,yes,NA,yes,"The 3 genera that appear in Mueller (Clanoptilus Cordylepherus Nepachys ) are all observed on flowers in GBIF gallery. However, NCBI taxanomy places these genera in Melyridae family and Malachiidae doesn’t exist. But GBIF places them in Malachiidae. Cordylepherus is mentioned in Duchenne in family Melyridae.",NA,4019,yes,NA,NA
+Polyphaga,Melyridae,Malachius,accepted,Melyridae,Malachius,yes,no,yes,no,yes,NA,yes,yes,NA,NA,NA,NA,4019,yes,NA,NA
+Polyphaga,Mordellidae,NA,NA,Mordellidae,The tumbling flower beetles,no,yes,no,no,no,yes,no,NA,NA,NA,NA,NA,NA,NA,NA,common name for Mordellidae family (Wikipedia). We have 4 genera from this family in this list already.
+Polyphaga,Mordellidae,Mordella,accepted,Mordellidae,Mordella,yes,no,yes,no,no,yes,yes,NA,NA,NA,NA,NA,221,yes,NA,NA
+Polyphaga,Mordellidae,Mordellistena,accepted,Mordellidae,Mordellistena,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,59,yes,NA,NA
+Polyphaga,Mordellidae,Mordellochroa,accepted,Mordellidae,Mordellochroa,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,301,yes,NA,NA
+Polyphaga,Mordellidae,Variimorda,accepted,Mordellidae,Variimorda,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,82,yes,NA,NA
+Polyphaga,Mycteridae,Mycterus,accepted,Mordellidae,Mycterus,no,yes,no,no,no,yes,no,yes,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Mycteridae,Mycterus,accepted,Mycteridae,Mycterus,no,yes,no,no,no,NA,yes,yes,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Nitidulidae,NA,NA,Nitidulidae,The sap beetles,no,yes,no,no,no,yes,no,NA,NA,NA,NA,NA,NA,NA,NA,common name for Nitidulidae family (Wikipedia). We have 9 genera from this family already in this list.
+Polyphaga,Nitidulidae,Brassicogethes,accepted,Nitidulidae,Brassicogethes,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,303,yes,NA,NA
+Polyphaga,Nitidulidae,Cychramus,accepted,Nitidulidae,Cychramus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,857,yes,NA,NA
+Polyphaga,Nitidulidae,Epuraea,accepted,Nitidulidae,Epuraea,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,287,yes,NA,NA
+Polyphaga,Nitidulidae,Fabogethes,accepted,Nitidulidae,Fabogethes,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,NA,NA,no img on GBIF gallery,no img on GBIF gallery
+Polyphaga,Nitidulidae,Genistogethes,accepted,Nitidulidae,Genistogethes,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,6,no,2 img on GBIF,NA
+Polyphaga,Nitidulidae,Glischrochilus,accepted,Nitidulidae,Glischrochilus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,2867,no,But possibly as rare event,NA
+Polyphaga,Nitidulidae,Meligethes,accepted,Nitidulidae,Meligethes,no,no,yes,yes,no,yes,yes,NA,NA,NA,NA,NA,98,yes,NA,NA
+Polyphaga,Nitidulidae,Pityophagus,accepted,Nitidulidae,Pityophagus,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,46,no,NA,NA
+Polyphaga,Nitidulidae,Pocadius,accepted,Nitidulidae,Pocadius,yes,no,no,no,no,yes,yes,NA,NA,NA,NA,NA,36,no,NA,NA
+Polyphaga,Oedemeridae,Anogcodes,accepted,Oedemeridae,Anogcodes,no,yes,no,yes,no,yes,yes,NA,NA,NA,NA,NA,142,yes,NA,NA
+Polyphaga,Oedemeridae,Chrysanthia,accepted,Oedemeridae,Chrysanthia,yes,yes,no,no,yes,yes,yes,NA,NA,NA,NA,NA,1455,yes,NA,NA
+Polyphaga,Oedemeridae,Ischnomera,accepted,Oedemeridae,Ischnomera,no,yes,no,no,no,yes,yes,NA,NA,NA,NA,NA,110,yes,NA,NA
+Polyphaga,Oedemeridae,Oedemera,accepted,Oedemeridae,Oedemera,yes,yes,yes,yes,yes,yes,yes,NA,NA,NA,NA,NA,11165,yes,NA,NA
+Polyphaga,Orsodacnidae,Orsodacne,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Phalacridae,Olibrus,accepted,Phalacridae,Olibrus,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,135,yes,NA,NA
+Polyphaga,Phalacridae,Stilbus,accepted,Phalacridae,Stilbus,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,10,yes,NA,NA
+Polyphaga,Pyrochroidae,Pyrochroa,accepted,Pyrochroidae,Pyrochroa,yes,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,8695,yes,NA,NA
+Polyphaga,Pyrochroidae,Schizotus,accepted,Pyrochroidae,Schizotus,yes,no,no,no,no,NA,yes,NA,NA,NA,NA,NA,887,yes,rare events,NA
+Polyphaga,Rutelidae,Anisoplia,accepted,Rutelidae,Anisoplia,no,yes,no,no,no,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Rutelidae,Phyllopertha,accepted,Rutelidae,Phyllopertha,no,yes,no,no,no,NA,yes,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Rutelidae in GBIF, but is now Scarabaeidae.",NA
+Polyphaga,Rutelidae,Phyllopertha,accepted,Scarabaeidae,Phyllopertha,no,no,no,yes,no,yes,no,yes,NA,NA,NA,NA,NA,yes,"added manually. Note that this one belongs to Rutelidae in GBIF, but is now Scarabaeidae.",NA
+Polyphaga,Scarabaeidae,NA,NA,Scarabaeidae,Aphodius,no,no,no,yes,no,yes,no,yes,yes,NA,NA,see same genus in Aphodiidae. GBIF prefers Aphodiidae and marks Scarabaeidae as doubtful for this genus,60,no,looks like spending its time on the ground,NA
+Polyphaga,Scarabaeidae,NA,NA,Scarabaeidae,Miksicus,yes,no,no,no,no,yes,no,NA,NA,NA,NA,see genus Protaetia,NA,NA,no images on GBIF,no images on GBIF
+Polyphaga,Scraptiidae,NA,NA,Scraptiidae,The false flower beetles,no,yes,no,no,no,yes,no,NA,NA,NA,NA,NA,NA,NA,NA,common name for Scraptiidae family (Wikipedia). There is 1 genera from this family in this list.
+Polyphaga,Scraptiidae,Anaspis,accepted,Scraptiidae,Anaspis,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,522,yes,NA,NA
+Polyphaga,Silphidae,NA,NA,Silphidae,Necrophorus,no,no,no,yes,no,no,no,NA,NA,NA,NA,NA,NA,NA,NA,Just 1 lab img on GBIF gallery for Europe
+Polyphaga,Staphylinidae,Anthophagus,accepted,Staphylinidae,Anthophagus,no,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,77,yes,just one case,NA
+Polyphaga,Staphylinidae,Eusphalerum,accepted,Staphylinidae,Eusphalerum,no,no,no,yes,no,yes,yes,NA,NA,NA,NA,NA,136,yes,NA,NA
+Polyphaga,Staphylinidae,Phloeopora,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Tenebrionidae,Cteniopus,accepted,Alleculidae,Cteniopus,no,no,no,yes,yes,yes,no,yes,NA,yes,subfamily of  Tenebrionidae. GBIF also points to Tenebrionidae.,belongs to Tenebrionidae in GBIF,1290,yes,NA,use this genus name but as part of Tenebrionidae family
+Polyphaga,Tenebrionidae,Cteniopus,accepted,Tenebrionidae,Cteniopus,no,yes,no,no,yes,no,yes,yes,NA,NA,NA,NA,1290,yes,NA,NA
+Polyphaga,Tenebrionidae,Hymenalia,accepted,Tenebrionidae,Hymenalia,no,yes,no,no,no,no,yes,NA,NA,NA,NA,NA,1,no,NA,NA
+Polyphaga,Tenebrionidae,Isomira,accepted,Tenebrionidae,Isomira,no,yes,no,no,yes,no,yes,NA,NA,NA,NA,NA,151,yes,NA,NA
+Polyphaga,Tenebrionidae,Lagria,accepted,NA,NA,no,no,no,no,yes,NA,yes,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Polyphaga,Tenebrionidae,Pseudocistela,accepted,Tenebrionidae,Pseudocistela,no,yes,no,yes,no,no,yes,NA,NA,NA,NA,NA,151,yes,NA,NA
