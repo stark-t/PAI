@@ -1,18 +1,18 @@
-order,superfamily,clade,family,notes,number of species,number of species estimated,number of images,reference,classification goal
-hymenoptera,Apoidea,Anthophila,Andrenidae,this clade is the bees,465,465,23786,Nieto et al. 2014 European Bees; Atlas_hymenoptera (http://www.atlashymenoptera.net/page.aspx?id=243),subfamily and genera
-hymenoptera,Apoidea,Anthophila,Apidae,this clade is the bees,561,561,110393,Nieto et al. 2014 European Bees,"subfamily, tribe, and genera, and bombus species"
-hymenoptera,Apoidea,Anthophila,Colletidae,this clade is the bees,146,146,3145,Nieto et al. 2014 European Bees,genera
-hymenoptera,Apoidea,Anthophila,Halictidae,this clade is the bees,314,314,6628,Nieto et al. 2014 European Bees,"subfamily, genera"
-hymenoptera,Apoidea,Anthophila,Megachilidae,this clade is the bees,442,442,20243,Nieto et al. 2014 European Bees,"subfamily, tribe, and genera"
-hymenoptera,Apoidea,Anthophila,Melittidae,this clade is the bees,37,37,3990,Nieto et al. 2014 European Bees,genera
-hymenoptera,Apoidea,apoid wasps,Crabronidae,"this clade is a paraphyletic assemblage of 4 familes, three of which occur in europe, Ampulicidae is also excluded because it is an exclusive parasite to cockroaches",730 in clade,730,12610,Schmid-Egger 2018,clade and family
-hymenoptera,Apoidea,apoid wasps,Sphecidae,"this clade is a paraphyletic assemblage of 4 familes, three of which occur in europe, Ampulicidae is also excluded because it is an exclusive parasite to cockroaches",730 in clade,,4368,Schmid-Egger 2018,clade and family
-hymenoptera,Pamphilioidea,,Megalodontesidae,,40,40,13,Taeger 2002,superfamily
-hymenoptera,Pamphilioidea,,Pamphiliidae,,56,56,859,Van Achterberg 1986,superfamily
-hymenoptera,Tenthredinoidea,,Argidae,,32,32,1750,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/argidae/,superfamily
-hymenoptera,Tenthredinoidea,,Blasticotomidae,,1; Blasticotoma filiceti,1,2,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/blasticotomidae/,superfamily
-hymenoptera,Tenthredinoidea,,Braconidae,,1485 in Germany,1500,445,Belokobylskij et al. 2003,superfamily and family
-hymenoptera,Tenthredinoidea,,Cimbicidae,,25,25,1359,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/cimbicidae/,superfamily
-hymenoptera,Tenthredinoidea,,Diprionidae,,17,17,165,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/diprionidae/,superfamily
-hymenoptera,Tenthredinoidea,,Tenthredinidae,,900,900,13775,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/tenthredinidae/,superfamily and family
-hymenoptera,Vespoidea,,Vespidae,,50??,50,30383,,family
+family,reference
+Andrenidae,Nieto et al. 2014 European Bees; Atlas_hymenoptera (http://www.atlashymenoptera.net/page.aspx?id=243)
+Apidae,Nieto et al. 2014 European Bees
+Colletidae,Nieto et al. 2014 European Bees
+Halictidae,Nieto et al. 2014 European Bees
+Megachilidae,Nieto et al. 2014 European Bees
+Melittidae,Nieto et al. 2014 European Bees
+Crabronidae,Schmid-Egger 2018
+Sphecidae,Schmid-Egger 2018
+Megalodontesidae,Taeger 2002
+Pamphiliidae,Van Achterberg 1986
+Argidae,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/argidae/
+Blasticotomidae,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/blasticotomidae/
+Braconidae,Belokobylskij et al. 2003
+Cimbicidae,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/cimbicidae/
+Diprionidae,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/diprionidae/
+Tenthredinidae,https://bladmineerders.nl/parasites/animalia/arthropoda/insecta/hymenoptera/symphyta/tenthredinoidea/tenthredinidae/
+Vespidae,

@@ -1,27 +1,27 @@
-order,superfamily,family,number of genera,number of species,reference,notes,goal
-Lepidoptera,Bombycoidea,Bombycidae,,,,silkworms,family
-Lepidoptera,Bombycoidea,Sphingidae,,,,"known to be pollinators, e.g., Hawk moths, Sphingidae",family
-Lepidoptera,Choreutoidea,Choreutidae,,,,metalmark moths,family
-Lepidoptera,Epermenioidea,Epermeniidae,,,,narrow winged moths,family
-Lepidoptera,Gelechioidea,Coleophoridae,,,,small moths,superfamily
-Lepidoptera,Gelechioidea,Gelechiidae,,,,twirler moths,superfamily
-Lepidoptera,Geometroidea,Geometridae,,,,fairy longhorn moths,family
-Lepidoptera,Incurvarioidea,Adelidae,,,,seen in Mueller study,family
-Lepidoptera,Micropterigoidea,Micropterigidae,,,,,family
-Lepidoptera,Noctuoidea,Erebidae,,,,tiger moths,family
-Lepidoptera,Noctuoidea,Noctuidae,,,,owlet moths,family
-Lepidoptera,Papilionoidea (butterflies),Hesperiidae,,47,Weimers et al. 2018,,genera
-Lepidoptera,Papilionoidea (butterflies),Lycaenidae,,130,Weimers et al. 2018,,genera
-Lepidoptera,Papilionoidea (butterflies),Nymphalidae,,246,Weimers et al. 2018,,genera
-Lepidoptera,Papilionoidea (butterflies),Papilionidae,,15,Weimers et al. 2018,,genera
-Lepidoptera,Papilionoidea (butterflies),Pieridae,,57,Weimers et al. 2018,,genera
-Lepidoptera,Papilionoidea (butterflies),Riodinidae,,1,Weimers et al. 2018,,genera
-Lepidoptera,Pterophoroidea,Pterophoridae,,,,plume moths; distinct,family
-Lepidoptera,Pyraloidea,Crambidae,,,,grass moths,superfamily
-Lepidoptera,Pyraloidea,Pyralidae,,,,snout moths,superfamily
-Lepidoptera,Tineiodea,Psychidae,,,,,family
-Lepidoptera,Tortricoidea,Tortricidae,,,,,family
-Lepidoptera,Yponomeutoidea,Glyphipterigidae,,,,,superfamily
-Lepidoptera,Yponomeutoidea,Plutellidae,,,,,superfamily
-Lepidoptera,Yponomeutoidea,Yponomeutidae,,,,,superfamily
-Lepidoptera,Zygaenoidea,Zygaenidae,,,,known to be pollinators,family
+family,reference,notes
+Bombycidae,,silkworms
+Sphingidae,,"known to be pollinators, e.g., Hawk moths, Sphingidae"
+Choreutidae,,metalmark moths
+Epermeniidae,,narrow winged moths
+Coleophoridae,,small moths
+Gelechiidae,,twirler moths
+Geometridae,,fairy longhorn moths
+Adelidae,,seen in Mueller study
+Micropterigidae,,
+Erebidae,,tiger moths
+Noctuidae,,owlet moths
+Hesperiidae,Weimers et al. 2018,
+Lycaenidae,Weimers et al. 2018,
+Nymphalidae,Weimers et al. 2018,
+Papilionidae,Weimers et al. 2018,
+Pieridae,Weimers et al. 2018,
+Riodinidae,Weimers et al. 2018,
+Pterophoridae,,plume moths; distinct
+Crambidae,,grass moths
+Pyralidae,,snout moths
+Psychidae,,
+Tortricidae,,
+Glyphipterigidae,,
+Plutellidae,,
+Yponomeutidae,,
+Zygaenidae,,known to be pollinators

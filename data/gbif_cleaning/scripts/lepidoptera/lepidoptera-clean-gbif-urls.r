@@ -34,7 +34,7 @@ target_taxa_all <- read.csv(file = "./data/gbif_cleaning/taxonomy/lepidoptera.cs
                             na.strings = c("NA", ""),
                             colClasses = "character")
 setDT(target_taxa_all)
-target_taxa <- target_taxa_all[, .(superfamily, family)]
+target_taxa <- target_taxa_all[, .(family)]
 # Check if target taxa exists in occurrence data (there might be typos)
 target_taxa[, exists_in_occ := family %in% unique(dt_occ_all$family)]
 target_taxa[exists_in_occ == FALSE, family]
