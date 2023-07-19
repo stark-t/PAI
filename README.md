@@ -19,6 +19,8 @@ git clone https://github.com/stark-t/PAI
 
 For training the models on a GPU cluster see our steps documented at https://github.com/stark-t/PAI/tree/main/scripts/cluster#readme
 
+The script used for model evaluation is `./scripts/evaluate.py`. Scripts named as `untils_*.py` contain helper functions.
+
 For using our trained weights, see the suggestions at https://github.com/stark-t/PAI/tree/main/detectors#readme
 
 # Data

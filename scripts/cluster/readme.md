@@ -104,13 +104,8 @@ deactivate
 
 ## Download the raw data
 
-Download the raw P1_dataset:
-```bash
-cd ~/datasets # move to home/datasets
-wget https://portal.idiv.de/nextcloud/index.php/s/wN349pKaXn4ckg6/download # don’t add .zip
-unzip download # unzips in a folder with its original name as stored on NextCloud: P1_Data
-rm download # delete the zip file
-```
+See https://github.com/stark-t/PAI/tree/main/data#readme
+
 
 ## Prepare data
 
