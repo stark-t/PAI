@@ -2,8 +2,7 @@
 
 This repository is associated with the paper:
 
-- preprint
-> Stark, T., Stefan, V., Wurm, M., Spanier, R., Taubenboeck, H., & Knight, T. M. (2023). YOLO object detection models can locate and classify broad groups of flower-visiting arthropods in images. https://assets.researchsquare.com/files/rs-2673814/v1/ed1dd10c2de6319cc445a1ac.pdf?c=1678851330
+> Stark, T., Stefan, V., Wurm, M., Spanier, R., Taubenboeck, H., & Knight, T. M. (2023). YOLO object detection models can locate and classify broad groups of flower-visiting arthropods in images. https://www.nature.com/articles/s41598-023-43482-3
 
 Computations were done using resources of the Leipzig University Computing Centre. Note that the setting of the environments are valid only for the resources made available to us. You will need to edit most of the data paths to fit your local settings.
 # How to use this repository
